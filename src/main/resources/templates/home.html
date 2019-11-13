@@ -50,7 +50,7 @@
                 <li class="layui-nav-item layui-nav-itemed">
                     <a class="" href="javascript:;">所有商品</a>
                     <dl class="layui-nav-child">
-                        <dd><a href="javascript:;">列表一</a></dd>
+                        <dd><a href="javascript:refresh();">列表一</a></dd>
                         <dd><a href="javascript:;">列表二</a></dd>
                         <dd><a href="javascript:;">列表三</a></dd>
                         <dd><a href="">超链接</a></dd>
@@ -112,6 +112,15 @@
                 }
             });
 
+            function refresh() {
+                alert("refresh");
+                $.getJSON("/static/json/airport.json", function(result) {
+                    _rawData = result;
+                    myChart.setOption(option = makeOption());
+                    initDrag();
+                });
+            }
+
             function makeOption() {
                 return {
                     tooltip: {
@@ -162,8 +171,8 @@
                         right: 10,
                         top: 70,
                         bottom: 20,
-                        start: 95,
-                        end: 100,
+                        startValue: 0,
+                        endValue: 15,
                         handleSize: 0,
                         showDetail: false,
                     }, {
@@ -254,7 +263,8 @@
 
                 var barLength = timeDeparture[0] - timeArrival[0];
                 // Get the heigth corresponds to length 1 on y axis.
-                var barHeight = api.size([0, 1])[1] * HEIGHT_RATIO;
+                var itemHeight = Math.min(api.size([0, 1])[1], 50);
+                var barHeight = itemHeight * HEIGHT_RATIO;
                 var x = timeArrival[0];
                 var y = timeArrival[1] - barHeight;
 
