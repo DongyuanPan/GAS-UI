@@ -74,7 +74,7 @@ public class FCFSSchedulingAlgorithmExample extends DataAwareSchedulingAlgorithm
             /**
              * Should change this based on real physical path
              */
-            String daxPath = "C:\\Users\\64123\\IdeaProjects\\springboot_web\\config\\dax\\Montage_100.xml";
+            String daxPath = "config/dax/Montage_100.xml";
 
             File daxFile = new File(daxPath);
             if (!daxFile.exists()) {

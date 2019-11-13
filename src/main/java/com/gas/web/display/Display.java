@@ -4,7 +4,6 @@ import com.gas.web.bean.Res;
 import com.gas.web.bean.Schedule;
 import com.gas.web.bean.Task;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,7 +34,7 @@ public class Display {
         List<String> dimensions = new ArrayList<>();
         dimensions.add("Name");
         dimensions.add("Type");
-        dimensions.add("Near Bridge");
+//        dimensions.add("Near Bridge");
         List<List<Object>> data = new ArrayList<>();
         for (Res res : resList) {
             List<Object> record = new ArrayList<>();
@@ -63,13 +62,18 @@ public class Display {
         dimensions.add("Parking Apron Index");
         dimensions.add("Arrival Time");
         dimensions.add("Departure Time");
+        dimensions.add("id");
+        dimensions.add("sucs");
+        dimensions.add("pres");
         List<List<Object>> data = new ArrayList<>();
         for (Task task : taskList) {
             List<Object> record = new ArrayList<>();
             record.add(task.getIndexRes());
             record.add(task.getStartTime());
             record.add(task.getEndTime());
-            record.add(task.getName());
+            record.add(task.getId());
+            record.add(task.getSucList());
+            record.add(task.getPreList());
             data.add(record);
         }
         flight.setDimensions(dimensions);
