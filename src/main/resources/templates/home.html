@@ -50,8 +50,8 @@
                 <li class="layui-nav-item layui-nav-itemed">
                     <a class="" href="javascript:;">所有商品</a>
                     <dl class="layui-nav-child">
-                        <dd><a href="javascript:refresh();">列表一</a></dd>
-                        <dd><a href="javascript:;">列表二</a></dd>
+                        <dd><a href="javascript:refresh();">refresh_test</a></dd>
+                        <dd><a href="javascript:FCFSExample();">FCFS</a></dd>
                         <dd><a href="javascript:;">列表三</a></dd>
                         <dd><a href="">超链接</a></dd>
                     </dl>
@@ -121,6 +121,21 @@
                 });
             }
 
+            function FCFSExample() {
+                alert("FCFSExample");
+                $.ajax({
+                    type: "GET",
+                    url: "/FCFSExample",
+                    success: function (result) {
+                        if (result.code == 200) {
+                            _rawData = result.data;
+                            myChart.setOption(option = makeOption());
+                            initDrag();
+                        }
+                    }
+                });
+            }
+
             function makeOption() {
                 return {
                     tooltip: {
@@ -140,7 +155,7 @@
                         }
                     },
                     title: {
-                        text: 'Gantt of Airport Flight',
+                        text: 'Gantt of Task',
                         left: 'center'
                     },
                     dataZoom: [{
@@ -195,15 +210,15 @@
                         borderWidth: 0
                     },
                     xAxis: {
-                        type: 'time',
-                        position: 'top',
+                        type: 'value',
+                        position: 'bottom',
                         splitLine: {
                             lineStyle: {
                                 color: ['#E9EDFF']
                             }
                         },
                         axisLine: {
-                            show: false
+                            show: true
                         },
                         axisTick: {
                             lineStyle: {
