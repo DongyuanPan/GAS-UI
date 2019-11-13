@@ -31,13 +31,67 @@
         series: [{
             name: '销量',
             type: 'bar',
-            data: [5, 20, 36, 10, 10, 20]
-        }]
+            data: [5, 20, 36, 10, 10, 20],
+            emphasis: {
+                itemStyle:{
+                    color : 'blue'
+                },
+                label: {
+                    show: true,
+                    // 高亮时标签的文字。
+                    formatter: 'This is a emphasis label.'
+                }
+            }
+        }
+
+        ]
     };
 
     // 使用刚指定的配置项和数据显示图表。
     myChart.setOption(option);
+    myChart.dispatchAction({
+        type: 'highlight',
+        seriesIndex: 0,
+        dataIndex: 1
+    });
 
+    myChart.on('mouseover', function(e) {
+
+//高亮显示悬停的那块
+        myChart.dispatchAction({
+            type: 'highlight',
+            seriesIndex: 0,
+            dataIndex: 0
+        });
+        myChart.dispatchAction({
+            type: 'highlight',
+            seriesIndex: 0,
+            dataIndex: 1
+        });
+        myChart.dispatchAction({
+            type: 'highlight',
+            seriesIndex: 0,
+            dataIndex: 2
+        });
+    });
+    //检测鼠标移出后显示之前默认高亮的那块
+    myChart.on('mouseout', function(e) {
+        myChart.dispatchAction({
+            type: 'downplay',
+            seriesIndex: 0,
+            dataIndex: 0
+        });
+        myChart.dispatchAction({
+            type: 'downplay',
+            seriesIndex: 0,
+            dataIndex: 1
+        });
+        myChart.dispatchAction({
+            type: 'downplay',
+            seriesIndex: 0,
+            dataIndex: 2
+        });
+    });
 
     $.getJSON("static/json/userinfo.json", function (data){
         var $jsontip = $("#jsonTip");
