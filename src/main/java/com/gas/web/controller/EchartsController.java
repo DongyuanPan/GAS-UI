@@ -21,7 +21,6 @@ import org.workflowsim.examples.clustering.balancing.*;
 import org.workflowsim.examples.failure.*;
 import org.workflowsim.examples.failure.clustering.*;
 import org.workflowsim.examples.planning.*;
-import org.workflowsim.examples.scheduling.*;
 import org.workflowsim.examples.cost.*;
 
 import java.util.ArrayList;
@@ -55,11 +54,13 @@ public class EchartsController {
     public HashMap<String, Object> FCFSExample() {
         String[] args = new String[]{};
         HashMap<String, Object> res = new HashMap<>();
-
-        FCFSSchedulingAlgorithmExample.main(args);
+        List<CondorVM> vmList = new ArrayList<>();
+        List<Job> jobList = new ArrayList<>();
+        FCFSSchedulingAlgorithmExample f = new FCFSSchedulingAlgorithmExample();
+        f.FCFS();
 
         res.put("code", "200");
-        res.put("data", genJson());
+        res.put("data", toDisplay(f.getCondorVMList(), f.getTaskList()));
         return res;
    }
       
@@ -67,18 +68,22 @@ public class EchartsController {
         Schedule schedule = new Schedule();
         List<Res> resList = new ArrayList<>();
         List<Task> taskList = new ArrayList<>();
-        for (CondorVM vm : vmList) {
+        HashMap<Integer, Integer> idToIndex = new HashMap<>();
+        for (int i = 0; i < vmList.size(); ++i) {
+            CondorVM vm = vmList.get(i);
             Res res = new Res();
             res.setName(String.valueOf(vm.getId()));
             resList.add(res);
+            idToIndex.put(vm.getId(), i);
         }
         for (Job job : jobList) {
             for (org.workflowsim.Task taskTmp : job.getTaskList()) {
                 Task task = new Task();
-                task.setIndexRes(taskTmp.getVmId());
+                task.setIndexRes(idToIndex.get(job.getVmId()));
                 task.setStartTime(taskTmp.getExecStartTime());
                 task.setEndTime(taskTmp.getTaskFinishTime());
                 task.setName(String.valueOf(taskTmp.getCloudletId()));
+                taskList.add(task);
             }
         }
         schedule.setResList(resList);
@@ -93,12 +98,12 @@ public class EchartsController {
         resList.add(new Res("AB95", "W"));
         resList.add(new Res("AB97", "W"));
         resList.add(new Res("AB98", "W"));
-        taskList.add(new Task(0, 1496840400000L, 1496841300000L, "Y1713"));
-        taskList.add(new Task(0, 1496850300000L, 1496870400000L, "Y3803"));
-        taskList.add(new Task(1, 1496846400000L, 1496879400000L, "Y3901"));
-        taskList.add(new Task(1, 1496883600000L, 1496890800000L, "Y4654"));
-        taskList.add(new Task(2, 1496840400000L, 1496843400000L, "Y8626"));
-        taskList.add(new Task(2, 1496850600000L, 1496865900000L, "Y0050"));
+        taskList.add(new Task(0, 14, 149, "Y1713"));
+        taskList.add(new Task(0, 14, 149, "Y3803"));
+        taskList.add(new Task(1, 14, 149, "Y3901"));
+        taskList.add(new Task(1, 14, 149, "Y4654"));
+        taskList.add(new Task(2, 14, 149, "Y8626"));
+        taskList.add(new Task(2, 14, 1496, "Y0050"));
         schedule.setResList(resList);
         schedule.setTaskList(taskList);
 
