@@ -97,7 +97,7 @@ public class WorkflowSimBasicExample1 {
             /**
              * Should change this based on real physical path
              */
-            String daxPath = "C:\\Users\\64123\\IdeaProjects\\springboot_web\\config\\dax\\Montage_100.xml";
+            String daxPath = "F:\\workspace\\IdeaProjects\\GAS-UI\\config\\dax\\Montage_100.xml";
             File daxFile = new File(daxPath);
             if (!daxFile.exists()) {
                 Log.printLine("Warning: Please replace daxPath with the physical path in your working environment!");
