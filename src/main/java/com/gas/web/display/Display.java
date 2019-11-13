@@ -65,6 +65,7 @@ public class Display {
         dimensions.add("id");
         dimensions.add("sucs");
         dimensions.add("pres");
+        dimensions.add("highlight");
         List<List<Object>> data = new ArrayList<>();
         for (Task task : taskList) {
             List<Object> record = new ArrayList<>();
@@ -74,6 +75,7 @@ public class Display {
             record.add(task.getId());
             record.add(task.getSucList());
             record.add(task.getPreList());
+            record.add(task.isHightlight());
             data.add(record);
         }
         flight.setDimensions(dimensions);

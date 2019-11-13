@@ -70,11 +70,11 @@ public class FCFSSchedulingAlgorithmExample extends DataAwareSchedulingAlgorithm
              * the data center or the host doesn't have sufficient resources the
              * exact vmNum would be smaller than that. Take care.
              */
-            int vmNum = 10;//number of vms;
+            int vmNum = 5;//number of vms;
             /**
              * Should change this based on real physical path
              */
-            String daxPath = "config/dax/Montage_100.xml";
+            String daxPath = "config/dax/leadmm.xml";
 
             File daxFile = new File(daxPath);
             if (!daxFile.exists()) {
@@ -149,6 +149,7 @@ public class FCFSSchedulingAlgorithmExample extends DataAwareSchedulingAlgorithm
             CloudSim.stopSimulation();
             CondorVMList = vmlist0;
             taskList = outputList0;
+            printJobList(outputList0);
         } catch (Exception e) {
             Log.printLine("The simulation has been terminated due to an unexpected error");
         }
