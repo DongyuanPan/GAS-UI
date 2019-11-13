@@ -7,9 +7,7 @@ import java.util.List;
 
 public class Schedule {
 
-    @SerializedName("parkingApron")
     private List<Res> resList;
-    @SerializedName("flight")
     private List<Task> taskList;
 
     public Schedule() {

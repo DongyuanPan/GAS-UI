@@ -2,15 +2,15 @@ package com.gas.web.bean;
 
 public class Task {
     private int indexRes;
-    private long startTime;
-    private long endTime;
+    private double startTime;
+    private double endTime;
     private String name;
 
     public Task() {
 
     }
 
-    public Task(int indexRes, long startTime, long endTime, String name) {
+    public Task(int indexRes, double startTime, double endTime, String name) {
         this.indexRes = indexRes;
         this.startTime = startTime;
         this.endTime = endTime;
@@ -25,19 +25,19 @@ public class Task {
         this.indexRes = indexRes;
     }
 
-    public long getStartTime() {
+    public double getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(long startTime) {
+    public void setStartTime(double startTime) {
         this.startTime = startTime;
     }
 
-    public long getEndTime() {
+    public double getEndTime() {
         return endTime;
     }
 
-    public void setEndTime(long endTime) {
+    public void setEndTime(double endTime) {
         this.endTime = endTime;
     }
 
