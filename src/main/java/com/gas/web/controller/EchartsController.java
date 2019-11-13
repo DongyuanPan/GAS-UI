@@ -15,6 +15,15 @@ import org.workflowsim.CondorVM;
 import org.workflowsim.Job;
 import org.workflowsim.utils.Parameters;
 
+import org.cloudbus.cloudsim.Log;
+import org.workflowsim.examples.clustering.*;
+import org.workflowsim.examples.clustering.balancing.*;
+import org.workflowsim.examples.failure.*;
+import org.workflowsim.examples.failure.clustering.*;
+import org.workflowsim.examples.planning.*;
+import org.workflowsim.examples.scheduling.*;
+import org.workflowsim.examples.cost.*;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -41,6 +50,19 @@ public class EchartsController {
         return "echarts";
     }
 
+    @ResponseBody
+    @RequestMapping("/FCFSExample")
+    public HashMap<String, Object> FCFSExample() {
+        String[] args = new String[]{};
+        HashMap<String, Object> res = new HashMap<>();
+
+        FCFSSchedulingAlgorithmExample.main(args);
+
+        res.put("code", "200");
+        res.put("data", genJson());
+        return res;
+   }
+      
     private Display toDisplay(List<CondorVM> vmList, List<Job> jobList) {
         Schedule schedule = new Schedule();
         List<Res> resList = new ArrayList<>();
@@ -89,4 +111,7 @@ public class EchartsController {
 //        String jsonPath = "F:\\workspace\\IdeaProjects\\springboot_web\\src\\main\\resources\\static\\json";
 //        CreateFileUtil.createJsonFile(json, jsonPath, "data");
     }
+
+
+
 }
