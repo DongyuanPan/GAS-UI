@@ -6,9 +6,14 @@ import com.gas.web.bean.Task;
 import com.gas.web.display.Display;
 import com.gas.web.util.CreateFileUtil;
 import com.google.gson.Gson;
+import org.cloudbus.cloudsim.Cloudlet;
+import org.cloudbus.cloudsim.Log;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.workflowsim.CondorVM;
+import org.workflowsim.Job;
+import org.workflowsim.utils.Parameters;
 
 import org.cloudbus.cloudsim.Log;
 import org.workflowsim.examples.clustering.*;
@@ -56,15 +61,38 @@ public class EchartsController {
         res.put("code", "200");
         res.put("data", genJson());
         return res;
+   }
+      
+    private Display toDisplay(List<CondorVM> vmList, List<Job> jobList) {
+        Schedule schedule = new Schedule();
+        List<Res> resList = new ArrayList<>();
+        List<Task> taskList = new ArrayList<>();
+        for (CondorVM vm : vmList) {
+            Res res = new Res();
+            res.setName(String.valueOf(vm.getId()));
+            resList.add(res);
+        }
+        for (Job job : jobList) {
+            for (org.workflowsim.Task taskTmp : job.getTaskList()) {
+                Task task = new Task();
+                task.setIndexRes(taskTmp.getVmId());
+                task.setStartTime(taskTmp.getExecStartTime());
+                task.setEndTime(taskTmp.getTaskFinishTime());
+                task.setName(String.valueOf(taskTmp.getCloudletId()));
+            }
+        }
+        schedule.setResList(resList);
+        schedule.setTaskList(taskList);
+        return new Display(schedule);
     }
 
     private Display genJson() {
         Schedule schedule = new Schedule();
         List<Res> resList = new ArrayList<>();
+        List<Task> taskList = new ArrayList<>();
         resList.add(new Res("AB95", "W"));
         resList.add(new Res("AB97", "W"));
         resList.add(new Res("AB98", "W"));
-        List<Task> taskList = new ArrayList<>();
         taskList.add(new Task(0, 1496840400000L, 1496841300000L, "Y1713"));
         taskList.add(new Task(0, 1496850300000L, 1496870400000L, "Y3803"));
         taskList.add(new Task(1, 1496846400000L, 1496879400000L, "Y3901"));
