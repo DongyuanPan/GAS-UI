@@ -10,6 +10,15 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import org.cloudbus.cloudsim.Log;
+import org.workflowsim.examples.clustering.*;
+import org.workflowsim.examples.clustering.balancing.*;
+import org.workflowsim.examples.failure.*;
+import org.workflowsim.examples.failure.clustering.*;
+import org.workflowsim.examples.planning.*;
+import org.workflowsim.examples.scheduling.*;
+import org.workflowsim.examples.cost.*;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -34,6 +43,19 @@ public class EchartsController {
     @RequestMapping("/echarts")
     public String echarts() {
         return "echarts";
+    }
+
+    @ResponseBody
+    @RequestMapping("/FCFSExample")
+    public HashMap<String, Object> FCFSExample() {
+        String[] args = new String[]{};
+        HashMap<String, Object> res = new HashMap<>();
+
+        FCFSSchedulingAlgorithmExample.main(args);
+
+        res.put("code", "200");
+        res.put("data", genJson());
+        return res;
     }
 
     private Display genJson() {
@@ -61,4 +83,7 @@ public class EchartsController {
 //        String jsonPath = "F:\\workspace\\IdeaProjects\\springboot_web\\src\\main\\resources\\static\\json";
 //        CreateFileUtil.createJsonFile(json, jsonPath, "data");
     }
+
+
+
 }
