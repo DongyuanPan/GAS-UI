@@ -11,17 +11,19 @@ public class Task {
     private String name;
     private List<Integer> sucList;
     private List<Integer> preList;
+    private boolean hightlight;
 
     public Task() {
         preList = new ArrayList<>();
         sucList = new ArrayList<>();
     }
 
-    public Task(int indexRes, double startTime, double endTime, String name) {
+    public Task(int indexRes, double startTime, double endTime, String name, boolean hightlight) {
         this.indexRes = indexRes;
         this.startTime = startTime;
         this.endTime = endTime;
         this.name = name;
+        this.hightlight = hightlight;
     }
 
     public int getIndexRes() {
@@ -78,5 +80,13 @@ public class Task {
 
     public void setPreList(List<Integer> preList) {
         this.preList = preList;
+    }
+
+    public boolean isHightlight() {
+        return hightlight;
+    }
+
+    public void setHightlight(boolean hightlight) {
+        this.hightlight = hightlight;
     }
 }

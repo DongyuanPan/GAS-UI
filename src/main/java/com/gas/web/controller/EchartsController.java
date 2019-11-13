@@ -67,29 +67,41 @@ public class EchartsController {
         Schedule schedule = new Schedule();
         List<Res> resList = new ArrayList<>();
         List<Task> taskList = new ArrayList<>();
-        HashMap<Integer, Integer> idToIndex = new HashMap<>();
+        HashMap<Integer, Integer> VMidToIndex = new HashMap<>();
+        HashMap<Integer, Integer> TaskidToIndex = new HashMap<>();
+
+        int index = 0;
+        for (Job job : jobList) {
+            for (org.workflowsim.Task taskTmp : job.getTaskList()) {
+                TaskidToIndex.put(taskTmp.getCloudletId(), index);
+                ++index;
+            }
+        }
+
         for (int i = 0; i < vmList.size(); ++i) {
             CondorVM vm = vmList.get(i);
             Res res = new Res();
             res.setName(String.valueOf(vm.getId()));
             resList.add(res);
-            idToIndex.put(vm.getId(), i);
+            VMidToIndex.put(vm.getId(), i);
         }
+
         for (Job job : jobList) {
             for (org.workflowsim.Task taskTmp : job.getTaskList()) {
                 Task task = new Task();
-                task.setIndexRes(idToIndex.get(job.getVmId()));
+                task.setIndexRes(VMidToIndex.get(job.getVmId()));
                 task.setStartTime(taskTmp.getExecStartTime());
                 task.setEndTime(taskTmp.getTaskFinishTime());
                 task.setId(taskTmp.getCloudletId());
                 // 读取后继任务和前驱任务的id
                 List<Integer> sucList = task.getSucList();
                 List<Integer> preList = task.getPreList();
+                task.setHightlight(false);
                 for (org.workflowsim.Task taskChild : taskTmp.getChildList()) {
-                    sucList.add(taskChild.getCloudletId());
+                    sucList.add(TaskidToIndex.get(taskChild.getCloudletId()));
                 }
                 for (org.workflowsim.Task taskParent : taskTmp.getParentList()) {
-                    preList.add(taskParent.getCloudletId());
+                    preList.add(TaskidToIndex.get(taskParent.getCloudletId()));
                 }
                 taskList.add(task);
             }
@@ -106,12 +118,12 @@ public class EchartsController {
         resList.add(new Res("AB95", "W"));
         resList.add(new Res("AB97", "W"));
         resList.add(new Res("AB98", "W"));
-        taskList.add(new Task(0, 14, 149, "Y1713"));
-        taskList.add(new Task(0, 14, 149, "Y3803"));
-        taskList.add(new Task(1, 14, 149, "Y3901"));
-        taskList.add(new Task(1, 14, 149, "Y4654"));
-        taskList.add(new Task(2, 14, 149, "Y8626"));
-        taskList.add(new Task(2, 14, 1496, "Y0050"));
+        taskList.add(new Task(0, 14, 149, "Y1713",false));
+        taskList.add(new Task(0, 14, 149, "Y3803",false));
+        taskList.add(new Task(1, 14, 149, "Y3901",false));
+        taskList.add(new Task(1, 14, 149, "Y4654",false));
+        taskList.add(new Task(2, 14, 149, "Y8626",false));
+        taskList.add(new Task(2, 14, 1496, "Y0050",false));
         schedule.setResList(resList);
         schedule.setTaskList(taskList);
 

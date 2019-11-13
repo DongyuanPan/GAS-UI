@@ -82,6 +82,10 @@
             var DIM_CATEGORY_INDEX = 0;
             var DIM_TIME_ARRIVAL = 1;
             var DIM_TIME_DEPARTURE = 2;
+            var DIM_SUCTASK_LIST = 4;
+            var DIM_PRETASK_LIST = 5;
+            var HIGHLIGHT = 6;
+
             var DATA_ZOOM_AUTO_MOVE_THROTTLE = 30;
             var DATA_ZOOM_X_INSIDE_INDEX = 1;
             var DATA_ZOOM_Y_INSIDE_INDEX = 3;
@@ -400,9 +404,70 @@
                 this.model.setIconStatus(type, _draggable ? 'emphasis' : 'normal');
             }
 
+            function light(ophighlight, seriesIndex, dataIndex) {
+                myChart.dispatchAction({
+                    type: ophighlight,
+                    seriesIndex: seriesIndex,
+                    dataIndex: dataIndex
+                });
+            }
+
             function initDrag() {
 
                 _autoDataZoomAnimator = makeAnimator(dispatchDataZoom);
+                myChart.off('click')
+                myChart.on('click', function (param) {
+                    var highlight = _rawData.flight.data[param.dataIndex][HIGHLIGHT];
+                    var sucTask = _rawData.flight.data[param.dataIndex][DIM_SUCTASK_LIST];
+                    var preTask = _rawData.flight.data[param.dataIndex][DIM_PRETASK_LIST];
+
+                    var sucQue = [];
+                    var preQue = [];
+                    for (var i = 0; i < sucTask.length; i++) {
+                        sucQue.push(sucTask[i]);
+                    }
+
+                    for (var i = 0; i < preTask.length; i++) {
+                        preQue.push(preTask[i]);
+                    }
+
+
+                    var ophighlight = '';
+                    if (highlight){
+                        ophighlight = 'downplay';
+                    }else{
+                        ophighlight = 'highlight';
+                    }
+
+
+                    _rawData.flight.data[param.dataIndex][HIGHLIGHT] = !_rawData.flight.data[param.dataIndex][HIGHLIGHT];
+                    light(ophighlight, 0, param.dataIndex);
+                    while (sucQue.length !== 0 ){
+                        light(ophighlight, 0, sucQue[0]);
+                        var node = _rawData.flight.data[sucQue[0]];
+                        node[HIGHLIGHT] = !node[HIGHLIGHT];
+                        var node_suc = node[DIM_SUCTASK_LIST];
+                        for (var i = 0; i < node_suc.length; i++) {
+                            if (sucQue.indexOf(node_suc[i]) > -1)
+                                continue;
+                            sucQue.push(node_suc[i]);
+                        }
+                        sucQue.shift();
+                    }
+
+                    while (preQue.length !== 0 ){
+                        light(ophighlight, 0, preQue[0]);
+                        var node = _rawData.flight.data[preQue[0]];
+                        node[HIGHLIGHT] = !node[HIGHLIGHT];
+                        var node_pre = node[DIM_SUCTASK_LIST];
+                        for (var i = 0; i < node_pre.length; i++) {
+                            if (preQue.indexOf(node_pre[i]) > -1)
+                                continue;
+                            preQue.push(node_pre[i]);
+                        }
+                        preQue.shift();
+                    }
+                })
 
                 myChart.on('mousedown', function (param) {
                     if (!_draggable || !param || param.seriesIndex == null) {
