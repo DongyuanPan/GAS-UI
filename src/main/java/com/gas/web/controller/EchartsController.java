@@ -4,25 +4,14 @@ import com.gas.web.bean.Res;
 import com.gas.web.bean.Schedule;
 import com.gas.web.bean.Task;
 import com.gas.web.display.Display;
-import com.gas.web.util.CreateFileUtil;
 import com.google.gson.Gson;
-import org.cloudbus.cloudsim.Cloudlet;
-import org.cloudbus.cloudsim.Log;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.workflowsim.CondorVM;
 import org.workflowsim.Job;
-import org.workflowsim.utils.Parameters;
 
-import org.cloudbus.cloudsim.Log;
-import org.workflowsim.examples.clustering.*;
-import org.workflowsim.examples.clustering.balancing.*;
-import org.workflowsim.examples.failure.*;
-import org.workflowsim.examples.failure.clustering.*;
-import org.workflowsim.examples.planning.*;
 import org.workflowsim.examples.scheduling.*;
-import org.workflowsim.examples.cost.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -78,7 +67,17 @@ public class EchartsController {
                 task.setIndexRes(taskTmp.getVmId());
                 task.setStartTime(taskTmp.getExecStartTime());
                 task.setEndTime(taskTmp.getTaskFinishTime());
-                task.setName(String.valueOf(taskTmp.getCloudletId()));
+                task.setId(taskTmp.getCloudletId());
+                // 读取后继任务和前驱任务的id
+                List<Integer> sucList = task.getSucList();
+                List<Integer> preList = task.getPreList();
+                for (org.workflowsim.Task taskChild : taskTmp.getChildList()) {
+                    sucList.add(taskChild.getCloudletId());
+                }
+                for (org.workflowsim.Task taskParent : taskTmp.getParentList()) {
+                    preList.add(taskParent.getCloudletId());
+                }
+                taskList.add(task);
             }
         }
         schedule.setResList(resList);
