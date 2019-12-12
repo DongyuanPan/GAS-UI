@@ -2,15 +2,15 @@ package com.gas.web.display;
 
 import java.util.List;
 
-public class ParkingApron {
+public class ParkingApr {
     private List<String> dimensions;
     private List<List<Object>> data;
 
-    public ParkingApron() {
+    public ParkingApr() {
 
     }
 
-    public ParkingApron(List<String> dimensions, List<List<Object>> data) {
+    public ParkingApr(List<String> dimensions, List<List<Object>> data) {
         this.dimensions = dimensions;
         this.data = data;
     }
