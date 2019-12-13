@@ -25,6 +25,7 @@ import org.workflowsim.examples.cost.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 
 @Controller
 public class EchartsController {
@@ -82,6 +83,7 @@ public class EchartsController {
             CondorVM vm = vmList.get(i);
             Res res = new Res();
             res.setName(String.valueOf(vm.getId()));
+            res.setType(String.valueOf(vm.getHost()));
             resList.add(res);
             VMidToIndex.put(vm.getId(), i);
         }
@@ -93,6 +95,8 @@ public class EchartsController {
                 task.setStartTime(taskTmp.getExecStartTime());
                 task.setEndTime(taskTmp.getTaskFinishTime());
                 task.setId(taskTmp.getCloudletId());
+                task.setName(taskTmp.getType());
+                task.setColorNum(new Random().nextInt(11));
                 // 读取后继任务和前驱任务的id
                 List<Integer> sucList = task.getSucList();
                 List<Integer> preList = task.getPreList();
@@ -118,12 +122,12 @@ public class EchartsController {
         resList.add(new Res("AB95", "W"));
         resList.add(new Res("AB97", "W"));
         resList.add(new Res("AB98", "W"));
-        taskList.add(new Task(0, 14, 149, "Y1713",false));
-        taskList.add(new Task(0, 14, 149, "Y3803",false));
-        taskList.add(new Task(1, 14, 149, "Y3901",false));
-        taskList.add(new Task(1, 14, 149, "Y4654",false));
-        taskList.add(new Task(2, 14, 149, "Y8626",false));
-        taskList.add(new Task(2, 14, 1496, "Y0050",false));
+        taskList.add(new Task(0, 14, 149, "Y1713",false,1));
+        taskList.add(new Task(0, 154, 249, "Y3803",false,2));
+        taskList.add(new Task(1, 14, 149, "Y3901",false,3));
+        taskList.add(new Task(1, 154, 249, "Y4654",false,4));
+        taskList.add(new Task(2, 14, 149, "Y8626",false,5));
+        taskList.add(new Task(2, 149, 296, "Y0050",false,6));
         schedule.setResList(resList);
         schedule.setTaskList(taskList);
 
@@ -136,6 +140,7 @@ public class EchartsController {
 //        String jsonPath = "F:\\workspace\\IdeaProjects\\springboot_web\\src\\main\\resources\\static\\json";
 //        CreateFileUtil.createJsonFile(json, jsonPath, "data");
     }
+
 
 
 

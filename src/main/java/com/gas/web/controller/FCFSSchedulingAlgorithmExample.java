@@ -70,11 +70,13 @@ public class FCFSSchedulingAlgorithmExample extends DataAwareSchedulingAlgorithm
              * the data center or the host doesn't have sufficient resources the
              * exact vmNum would be smaller than that. Take care.
              */
-            int vmNum = 5;//number of vms;
+            int vmNum = 100;//number of vms;
             /**
              * Should change this based on real physical path
              */
-            String daxPath = "config/dax/leadmm.xml";
+            //String daxPath = "config/dax/leadmm.xml";
+            String daxPath = "config/dax/Montage_1000.xml";
+
 
             File daxFile = new File(daxPath);
             if (!daxFile.exists()) {
