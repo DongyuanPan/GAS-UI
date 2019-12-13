@@ -44,6 +44,11 @@ public class EchartsController {
         return "home";
     }
 
+    @RequestMapping("/test")
+    public String test() {
+        return "test";
+    }
+
     @RequestMapping("/echarts")
     public String echarts() {
         return "echarts";
@@ -134,6 +139,7 @@ public class EchartsController {
         Gson gson = new Gson();
         Display display = new Display(schedule);
         String json = gson.toJson(display);
+        System.out.println(json);
         return display;
 //        System.out.println(json);
 

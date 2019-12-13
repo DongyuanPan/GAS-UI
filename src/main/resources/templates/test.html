@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>GAS-UI</title>
+    <link rel="stylesheet" href="../static/layui/css/layui.css" media="all">
+    <!-- 引入 echarts.js -->
+    <script src="../static/dist/echarts.min.js"></script>
+    <!-- 引入 jquery.js -->
+    <script src="../static/js/jquery-3.4.1.js"></script>
+</head>
+<body>
+
+    <div class="layui-upload">
+        <button type="button" class="layui-btn layui-btn-normal" id="test8">选择文件</button>
+        <button type="button" class="layui-btn" id="test9">开始上传</button>
+    </div>
+
+    <script src="/static/layui/layui.js"></script>
+    <script>
+        layui.use('upload', function(){
+            var $ = layui.jquery
+                ,upload = layui.upload;
+
+
+            //选完文件后不自动上传
+            upload.render({
+                elem: '#test8'
+                ,url: '/upload/'
+                ,auto: false
+                //,multiple: true
+                ,bindAction: '#test9'
+                ,done: function(res){
+                    alert("成功")
+                }
+            });
+        });
+    </script>
+</body>
