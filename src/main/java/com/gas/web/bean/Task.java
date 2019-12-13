@@ -13,19 +13,29 @@ public class Task {
     private List<Integer> preList;
     private boolean hightlight;
 
+    private int colorNum;
+
     public Task() {
         preList = new ArrayList<>();
         sucList = new ArrayList<>();
     }
 
-    public Task(int indexRes, double startTime, double endTime, String name, boolean hightlight) {
+    public Task(int indexRes, double startTime, double endTime, String name, boolean hightlight, int colorNum) {
         this.indexRes = indexRes;
         this.startTime = startTime;
         this.endTime = endTime;
         this.name = name;
         this.hightlight = hightlight;
+        this.colorNum = colorNum;
     }
 
+    public int getColorNum() {
+        return colorNum;
+    }
+
+    public void setColorNum(int colorNum) {
+        this.colorNum = colorNum;
+    }
     public int getIndexRes() {
         return indexRes;
     }

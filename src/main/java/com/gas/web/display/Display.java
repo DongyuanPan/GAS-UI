@@ -8,8 +8,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Display {
-    private ParkingApron parkingApron;
-    private Flight flight;
+    public ParkingApr getResources() {
+        return resources;
+    }
+
+    public void setResources(ParkingApr resources) {
+        this.resources = resources;
+    }
+
+    public Flight getTasks() {
+        return tasks;
+    }
+
+    public void setTasks(Flight tasks) {
+        this.tasks = tasks;
+    }
+
+    private ParkingApr resources;
+    private Flight tasks;
 
     public Display() {
 
@@ -20,16 +36,8 @@ public class Display {
         setFlight(schedule);
     }
 
-    public ParkingApron getParkingApron() {
-        return parkingApron;
-    }
-
-    public void setParkingApron(ParkingApron parkingApron) {
-        this.parkingApron = parkingApron;
-    }
-
     public void setParkingApron(Schedule schedule) {
-        parkingApron = new ParkingApron();
+        resources = new ParkingApr();
         List<Res> resList = schedule.getResList();
         List<String> dimensions = new ArrayList<>();
         dimensions.add("Name");
@@ -43,29 +51,24 @@ public class Display {
 //            record.add(true);
             data.add(record);
         }
-        parkingApron.setDimensions(dimensions);
-        parkingApron.setData(data);
-    }
-
-    public Flight getFlight() {
-        return flight;
-    }
-
-    public void setFlight(Flight flight) {
-        this.flight = flight;
+        resources.setDimensions(dimensions);
+        resources.setData(data);
     }
 
     public void setFlight(Schedule schedule) {
-        flight = new Flight();
+        tasks = new Flight();
         List<Task> taskList = schedule.getTaskList();
         List<String> dimensions = new ArrayList<>();
-        dimensions.add("Parking Apron Index");
-        dimensions.add("Arrival Time");
-        dimensions.add("Departure Time");
+        dimensions.add("Resources Index");
+        dimensions.add("Start Time");
+        dimensions.add("Finish Time");
         dimensions.add("id");
         dimensions.add("sucs");
         dimensions.add("pres");
         dimensions.add("highlight");
+        dimensions.add("Name");
+        dimensions.add("Color");
+
         List<List<Object>> data = new ArrayList<>();
         for (Task task : taskList) {
             List<Object> record = new ArrayList<>();
@@ -76,9 +79,11 @@ public class Display {
             record.add(task.getSucList());
             record.add(task.getPreList());
             record.add(task.isHightlight());
+            record.add(task.getName());
+            record.add(task.getColorNum());
             data.add(record);
         }
-        flight.setDimensions(dimensions);
-        flight.setData(data);
+        tasks.setDimensions(dimensions);
+        tasks.setData(data);
     }
 }
