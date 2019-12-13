@@ -64,7 +64,7 @@
                         <dd><a href="">超链接</a></dd>
                     </dl>
                 </li>
-                <li class="layui-nav-item"><a href="">云市场</a></li>
+                <li class="layui-nav-item"><a href="">选择json文件</a></li>
                 <li class="layui-nav-item"><a href="">发布商品</a></li>
             </ul>
         </div>
@@ -109,9 +109,9 @@
                 url: "/init",
                 success: function (result) {
                     if (result.code == 200) {
-                            _rawData = result.data;
-                            myChart.setOption(option = makeOption());
-                            initDrag();
+                        _rawData = result.data;
+                        myChart.setOption(option = makeOption());
+                        initDrag();
                     }
                 }
             });
