@@ -102,7 +102,8 @@
                         </div>
                         <div class="layui-form-item">
                             <div class="layui-input-block">
-                                <button class="layui-btn" id="commit" onclick="return false">立即提交</button>
+                                <button type="submit" class="layui-btn" lay-submit="" lay-filter="commit" id="commit" >立即提交</button>
+<!--                                <button class="layui-btn" id="commit" onclick="return false">立即提交</button>-->
                             </div>
                         </div>
                     </div>
@@ -646,7 +647,6 @@ function initDrag() {
         var $ = layui.jquery
             ,upload = layui.upload;
 
-
         //选完文件后不自动上传
         upload.render({
             elem: '#chooseFile'
@@ -661,7 +661,7 @@ function initDrag() {
                     _rawData = result.data;
                     myChart.setOption(option = makeOption());
                     initDrag();
-                    alert("成功");
+                    alert("上传文件成功");
                 } else {
                     alert("上传文件失败");
                 }
@@ -673,35 +673,64 @@ function initDrag() {
         });
     });
 
-    layui.use(['form', 'layer', 'upload'], function () {
-        var layer = layui.layer;
+    layui.use(['form', 'upload', 'layedit', 'laydate'], function(){
+        var form = layui.form
+            ,layer = layui.layer
+            ,layedit = layui.layedit
+            ,laydate = layui.laydate;
+
         var upload = layui.upload;
         var $ = layui.jquery;
 
         upload.render({
             elem: '#chooseFileForSim',
-            url: '/SimUpload',
+            url: '/taskFileUpload',
             auto: false,//选择文件后不自动上传
             accept: 'file', //允许上传的文件类型
             bindAction: '#commit',
             //操作成功的回调
             done: function (res) {
                 if (res.code == 200) {
-                    // alert(result.data);
-                    _rawData = res.data;
-                    myChart.setOption(option = makeOption());
-                    initDrag();
-                    alert("成功");
+                    alert("任务文件上传成功");
                 } else {
-                    alert("上传文件失败");
                 }
             }
             ,error: function(){
                 //请求异常回调
-                alert("上传文件失败");
+                alert("任务文件上传失败");
             }
         });
-    })
+
+        // 监听表单提交
+        form.on('submit(commit)', function(data){
+            /*
+            console.log(data.elem) //被执行事件的元素DOM对象，一般为button对象
+            console.log(data.form) //被执行提交的form对象，一般在存在form标签时才会返回
+            console.log(data.field) //当前容器的全部表单字段，名值对形式：{name: value}
+             */
+            $.ajax({
+                url:'/formUpload',
+                method:'post',
+                data:data.field,
+                dataType:'JSON',
+                success:function(res){
+                    if(res.code = 200){
+                        alert("表单提交成功");
+                    } else {
+                    }
+                },
+                error:function () {
+                    alert("表单提交失败");
+                }
+            });
+            // layer.alert(JSON.stringify(data.field), {
+            //     title: '最终的提交信息'
+            // })
+            return false;
+        });
+
+    });
+
 }
 </script>
 </body>
