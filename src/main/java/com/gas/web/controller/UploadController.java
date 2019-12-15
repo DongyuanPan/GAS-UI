@@ -52,4 +52,38 @@ public class UploadController {
         }
         return jsonObject;
     }
+
+    /**
+     * 文件上传
+     * @param file 接收前端的formdata
+     * @return 包含上传信息的json
+     */
+    @RequestMapping(value = "/SimUpload", method = RequestMethod.POST)
+    @ResponseBody
+    public JSONObject SimUpload(@RequestParam("file")MultipartFile file){
+        JSONObject jsonObject = new JSONObject();
+        if (file.isEmpty()) {
+            jsonObject.put("code", -1);
+            return jsonObject;
+        }
+        String fileName = file.getOriginalFilename();
+        StringBuilder stringBuilder = new StringBuilder();
+        File fileDir = new File("src/main/resources/static/upload");
+        String path = fileDir.getAbsolutePath();
+        if(!fileDir.exists()){
+            fileDir.mkdir();
+        }
+        try {
+            jsonObject.put("code", 200);
+            JSONObject jsonobject = JSONObject.parseObject(new String(file.getBytes()));
+            //jsonObject.put("data", new String(file.getBytes(),"UTF-8"));
+            jsonObject.put("data", jsonobject);
+            jsonObject.put("url", stringBuilder.append(path).append(fileName).toString());
+//            file.transferTo(new File(path, fileName));
+        } catch (Exception e) {
+            jsonObject.put("code", 0);
+            e.printStackTrace();
+        }
+        return jsonObject;
+    }
 }

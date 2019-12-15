@@ -12,29 +12,68 @@
 </head>
 <body>
 
-    <div class="layui-upload">
-        <button type="button" class="layui-btn layui-btn-normal" id="test8">选择文件</button>
-        <button type="button" class="layui-btn" id="test9">开始上传</button>
+<form class="layui-form">
+    <div class="layui-form-item">
+        <label class="layui-form-label">尾灯名称</label>
+        <div class="layui-input-block">
+            <input type="text" name="name" required lay-verify="required" placeholder="请输入尾灯名称" class="layui-input">
+        </div>
     </div>
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button type="button" class="layui-btn" id="upload">
+                <i class="layui-icon">&#xe67c;</i>上传图标
+            </button>
+            <br><br>
+            <div style="width:200px;height:200px;border:3px solid #0099CC;border-radius: 5px;padding: 3px;">
+                <img style="max-width: 200px;max-height:200px;" id="preview">
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" id="commit" onclick="return false">立即提交</button>
+        </div>
+    </div>
+</form>
 
     <script src="/static/layui/layui.js"></script>
-    <script>
-        layui.use('upload', function(){
-            var $ = layui.jquery
-                ,upload = layui.upload;
+<script>
+    layui.use(['form', 'layer', 'upload'], function () {
+        var layer = layui.layer;
+        var upload = layui.upload;
+        var $ = layui.jquery;
 
-
-            //选完文件后不自动上传
-            upload.render({
-                elem: '#test8'
-                ,url: '/upload/'
-                ,auto: false
-                //,multiple: true
-                ,bindAction: '#test9'
-                ,done: function(res){
-                    alert("成功")
+        upload.render({
+            elem: '#upload',
+            url: '{:U("addTL")}',
+            auto: false,//选择文件后不自动上传
+            bindAction: '#commit',
+            //上传前的回调
+            before: function () {
+                this.data = {
+                    name: $('input[name="name"]').val()
                 }
-            });
+            },
+            //选择文件后的回调
+            choose: function (obj) {
+                obj.preview(function (index, file, result) {
+                    $('#preview').attr('src', result);
+                })
+            },
+            //操作成功的回调
+            done: function (res, index, upload) {
+                var code = res.code === 0 ? 1 : 2;
+                layer.alert(res.msg, {icon: code}, function () {
+                    parent.window.location.reload();
+                })
+            },
+            //上传错误回调
+            error: function (index, upload) {
+                layer.alert('上传失败！' + index);
+            }
         });
-    </script>
+    })
+</script>
+
 </body>
