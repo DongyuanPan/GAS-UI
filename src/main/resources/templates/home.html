@@ -47,32 +47,67 @@
         <div class="layui-side-scroll">
             <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
             <ul class="layui-nav layui-nav-tree"  lay-filter="test">
-<!--                <li class="layui-nav-item layui-nav-itemed">-->
-<!--                    <a class="" href="javascript:;">所有商品</a>-->
-<!--                    <dl class="layui-nav-child">-->
-<!--                        <dd><a href="javascript:refresh();">refresh_test</a></dd>-->
-<!--                        <dd><a href="javascript:FCFSExample();">FCFS</a></dd>-->
-<!--                        <dd><a href="javascript:;">列表三</a></dd>-->
-<!--                        <dd><a href="">超链接</a></dd>-->
-<!--                    </dl>-->
-<!--                </li>-->
-<!--                <li class="layui-nav-item">-->
-<!--                    <a href="javascript:;">解决方案</a>-->
-<!--                    <dl class="layui-nav-child">-->
-<!--                        <dd><a href="javascript:;">列表一</a></dd>-->
-<!--                        <dd><a href="javascript:;">列表二</a></dd>-->
-<!--                        <dd><a href="">超链接</a></dd>-->
-<!--                    </dl>-->
-<!--                </li>-->
-                <li class="layui-nav-item"><a href="javascript:;">Button</a></li>
-<!--                <form action="http://localhost:8080/fileup" enctype="multipart/form-data" method="post">-->
-<!--                <input type="file" id="file" name="file">-->
-<!--                <input type="submit" id="butto" value="上传">-->
-<!--                 </form>-->
-                <div class="layui-upload">
-                    <button type="button" class="layui-btn layui-btn-normal" id="chooseFile">选择文件</button>
-                    <button type="button" class="layui-btn" id="submit">开始上传</button>
-                </div>
+                <li class="layui-nav-item">
+                    <a href="javascript:;">首页</a>
+                </li>
+                <li class="layui-nav-item">
+                    <a href="javascript:;">选择JSON绘制</a>
+                    <dl class="layui-nav-child">
+                        <div class="layui-upload">
+                            <div class="layui-upload">
+                                <button type="button" class="layui-btn layui-btn-normal" id="chooseFile">选择文件</button>
+                            </div>
+                            <div class="layui-upload">
+                                <button type="button" class="layui-btn" id="submit">开始上传</button>
+                            </div>
+
+                        </div>
+                    </dl>
+                </li>
+                <li class="layui-nav-item">
+                    <a href="javascript:;">仿真并绘制</a>
+                    <dl class="layui-nav-child">
+                    <div class="layui-form" action="">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">选择任务</label>
+                            <div class="layui-upload">
+                                <button type="button" class="layui-btn layui-btn-normal" id="chooseFileForSim">选择文件</button>
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">虚拟机个数</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="title" required  lay-verify="required" placeholder="请输入虚拟机个数" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+<!--                            <label class="layui-form-label">选择框</label>-->
+                            <div class="layui-input-block must">
+                                <select name="city" lay-verify="required">
+                                    <option color= value=""></option>
+                                    <option value="0">北京</option>
+                                    <option value="1">上海</option>
+                                    <option value="2">广州</option>
+                                    <option value="3">深圳</option>
+                                    <option value="4">杭州</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">开关</label>
+                            <div class="layui-input-block">
+                                <input type="checkbox" name="switch" lay-skin="switch">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <div class="layui-input-block">
+                                <button class="layui-btn" id="commit" onclick="return false">立即提交</button>
+                            </div>
+                        </div>
+                    </div>
+                    </dl>
+                </li>
             </ul>
         </div>
     </div>
@@ -104,15 +139,7 @@ var DATA_ZOOM_AUTO_MOVE_THROTTLE = 30;
 var DATA_ZOOM_X_INSIDE_INDEX = 1;
 var DATA_ZOOM_Y_INSIDE_INDEX = 3;
 var DATA_ZOOM_AUTO_MOVE_SPEED = 0.2;
-var DATA_ZOOM_AUTO_MOVE_DETECT_AREA_WIDTH = 30;
 
-var _draggable;
-var _draggingEl;
-var _dropShadow;
-var _draggingCursorOffset = [0, 0];
-var _draggingTimeLength;
-var _draggingRecord;
-var _dropRecord;
 var _cartesianXBounds = [];
 var _cartesianYBounds = [];
 var _rawData;
@@ -605,6 +632,16 @@ function initDrag() {
 
     });
 
+    layui.use('form', function(){
+        var form = layui.form;
+
+        //监听提交
+        form.on('submit(formDemo)', function(data){
+            layer.msg(JSON.stringify(data.field));
+            return false;
+        });
+    });
+
     layui.use('upload', function(){
         var $ = layui.jquery
             ,upload = layui.upload;
@@ -635,6 +672,36 @@ function initDrag() {
             }
         });
     });
+
+    layui.use(['form', 'layer', 'upload'], function () {
+        var layer = layui.layer;
+        var upload = layui.upload;
+        var $ = layui.jquery;
+
+        upload.render({
+            elem: '#chooseFileForSim',
+            url: '/SimUpload',
+            auto: false,//选择文件后不自动上传
+            accept: 'file', //允许上传的文件类型
+            bindAction: '#commit',
+            //操作成功的回调
+            done: function (res) {
+                if (res.code == 200) {
+                    // alert(result.data);
+                    _rawData = res.data;
+                    myChart.setOption(option = makeOption());
+                    initDrag();
+                    alert("成功");
+                } else {
+                    alert("上传文件失败");
+                }
+            }
+            ,error: function(){
+                //请求异常回调
+                alert("上传文件失败");
+            }
+        });
+    })
 }
 </script>
 </body>
