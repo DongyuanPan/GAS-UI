@@ -81,26 +81,20 @@
                         <div class="layui-form-item">
                             <label class="layui-form-label">虚拟机个数</label>
                             <div class="layui-input-block">
-                                <input type="text" name="title" required  lay-verify="required" placeholder="请输入虚拟机个数" autocomplete="off" class="layui-input">
+                                <input type="text" name="vmnum" required  lay-verify="required" placeholder="请输入虚拟机个数" autocomplete="off" class="layui-input">
                             </div>
                         </div>
                         <div class="layui-form-item">
-<!--                            <label class="layui-form-label">选择框</label>-->
+                            <label class="layui-form-label">调度算法</label>
                             <div class="layui-input-block must">
-                                <select name="city" lay-verify="required">
+                                <select name="algorithm" lay-verify="required">
                                     <option color= value=""></option>
-                                    <option value="0">北京</option>
-                                    <option value="1">上海</option>
-                                    <option value="2">广州</option>
-                                    <option value="3">深圳</option>
-                                    <option value="4">杭州</option>
+                                    <option value="0">FCFS</option>
+                                    <option value="1">MAXMIN</option>
+                                    <option value="2">MINMIN</option>
+                                    <option value="3">ROUNDROBIN</option>
+                                    <option value="4">MCT</option>
                                 </select>
-                            </div>
-                        </div>
-                        <div class="layui-form-item">
-                            <label class="layui-form-label">开关</label>
-                            <div class="layui-input-block">
-                                <input type="checkbox" name="switch" lay-skin="switch">
                             </div>
                         </div>
                         <div class="layui-form-item">
@@ -108,6 +102,8 @@
                                 <button type="submit" class="layui-btn" lay-submit="" lay-filter="commit" id="commit" >立即提交</button>
 <!--                                <button class="layui-btn" id="commit" onclick="return false">立即提交</button>-->
                             </div>
+                        </div>
+                        <div class="layui-form-item">
                             <div class="layui-input-block">
                                 <button class="layui-btn" id="download" onclick="downLoadJson();">结果下载</button>
                             </div>
@@ -284,7 +280,10 @@ function downLoadJson() {
         document.body.removeChild(eleLink);
     };
 
-    funDownload(eleTextarea, 'test.json');
+    var jsonstr = JSON.stringify(eleTextarea);
+    var myDate = new Date();
+    var time = myDate.toISOString();
+    funDownload(jsonstr, time);
 
 }
 
@@ -656,111 +655,104 @@ function initDrag() {
         };
     }
 
-    //JavaScript代码区域
-    layui.use('element', function(){
-        var element = layui.element;
+}
 
-    });
+//JavaScript代码区域
+layui.use('element', function(){
+    var element = layui.element;
 
-    layui.use('form', function(){
-        var form = layui.form;
+});
 
-        //监听提交
-        form.on('submit(formDemo)', function(data){
-            layer.msg(JSON.stringify(data.field));
-            return false;
-        });
-    });
+layui.use('upload', function(){
+    var $ = layui.jquery
+        ,upload = layui.upload;
 
-    layui.use('upload', function(){
-        var $ = layui.jquery
-            ,upload = layui.upload;
-
-        //选完文件后不自动上传
-        upload.render({
-            elem: '#chooseFile'
-            ,url: '/uploadJsonFile'
-            ,auto: false
-            //,multiple: true
-            ,accept: 'file' //允许上传的文件类型
-            ,bindAction: '#submit'
-            ,done: function(result){
-                if (result.code == 200) {
-                    // alert(result.data);
-                    _rawData = result.data;
-                    myChart.setOption(option = makeOption());
-                    initDrag();
-                    alert("上传文件成功");
-                } else {
-                    alert("上传文件失败");
-                }
-            }
-            ,error: function(){
-                //请求异常回调
+    //选完文件后不自动上传
+    upload.render({
+        elem: '#chooseFile'
+        ,url: '/uploadJsonFile'
+        ,auto: false
+        //,multiple: true
+        ,accept: 'file' //允许上传的文件类型
+        ,bindAction: '#submit'
+        ,done: function(result){
+            if (result.code == 200) {
+                // alert(result.data);
+                _rawData = result.data;
+                myChart.setOption(option = makeOption());
+                initDrag();
+                alert("上传文件成功");
+            } else {
                 alert("上传文件失败");
             }
-        });
+        }
+        ,error: function(){
+            //请求异常回调
+            alert("上传文件失败");
+        }
+    });
+});
+
+layui.use(['form', 'upload', 'layedit', 'laydate'], function(){
+    var form = layui.form
+        ,layer = layui.layer
+        ,layedit = layui.layedit
+        ,laydate = layui.laydate;
+
+    var upload = layui.upload;
+    var $ = layui.jquery;
+
+    upload.render({
+        elem: '#chooseFileForSim',
+        url: '/taskFileUpload',
+        auto: false,//选择文件后不自动上传
+        accept: 'file', //允许上传的文件类型
+        bindAction: '#commit',
+        //操作成功的回调
+        done: function (res) {
+            if (res.code == 200) {
+
+            } else {
+            }
+        }
+        ,error: function(){
+            //请求异常回调
+            alert("任务文件上传失败");
+        }
     });
 
-    layui.use(['form', 'upload', 'layedit', 'laydate'], function(){
-        var form = layui.form
-            ,layer = layui.layer
-            ,layedit = layui.layedit
-            ,laydate = layui.laydate;
+    // 监听表单提交
+    form.on('submit(commit)', function(data){
+        /*
+        console.log(data.elem) //被执行事件的元素DOM对象，一般为button对象
+        console.log(data.form) //被执行提交的form对象，一般在存在form标签时才会返回
+        console.log(data.field) //当前容器的全部表单字段，名值对形式：{name: value}
+         */
+        $.ajax({
+            url:'/formUpload',
+            method:'post',
+            data:data.field,
+            dataType:'JSON',
+            success:function(res){
+                if(res.code = 200){
+                    _rawData = res.data;
+                    myChart.setOption(option = makeOption());
+                    initDrag();
 
-        var upload = layui.upload;
-        var $ = layui.jquery;
-
-        upload.render({
-            elem: '#chooseFileForSim',
-            url: '/taskFileUpload',
-            auto: false,//选择文件后不自动上传
-            accept: 'file', //允许上传的文件类型
-            bindAction: '#commit',
-            //操作成功的回调
-            done: function (res) {
-                if (res.code == 200) {
-                    alert("任务文件上传成功");
                 } else {
                 }
-            }
-            ,error: function(){
-                //请求异常回调
-                alert("任务文件上传失败");
+            },
+            error:function () {
+                alert("表单提交失败");
             }
         });
-
-        // 监听表单提交
-        form.on('submit(commit)', function(data){
-            /*
-            console.log(data.elem) //被执行事件的元素DOM对象，一般为button对象
-            console.log(data.form) //被执行提交的form对象，一般在存在form标签时才会返回
-            console.log(data.field) //当前容器的全部表单字段，名值对形式：{name: value}
-             */
-            $.ajax({
-                url:'/formUpload',
-                method:'post',
-                data:data.field,
-                dataType:'JSON',
-                success:function(res){
-                    if(res.code = 200){
-                        alert("表单提交成功");
-                    } else {
-                    }
-                },
-                error:function () {
-                    alert("表单提交失败");
-                }
-            });
-            // layer.alert(JSON.stringify(data.field), {
-            //     title: '最终的提交信息'
-            // })
-            return false;
-        });
-
+        // layer.alert(JSON.stringify(data.field), {
+        //     title: '最终的提交信息'
+        // })
+        return false;
     });
 
-}
+});
 </script>
 </body>
 </html>

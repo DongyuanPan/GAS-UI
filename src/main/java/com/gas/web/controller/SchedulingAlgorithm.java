@@ -35,7 +35,7 @@ import java.util.List;
  * @since WorkflowSim Toolkit 1.1
  * @date Nov 9, 2013
  */
-public class FCFSSchedulingAlgorithmExample extends DataAwareSchedulingAlgorithmExample {
+public class SchedulingAlgorithm extends DataAwareSchedulingAlgorithmExample {
 
     public List<CondorVM> CondorVMList;
     public List<Job> taskList;
@@ -61,7 +61,7 @@ public class FCFSSchedulingAlgorithmExample extends DataAwareSchedulingAlgorithm
      * Creates main() to run this example This example has only one datacenter
      * and one storage
      */
-    public void FCFS() {
+    public void process(String path, int vmnum, int algorithm) {
 
         try {
             // First step: Initialize the WorkflowSim package. 
@@ -70,12 +70,12 @@ public class FCFSSchedulingAlgorithmExample extends DataAwareSchedulingAlgorithm
              * the data center or the host doesn't have sufficient resources the
              * exact vmNum would be smaller than that. Take care.
              */
-            int vmNum = 100;//number of vms;
+            int vmNum = vmnum;//number of vms;
             /**
              * Should change this based on real physical path
              */
             //String daxPath = "config/dax/leadmm.xml";
-            String daxPath = "config/dax/Montage_1000.xml";
+            String daxPath = path;
 
 
             File daxFile = new File(daxPath);
@@ -88,8 +88,31 @@ public class FCFSSchedulingAlgorithmExample extends DataAwareSchedulingAlgorithm
              * Since we are using HEFT planning algorithm, the scheduling
              * algorithm should be static such that the scheduler would not
              * override the result of the planner
+             *                                     <option value="0">FCFS</option>
+             *                                     <option value="1">MAXMIN</option>
+             *                                     <option value="2">MINMIN</option>
+             *                                     <option value="3">ROUNDROBIN</option>
+             *                                     <option value="4">MCT</option>
              */
-            Parameters.SchedulingAlgorithm sch_method = Parameters.SchedulingAlgorithm.FCFS;
+            Parameters.SchedulingAlgorithm sch_method  = Parameters.SchedulingAlgorithm.FCFS;;
+            switch (algorithm){
+                case 0:
+                    sch_method = Parameters.SchedulingAlgorithm.FCFS;
+                    break;
+                case 1:
+                    sch_method = Parameters.SchedulingAlgorithm.MAXMIN;
+                    break;
+                case 2:
+                    sch_method = Parameters.SchedulingAlgorithm.MINMIN;
+                    break;
+                case 3:
+                    sch_method = Parameters.SchedulingAlgorithm.ROUNDROBIN;
+                    break;
+                case 4:
+                    sch_method = Parameters.SchedulingAlgorithm.MCT;
+                    break;
+            }
+
             Parameters.PlanningAlgorithm pln_method = Parameters.PlanningAlgorithm.INVALID;
             ReplicaCatalog.FileSystem file_system = ReplicaCatalog.FileSystem.LOCAL;
 
