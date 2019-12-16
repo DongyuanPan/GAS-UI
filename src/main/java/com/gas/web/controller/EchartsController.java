@@ -1,27 +1,23 @@
 package com.gas.web.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.gas.web.bean.Res;
 import com.gas.web.bean.Schedule;
 import com.gas.web.bean.Task;
 import com.gas.web.display.Display;
 import com.google.gson.Gson;
+import org.cloudbus.cloudsim.Log;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 import org.workflowsim.CondorVM;
 import org.workflowsim.Job;
 
-import org.workflowsim.examples.scheduling.*;
-import org.workflowsim.utils.Parameters;
-
-import org.cloudbus.cloudsim.Log;
-import org.workflowsim.examples.clustering.*;
-import org.workflowsim.examples.clustering.balancing.*;
-import org.workflowsim.examples.failure.*;
-import org.workflowsim.examples.failure.clustering.*;
-import org.workflowsim.examples.planning.*;
-import org.workflowsim.examples.cost.*;
-
+import javax.servlet.http.HttpServletRequest;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -61,8 +57,8 @@ public class EchartsController {
         HashMap<String, Object> res = new HashMap<>();
         List<CondorVM> vmList = new ArrayList<>();
         List<Job> jobList = new ArrayList<>();
-        FCFSSchedulingAlgorithmExample f = new FCFSSchedulingAlgorithmExample();
-        f.FCFS();
+        SchedulingAlgorithm f = new SchedulingAlgorithm();
+//        f.FCFS();
 
         res.put("code", "200");
         res.put("data", toDisplay(f.getCondorVMList(), f.getTaskList()));
@@ -147,7 +143,117 @@ public class EchartsController {
 //        CreateFileUtil.createJsonFile(json, jsonPath, "data");
     }
 
+    private boolean finishUpload = false;
+    private String lastFileName;
+
+    public boolean isFinishUpload() {
+        return finishUpload;
+    }
+
+    public void setFinishUpload(boolean finishUpload) {
+        this.finishUpload = finishUpload;
+    }
+
+    public String getLastFileName() {
+        return lastFileName;
+    }
+
+    public void setLastFileName(String lastFileName) {
+        this.lastFileName = lastFileName;
+    }
 
 
+
+    /**
+     * 文件上传
+     * @param file 接收前端的formdata
+     * @return 返回响应结果
+     */
+    @RequestMapping(value = "/uploadJsonFile", method = RequestMethod.POST)
+    @ResponseBody
+    public JSONObject singleFileUpload(@RequestParam("file") MultipartFile file){
+        JSONObject jsonObject = new JSONObject();
+        if (file.isEmpty()) {
+            jsonObject.put("code", -1);
+            return jsonObject;
+        }
+        String fileName = file.getOriginalFilename();
+        StringBuilder stringBuilder = new StringBuilder();
+        File fileDir = new File("src/main/resources/static/upload");
+        String path = fileDir.getAbsolutePath();
+        if(!fileDir.exists()){
+            fileDir.mkdir();
+        }
+        try {
+            jsonObject.put("code", 200);
+            JSONObject jsonobject = JSONObject.parseObject(new String(file.getBytes()));
+            //jsonObject.put("data", new String(file.getBytes(),"UTF-8"));
+            jsonObject.put("data", jsonobject);
+            jsonObject.put("url", stringBuilder.append(path).append(fileName).toString());
+//            file.transferTo(new File(path, fileName));
+        } catch (Exception e) {
+            jsonObject.put("code", 0);
+            e.printStackTrace();
+        }
+        return jsonObject;
+    }
+
+    /**
+     * 任务文件上传
+     * @param file 接收前端的formdata
+     * @return 返回响应结果
+     */
+    @RequestMapping(value = "/taskFileUpload", method = RequestMethod.POST)
+    @ResponseBody
+    public JSONObject taskFileUpload(@RequestParam("file")MultipartFile file){
+        JSONObject jsonObject = new JSONObject();
+        if (file.isEmpty()) {
+            jsonObject.put("code", -1);
+            return jsonObject;
+        }
+        String fileName = file.getOriginalFilename();
+        setLastFileName(fileName);
+        File fileDir = new File("src/main/resources/static/tasksim");
+        String path = fileDir.getAbsolutePath();
+        if(!fileDir.exists()){
+            fileDir.mkdir();
+        }
+        try {
+            file.transferTo(new File(path, fileName));
+        } catch (Exception e) {
+            jsonObject.put("code", 0);
+            e.printStackTrace();
+        }
+        setFinishUpload(true);
+        return jsonObject;
+    }
+
+    /**
+     * 表单数据上传
+     * @return 返回响应结果
+     */
+    @RequestMapping(value = "/formUpload", method = RequestMethod.POST)
+    @ResponseBody
+    public JSONObject addQuestionnaire(HttpServletRequest request) {
+        JSONObject jsonObject = new JSONObject();
+
+        String vmnum = request.getParameter("vmnum");
+        String path = "src/main/resources/static/tasksim/"+getLastFileName();
+        String algorithm = request.getParameter("algorithm");;
+        boolean whetherSave = Boolean.parseBoolean(request.getParameter("switch"));
+
+        while (true){
+            File daxFile = new File(path);
+            if (daxFile.exists())
+                break;
+        }
+        SchedulingAlgorithm f = new SchedulingAlgorithm();
+        f.process(path, Integer.parseInt(vmnum), Integer.parseInt(algorithm));
+
+        jsonObject.put("code", 200);
+        jsonObject.put("data", toDisplay(f.getCondorVMList(), f.getTaskList()));
+        setFinishUpload(false);
+        return jsonObject;
+    }
 
 }
