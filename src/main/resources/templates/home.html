@@ -44,9 +44,10 @@
         <div class="layui-side-scroll">
             <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
             <ul class="layui-nav layui-nav-tree"  lay-filter="test">
-                <li class="layui-nav-item">
-                    <a href="javascript:;">首页</a>
-                </li>
+                <li class="layui-nav-item"><a href="javascript:showForm();">首页</a></li>
+                <li class="layui-nav-item"><a href="javascript:showPic();">绘图</a></li>
+
+
                 <li class="layui-nav-item">
                     <a href="javascript:;">选择JSON绘制</a>
                     <dl class="layui-nav-child">
@@ -67,9 +68,59 @@
                         </div>
                     </dl>
                 </li>
-                <li class="layui-nav-item">
-                    <a href="javascript:;">仿真并绘制</a>
-                    <dl class="layui-nav-child">
+<!--                <li class="layui-nav-item">-->
+<!--                    <a href="javascript:;">仿真并绘制</a>-->
+<!--                    <dl class="layui-nav-child">-->
+<!--                    <div class="layui-form" action="">-->
+<!--                        <div class="layui-form-item">-->
+<!--                            <label class="layui-form-label">选择任务</label>-->
+<!--                            <div class="layui-upload">-->
+<!--                                <button type="button" class="layui-btn layui-btn-normal" id="chooseFileForSim">选择文件</button>-->
+<!--                            </div>-->
+<!--                        </div>-->
+
+<!--                        <div class="layui-form-item">-->
+<!--                            <label class="layui-form-label">虚拟机个数</label>-->
+<!--                            <div class="layui-input-block">-->
+<!--                                <input type="text" name="vmnum" required  lay-verify="required" placeholder="请输入虚拟机个数" autocomplete="off" class="layui-input">-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                        <div class="layui-form-item">-->
+<!--                            <label class="layui-form-label">调度算法</label>-->
+<!--                            <div class="layui-input-block must">-->
+<!--                                <select name="algorithm" lay-verify="required">-->
+<!--                                    <option color= value=""></option>-->
+<!--                                    <option value="0">FCFS</option>-->
+<!--                                    <option value="1">MAXMIN</option>-->
+<!--                                    <option value="2">MINMIN</option>-->
+<!--                                    <option value="3">ROUNDROBIN</option>-->
+<!--                                    <option value="4">MCT</option>-->
+<!--                                </select>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                        <div class="layui-form-item">-->
+<!--                            <div class="layui-input-block">-->
+<!--                                <button type="submit" class="layui-btn" lay-submit="" lay-filter="commit" id="commit" >立即提交</button>-->
+<!--&lt;!&ndash;                                <button class="layui-btn" id="commit" onclick="return false">立即提交</button>&ndash;&gt;-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                        <div class="layui-form-item">-->
+<!--                            <div class="layui-input-block">-->
+<!--                                <button class="layui-btn" id="download" onclick="downLoadJson();">结果下载</button>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                    </dl>-->
+<!--                </li>-->
+            </ul>
+        </div>
+    </div>
+
+    <div class="layui-body">
+        <!-- 内容主体区域 -->
+        <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+        <div style="width:100%;height:100%;" id="formDiv">
+
                     <div class="layui-form" action="">
                         <div class="layui-form-item">
                             <label class="layui-form-label">选择任务</label>
@@ -100,7 +151,7 @@
                         <div class="layui-form-item">
                             <div class="layui-input-block">
                                 <button type="submit" class="layui-btn" lay-submit="" lay-filter="commit" id="commit" >立即提交</button>
-<!--                                <button class="layui-btn" id="commit" onclick="return false">立即提交</button>-->
+                                <!--                                <button class="layui-btn" id="commit" onclick="return false">立即提交</button>-->
                             </div>
                         </div>
                         <div class="layui-form-item">
@@ -109,23 +160,26 @@
                             </div>
                         </div>
                     </div>
-                    </dl>
-                </li>
-            </ul>
-        </div>
-    </div>
 
-    <div class="layui-body">
-        <!-- 内容主体区域 -->
-        <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
-        <div id="main" style="width:100%;height:100%;"></div>
+        </div>
+        <div style="width:100%;height:100%;" id="main"></div>
     </div>
 </div>
 
 
 <script src="../static/layui/layui.js"></script>
 <script type="text/javascript">
-// 基于准备好的dom，初始化echarts实例
+    function showForm() {
+        document.getElementById("main").style.display="none";//隐藏
+        document.getElementById("formDiv").style.display="";//隐藏
+    }
+
+    function showPic() {
+        document.getElementById("formDiv").style.display="none";//隐藏
+        document.getElementById("main").style.display="";//隐藏
+    }
+
+    // 基于准备好的dom，初始化echarts实例
 var myChart = echarts.init(document.getElementById('main'),'macarons');
 
 var HEIGHT_RATIO = 0.6;
@@ -232,7 +286,7 @@ function FCFSExample() {
 function downLoadJson() {
     var eleTextarea = _rawData;
 
-// 下载文件方法
+    // 下载文件方法
     var funDownload = function (content, filename) {
         var eleLink = document.createElement('a');
         eleLink.download = filename;
@@ -706,7 +760,7 @@ layui.use(['form', 'upload', 'layedit', 'laydate'], function(){
                     _rawData = res.data;
                     myChart.setOption(option = makeOption());
                     initDrag();
-
+                    showPic();
                 } else {
                 }
             },
