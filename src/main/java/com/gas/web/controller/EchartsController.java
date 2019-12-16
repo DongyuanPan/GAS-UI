@@ -260,7 +260,7 @@ public class EchartsController {
 //        }
 
         SchedulingAlgorithm f = new SchedulingAlgorithm();
-        f.process(path, Integer.parseInt(vmnum), Integer.parseInt(algorithm));
+        f.process(path + getLastFileName(), Integer.parseInt(vmnum), Integer.parseInt(algorithm));
 
         jsonObject.put("code", 200);
         jsonObject.put("data", toDisplay(f.getCondorVMList(), f.getTaskList()));
