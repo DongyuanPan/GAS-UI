@@ -144,7 +144,7 @@ public class EchartsController {
     }
 
     private boolean finishUpload = false;
-    private String lastFileName;
+    private String lastFileName = null;
 
     public boolean isFinishUpload() {
         return finishUpload;
@@ -220,11 +220,13 @@ public class EchartsController {
         }
         try {
             file.transferTo(new File(path, fileName));
+            setLastFileName(fileName);
+            setFinishUpload(true);
+            jsonObject.put("code", 200);
         } catch (Exception e) {
             jsonObject.put("code", 0);
             e.printStackTrace();
         }
-        setFinishUpload(true);
         return jsonObject;
     }
 
@@ -238,15 +240,25 @@ public class EchartsController {
         JSONObject jsonObject = new JSONObject();
 
         String vmnum = request.getParameter("vmnum");
-        String path = "src/main/resources/static/tasksim/"+getLastFileName();
+        String path = "src/main/resources/static/tasksim/";
         String algorithm = request.getParameter("algorithm");;
         boolean whetherSave = Boolean.parseBoolean(request.getParameter("switch"));
 
         while (true){
-            File daxFile = new File(path);
+            System.out.println("sleep");
+            File daxFile = new File(path + getLastFileName());
             if (daxFile.exists())
                 break;
         }
+
+//        while (getLastFileName() == null) {
+//            System.out.println("sleep");
+//        }
+
+//        while (!finishUpload) {
+//            System.out.println("sleep");
+//        }
+
         SchedulingAlgorithm f = new SchedulingAlgorithm();
         f.process(path, Integer.parseInt(vmnum), Integer.parseInt(algorithm));
 

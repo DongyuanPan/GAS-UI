@@ -205,39 +205,6 @@ $.ajax({
     }
 });
 
-$(function () {
-    $("#upload").click(function () {
-        var form = new FormData();
-        form.append("file", document.getElementById("file").files[0]);
-        $.ajax({
-            url: "/uploadJsonFile",        //后台url
-            data: form,
-            cache: false,
-            async: false,
-            type: "POST",                   //类型，POST或者GET
-            dataType: 'json',              //数据返回类型，可以是xml、json等
-            processData: false,
-            contentType: false,
-            success: function (result) {      //成功，回调函数
-                if (result.code == 200) {
-                    alert(result.data);
-                    $("#url").html(result.url);
-                    _rawData = result;
-                    myChart.setOption(option = makeOption());
-                    initDrag();
-                } else {
-                    alert("上传文件失败");
-                }
-            },
-            error: function (er) {          //失败，回调函数
-                alert(er);
-            }
-        });
-
-    })
-});
-
-
 function refresh() {
     alert("refresh");
     $.getJSON("static/upload/airport.json", function(result) {
@@ -711,7 +678,7 @@ layui.use(['form', 'upload', 'layedit', 'laydate'], function(){
         //操作成功的回调
         done: function (res) {
             if (res.code == 200) {
-
+                alert("任务文件上传成功");
             } else {
             }
         }
@@ -735,6 +702,7 @@ layui.use(['form', 'upload', 'layedit', 'laydate'], function(){
             dataType:'JSON',
             success:function(res){
                 if(res.code = 200){
+                    alert("表单提交成功");
                     _rawData = res.data;
                     myChart.setOption(option = makeOption());
                     initDrag();
