@@ -678,7 +678,7 @@ layui.use(['form', 'upload', 'layedit', 'laydate'], function(){
         //操作成功的回调
         done: function (res) {
             if (res.code == 200) {
-
+                alert("任务文件上传成功");
             } else {
             }
         }
@@ -702,6 +702,7 @@ layui.use(['form', 'upload', 'layedit', 'laydate'], function(){
             dataType:'JSON',
             success:function(res){
                 if(res.code = 200){
+                    alert("表单提交成功");
                     _rawData = res.data;
                     myChart.setOption(option = makeOption());
                     initDrag();
