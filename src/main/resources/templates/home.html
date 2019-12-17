@@ -17,27 +17,14 @@
         <!-- 头部区域（可配合layui已有的水平导航） -->
         <ul class="layui-nav layui-layout-left">
             <li class="layui-nav-item">
-                <a href="javascript:;">其它系统</a>
+                <a href="javascript:;">主题风格</a>
                 <dl class="layui-nav-child">
-                    <dd><a href="">邮件管理</a></dd>
-                    <dd><a href="">消息管理</a></dd>
-                    <dd><a href="">授权管理</a></dd>
+                    <dd><a href="javascript: refresh1()">青春靓丽</a></dd>
+                    <dd><a href="javascript: refresh2()">热情活泼</a></dd>
+                    <dd><a href="javascript: refresh3()">暗灰风格</a></dd>
                 </dl>
             </li>
         </ul>
-<!--        <ul class="layui-nav layui-layout-right">-->
-<!--            <li class="layui-nav-item">-->
-<!--                <a href="javascript:;">-->
-<!--                    <img src="http://t.cn/RCzsdCq" class="layui-nav-img">-->
-<!--                    贤心-->
-<!--                </a>-->
-<!--                <dl class="layui-nav-child">-->
-<!--                    <dd><a href="">基本资料</a></dd>-->
-<!--                    <dd><a href="">安全设置</a></dd>-->
-<!--                </dl>-->
-<!--            </li>-->
-<!--            <li class="layui-nav-item"><a href="">退了</a></li>-->
-<!--        </ul>-->
     </div>
 
     <div class="layui-side layui-bg-black">
@@ -46,11 +33,18 @@
             <ul class="layui-nav layui-nav-tree"  lay-filter="test">
                 <li class="layui-nav-item"><a href="javascript:showForm();">首页</a></li>
                 <li class="layui-nav-item"><a href="javascript:showPic();">绘图</a></li>
+            </ul>
+        </div>
+    </div>
 
-
-                <li class="layui-nav-item">
-                    <a href="javascript:;">选择JSON绘制</a>
-                    <dl class="layui-nav-child">
+    <div class="layui-body">
+        <!-- 内容主体区域 -->
+        <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+        <div style="width:100%;height:100%;" id="formDiv">
+            <div class="layui-container">
+                <div class="layui-row layui-col-space30">
+                    <div class="layui-col-md6">
+                        <blockquote class="layui-elem-quote">直接绘制</blockquote>
                         <div class="layui-form" action="">
 
                             <div class="layui-form-item">
@@ -66,101 +60,52 @@
                                 </div>
                             </div>
                         </div>
-                    </dl>
-                </li>
-<!--                <li class="layui-nav-item">-->
-<!--                    <a href="javascript:;">仿真并绘制</a>-->
-<!--                    <dl class="layui-nav-child">-->
-<!--                    <div class="layui-form" action="">-->
-<!--                        <div class="layui-form-item">-->
-<!--                            <label class="layui-form-label">选择任务</label>-->
-<!--                            <div class="layui-upload">-->
-<!--                                <button type="button" class="layui-btn layui-btn-normal" id="chooseFileForSim">选择文件</button>-->
-<!--                            </div>-->
-<!--                        </div>-->
-
-<!--                        <div class="layui-form-item">-->
-<!--                            <label class="layui-form-label">虚拟机个数</label>-->
-<!--                            <div class="layui-input-block">-->
-<!--                                <input type="text" name="vmnum" required  lay-verify="required" placeholder="请输入虚拟机个数" autocomplete="off" class="layui-input">-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                        <div class="layui-form-item">-->
-<!--                            <label class="layui-form-label">调度算法</label>-->
-<!--                            <div class="layui-input-block must">-->
-<!--                                <select name="algorithm" lay-verify="required">-->
-<!--                                    <option color= value=""></option>-->
-<!--                                    <option value="0">FCFS</option>-->
-<!--                                    <option value="1">MAXMIN</option>-->
-<!--                                    <option value="2">MINMIN</option>-->
-<!--                                    <option value="3">ROUNDROBIN</option>-->
-<!--                                    <option value="4">MCT</option>-->
-<!--                                </select>-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                        <div class="layui-form-item">-->
-<!--                            <div class="layui-input-block">-->
-<!--                                <button type="submit" class="layui-btn" lay-submit="" lay-filter="commit" id="commit" >立即提交</button>-->
-<!--&lt;!&ndash;                                <button class="layui-btn" id="commit" onclick="return false">立即提交</button>&ndash;&gt;-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                        <div class="layui-form-item">-->
-<!--                            <div class="layui-input-block">-->
-<!--                                <button class="layui-btn" id="download" onclick="downLoadJson();">结果下载</button>-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                    </dl>-->
-<!--                </li>-->
-            </ul>
-        </div>
-    </div>
-
-    <div class="layui-body">
-        <!-- 内容主体区域 -->
-        <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
-        <div style="width:100%;height:100%;" id="formDiv">
-
-                    <div class="layui-form" action="">
-                        <div class="layui-form-item">
-                            <label class="layui-form-label">选择任务</label>
-                            <div class="layui-upload">
-                                <button type="button" class="layui-btn layui-btn-normal" id="chooseFileForSim">选择文件</button>
-                            </div>
-                        </div>
-
-                        <div class="layui-form-item">
-                            <label class="layui-form-label">虚拟机个数</label>
-                            <div class="layui-input-block">
-                                <input type="text" name="vmnum" required  lay-verify="required" placeholder="请输入虚拟机个数" autocomplete="off" class="layui-input">
-                            </div>
-                        </div>
-                        <div class="layui-form-item">
-                            <label class="layui-form-label">调度算法</label>
-                            <div class="layui-input-block must">
-                                <select name="algorithm" lay-verify="required">
-                                    <option color= value=""></option>
-                                    <option value="0">FCFS</option>
-                                    <option value="1">MAXMIN</option>
-                                    <option value="2">MINMIN</option>
-                                    <option value="3">ROUNDROBIN</option>
-                                    <option value="4">MCT</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="layui-form-item">
-                            <div class="layui-input-block">
-                                <button type="submit" class="layui-btn" lay-submit="" lay-filter="commit" id="commit" >立即提交</button>
-                                <!--                                <button class="layui-btn" id="commit" onclick="return false">立即提交</button>-->
-                            </div>
-                        </div>
-                        <div class="layui-form-item">
-                            <div class="layui-input-block">
-                                <button class="layui-btn" id="download" onclick="downLoadJson();">结果下载</button>
-                            </div>
-                        </div>
                     </div>
+                    <div class="layui-col-md6">
+                        <blockquote class="layui-elem-quote">仿真绘制</blockquote>
+                        <form class="layui-form" action="">
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">选择任务</label>
+                                <div class="layui-upload">
+                                    <button type="button" class="layui-btn layui-btn-normal" id="chooseFileForSim">选择文件</button>
+                                </div>
+                            </div>
 
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">虚拟机个数</label>
+                                <div class="layui-input-block">
+                                    <input type="text" name="vmnum" required  lay-verify="required" placeholder="请输入虚拟机个数" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">调度算法</label>
+                                <div class="layui-input-block must">
+                                    <select name="algorithm" lay-verify="required">
+                                        <option color= value=""></option>
+                                        <option value="0">FCFS</option>
+                                        <option value="1">MAXMIN</option>
+                                        <option value="2">MINMIN</option>
+                                        <option value="3">ROUNDROBIN</option>
+                                        <option value="4">MCT</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <div class="layui-input-block">
+                                    <button type="submit" class="layui-btn" lay-submit="" lay-filter="commit" id="commit" >立即提交</button>
+                                    <!--                                <button class="layui-btn" id="commit" onclick="return false">立即提交</button>-->
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <div class="layui-input-block">
+                                    <button class="layui-btn" id="download" onclick="downLoadJson();">结果下载</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+            </div>
         </div>
         <div style="width:100%;height:100%;" id="main"></div>
     </div>
@@ -169,14 +114,15 @@
 
 <script src="../static/layui/layui.js"></script>
 <script type="text/javascript">
+
     function showForm() {
+        document.getElementById("formDiv").style="width:100%;height:100%;";//显示
         document.getElementById("main").style.display="none";//隐藏
-        document.getElementById("formDiv").style.display="";//隐藏
     }
 
     function showPic() {
+        document.getElementById("main").style="width:100%;height:100%;";//显示
         document.getElementById("formDiv").style.display="none";//隐藏
-        document.getElementById("main").style.display="";//隐藏
     }
 
     // 基于准备好的dom，初始化echarts实例
@@ -201,40 +147,6 @@ var _cartesianXBounds = [];
 var _cartesianYBounds = [];
 var _rawData;
 var _autoDataZoomAnimator;
-// var color = [
-//     "#2ec7c9",
-//     "#b6a2de",
-//     "#5ab1ef",
-//     "#ffb980",
-//     "#d87a80",
-//     "#8d98b3",
-//     "#e5cf0d",
-//     "#97b552",
-//     "#95706d",
-//     "#dc69aa",
-//     "#07a2a4",
-//     "#9a7fd1",
-//     "#588dd5",
-//     "#f5994e",
-//     "#c05050",
-//     "#59678c",
-//     "#c9ab00",
-//     "#7eb00a",
-//     "#6f5553",
-//     "#c14089"
-// ];
-// var color =  [
-//     "#516b91",
-//     "#59c4e6",
-//     "#edafda",
-//     "#93b7e3",
-//     "#a5e7f0",
-//     "#cbb0e3",
-//     "#a2f3c3",
-//     "#0ef1ec",
-//     "#b4fae9",
-//     "#e179e1"
-// ];
 var color = [
     "#b5b0b0",
     "#7d7676",
@@ -258,14 +170,55 @@ $.ajax({
         }
     }
 });
+showForm();
 
-function refresh() {
-    alert("refresh");
-    $.getJSON("static/upload/airport.json", function(result) {
-        _rawData = result;
-        myChart.setOption(option = makeOption());
-        initDrag();
-    });
+function refresh1() {
+    color =  [
+        "#516b91",
+        "#59c4e6",
+        "#edafda",
+        "#93b7e3",
+        "#a5e7f0",
+        "#cbb0e3",
+        "#a2f3c3",
+        "#0ef1ec",
+        "#b4fae9",
+        "#e179e1"
+    ];
+    myChart.setOption(option = makeOption());
+    initDrag();
+}
+function refresh2() {
+    color = [
+        "#2ec7c9",
+        "#b6a2de",
+        "#5ab1ef",
+        "#ffb980",
+        "#d87a80",
+        "#8d98b3",
+        "#dc69aa",
+        "#07a2a4",
+        "#9a7fd1",
+        "#588dd5"
+    ];
+    myChart.setOption(option = makeOption());
+    initDrag();
+}
+function refresh3() {
+    color = [
+        "#b5b0b0",
+        "#7d7676",
+        "#a29696",
+        "#c7bcbc",
+        "#dabfbf",
+        "#d6cfcf",
+        "#000000",
+        "#795c5c",
+        "#757474",
+        "#955555"
+    ];
+    myChart.setOption(option = makeOption());
+    initDrag();
 }
 
 function FCFSExample() {
@@ -304,7 +257,7 @@ function downLoadJson() {
     var jsonstr = JSON.stringify(eleTextarea);
     var myDate = new Date();
     var time = myDate.toISOString();
-    funDownload(jsonstr, time);
+    funDownload(jsonstr, time+".json");
 
 }
 
@@ -702,7 +655,7 @@ layui.use('upload', function(){
                 _rawData = result.data;
                 myChart.setOption(option = makeOption());
                 initDrag();
-                alert("上传文件成功");
+                showPic();
             } else {
                 alert("上传文件失败");
             }
@@ -732,7 +685,7 @@ layui.use(['form', 'upload', 'layedit', 'laydate'], function(){
         //操作成功的回调
         done: function (res) {
             if (res.code == 200) {
-                alert("任务文件上传成功");
+
             } else {
             }
         }
@@ -756,7 +709,7 @@ layui.use(['form', 'upload', 'layedit', 'laydate'], function(){
             dataType:'JSON',
             success:function(res){
                 if(res.code = 200){
-                    alert("表单提交成功");
+
                     _rawData = res.data;
                     myChart.setOption(option = makeOption());
                     initDrag();
