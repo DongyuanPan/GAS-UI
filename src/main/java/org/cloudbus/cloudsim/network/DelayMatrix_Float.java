@@ -12,133 +12,135 @@ import java.util.Iterator;
 
 /**
  * This class represents an delay-topology storing every distance between connected nodes
- * 
+ *
  * @author Thomas Hohnstein
  * @since CloudSim Toolkit 1.0
  */
 public class DelayMatrix_Float {
 
-	/**
-	 * matrix holding delay information between any two nodes
-	 */
-	protected float[][] mDelayMatrix = null;
+    /**
+     * matrix holding delay information between any two nodes
+     */
+    protected float[][] mDelayMatrix = null;
 
-	/**
-	 * number of nodes in the distance-aware-topology
-	 */
-	protected int mTotalNodeNum = 0;
+    /**
+     * number of nodes in the distance-aware-topology
+     */
+    protected int mTotalNodeNum = 0;
 
-	/**
-	 * private constructor to ensure that only an correct initialized delay-matrix could be created
-	 */
-	@SuppressWarnings("unused")
-	private DelayMatrix_Float() {
-	};
+    /**
+     * private constructor to ensure that only an correct initialized delay-matrix could be created
+     */
+    @SuppressWarnings("unused")
+    private DelayMatrix_Float() {
+    }
 
-	/**
-	 * this constructor creates an correct initialized Float-Delay-Matrix
-	 * 
-	 * @param graph the topological graph as source-information
-	 * @param directed true if an directed matrix should be computed, false otherwise
-	 */
-	public DelayMatrix_Float(TopologicalGraph graph, boolean directed) {
+    ;
 
-		// lets preinitialize the Delay-Matrix
-		createDelayMatrix(graph, directed);
+    /**
+     * this constructor creates an correct initialized Float-Delay-Matrix
+     *
+     * @param graph    the topological graph as source-information
+     * @param directed true if an directed matrix should be computed, false otherwise
+     */
+    public DelayMatrix_Float(TopologicalGraph graph, boolean directed) {
 
-		// now its time to calculate all possible connection-delays
-		calculateShortestPath();
-	}
+        // lets preinitialize the Delay-Matrix
+        createDelayMatrix(graph, directed);
 
-	/**
-	 * @param srcID the id of the source-node
-	 * @param destID the id of the destination-node
-	 * @return the delay-count between the given two nodes
-	 */
-	public float getDelay(int srcID, int destID) {
-		// check the nodeIDs against internal array-boundarys
-		if (srcID > mTotalNodeNum || destID > mTotalNodeNum) {
-			throw new ArrayIndexOutOfBoundsException("srcID or destID is higher than highest stored node-ID!");
-		}
+        // now its time to calculate all possible connection-delays
+        calculateShortestPath();
+    }
 
-		return mDelayMatrix[srcID][destID];
-	}
+    /**
+     * @param srcID  the id of the source-node
+     * @param destID the id of the destination-node
+     * @return the delay-count between the given two nodes
+     */
+    public float getDelay(int srcID, int destID) {
+        // check the nodeIDs against internal array-boundarys
+        if (srcID > mTotalNodeNum || destID > mTotalNodeNum) {
+            throw new ArrayIndexOutOfBoundsException("srcID or destID is higher than highest stored node-ID!");
+        }
 
-	/**
-	 * creates all internal necessary network-distance structures from the given graph for
-	 * similarity we assume all kommunikation-distances are symmetrical thus leads to an undirected
-	 * network
-	 * 
-	 * @param graph this graph contains all node and link information
-	 * @param directed defines to preinitialize an directed or undirected Delay-Matrix!
-	 */
-	private void createDelayMatrix(TopologicalGraph graph, boolean directed) {
+        return mDelayMatrix[srcID][destID];
+    }
 
-		// number of nodes inside the network
-		mTotalNodeNum = graph.getNumberOfNodes();
+    /**
+     * creates all internal necessary network-distance structures from the given graph for
+     * similarity we assume all kommunikation-distances are symmetrical thus leads to an undirected
+     * network
+     *
+     * @param graph    this graph contains all node and link information
+     * @param directed defines to preinitialize an directed or undirected Delay-Matrix!
+     */
+    private void createDelayMatrix(TopologicalGraph graph, boolean directed) {
 
-		mDelayMatrix = new float[mTotalNodeNum][mTotalNodeNum];
+        // number of nodes inside the network
+        mTotalNodeNum = graph.getNumberOfNodes();
 
-		// cleanup the complete distance-matrix with "0"s
-		for (int row = 0; row < mTotalNodeNum; ++row) {
-			for (int col = 0; col < mTotalNodeNum; ++col) {
-				mDelayMatrix[row][col] = Float.MAX_VALUE;
-			}
-		}
+        mDelayMatrix = new float[mTotalNodeNum][mTotalNodeNum];
 
-		Iterator<TopologicalLink> itr = graph.getLinkIterator();
+        // cleanup the complete distance-matrix with "0"s
+        for (int row = 0; row < mTotalNodeNum; ++row) {
+            for (int col = 0; col < mTotalNodeNum; ++col) {
+                mDelayMatrix[row][col] = Float.MAX_VALUE;
+            }
+        }
 
-		TopologicalLink edge;
-		while (itr.hasNext()) {
-			edge = itr.next();
+        Iterator<TopologicalLink> itr = graph.getLinkIterator();
 
-			mDelayMatrix[edge.getSrcNodeID()][edge.getDestNodeID()] = edge.getLinkDelay();
+        TopologicalLink edge;
+        while (itr.hasNext()) {
+            edge = itr.next();
 
-			if (!directed) {
-				// according to aproximity of symmetry to all kommunication-paths
-				mDelayMatrix[edge.getDestNodeID()][edge.getSrcNodeID()] = edge.getLinkDelay();
-			}
+            mDelayMatrix[edge.getSrcNodeID()][edge.getDestNodeID()] = edge.getLinkDelay();
 
-		}
-	}
+            if (!directed) {
+                // according to aproximity of symmetry to all kommunication-paths
+                mDelayMatrix[edge.getDestNodeID()][edge.getSrcNodeID()] = edge.getLinkDelay();
+            }
 
-	/**
-	 * just calculates all pairs shortest paths
-	 */
-	private void calculateShortestPath() {
-		FloydWarshall_Float floyd = new FloydWarshall_Float();
+        }
+    }
 
-		floyd.initialize(mTotalNodeNum);
-		mDelayMatrix = floyd.allPairsShortestPaths(mDelayMatrix);
-	}
+    /**
+     * just calculates all pairs shortest paths
+     */
+    private void calculateShortestPath() {
+        FloydWarshall_Float floyd = new FloydWarshall_Float();
 
-	/**
-	 * this method just creates an string-output from the internal structures... eg. printsout the
-	 * delay-matrix...
-	 */
-	@Override
-	public String toString() {
-		StringBuffer buffer = new StringBuffer();
+        floyd.initialize(mTotalNodeNum);
+        mDelayMatrix = floyd.allPairsShortestPaths(mDelayMatrix);
+    }
 
-		buffer.append("just a simple printout of the distance-aware-topology-class\n");
-		buffer.append("delay-matrix is:\n");
+    /**
+     * this method just creates an string-output from the internal structures... eg. printsout the
+     * delay-matrix...
+     */
+    @Override
+    public String toString() {
+        StringBuffer buffer = new StringBuffer();
 
-		for (int column = 0; column < mTotalNodeNum; ++column) {
-			buffer.append("\t" + column);
-		}
+        buffer.append("just a simple printout of the distance-aware-topology-class\n");
+        buffer.append("delay-matrix is:\n");
 
-		for (int row = 0; row < mTotalNodeNum; ++row) {
-			buffer.append("\n" + row);
+        for (int column = 0; column < mTotalNodeNum; ++column) {
+            buffer.append("\t" + column);
+        }
 
-			for (int col = 0; col < mTotalNodeNum; ++col) {
-				if (mDelayMatrix[row][col] == Float.MAX_VALUE) {
-					buffer.append("\t" + "-");
-				} else {
-					buffer.append("\t" + mDelayMatrix[row][col]);
-				}
-			}
-		}
+        for (int row = 0; row < mTotalNodeNum; ++row) {
+            buffer.append("\n" + row);
 
-		return buffer.toString();
-	}
+            for (int col = 0; col < mTotalNodeNum; ++col) {
+                if (mDelayMatrix[row][col] == Float.MAX_VALUE) {
+                    buffer.append("\t" + "-");
+                } else {
+                    buffer.append("\t" + mDelayMatrix[row][col]);
+                }
+            }
+        }
+
+        return buffer.toString();
+    }
 }

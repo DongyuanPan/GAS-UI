@@ -36,6 +36,7 @@ public class Task {
     public void setColorNum(int colorNum) {
         this.colorNum = colorNum;
     }
+
     public int getIndexRes() {
         return indexRes;
     }

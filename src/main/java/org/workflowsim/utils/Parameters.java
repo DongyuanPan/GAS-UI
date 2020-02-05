@@ -28,6 +28,7 @@ import org.cloudbus.cloudsim.Log;
  */
 public class Parameters {
 
+    public static int AlgorithmIndex = 0;
     
     /*
      * Scheduling Algorithm (Local Scheduling Algorithm)
