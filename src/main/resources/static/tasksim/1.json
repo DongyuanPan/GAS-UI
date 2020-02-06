@@ -1,0 +1,21 @@
+{
+	"resources": {
+		"dimensions": ["Name", "Type"],
+		"data": [
+			["AB95", "W"],
+			["AB97", "W"],
+			["AB98", "W"]
+		]
+	},
+	"tasks": {
+		"dimensions": ["Resources Index", "Start Time", "Finish Time", "id", "sucs", "pres", "highlight", "Name", "Color"],
+		"data": [
+			[0, 14.0, 149.0, 0, null, null, false, "Y1713", 1],
+			[0, 154.0, 249.0, 0, null, null, false, "Y3803", 2],
+			[1, 14.0, 149.0, 0, null, null, false, "Y3901", 3],
+			[1, 154.0, 249.0, 0, null, null, false, "Y4654", 4],
+			[2, 14.0, 149.0, 0, null, null, false, "Y8626", 5],
+			[2, 149.0, 296.0, 0, null, null, false, "Y0050", 6]
+		]
+	}
+}

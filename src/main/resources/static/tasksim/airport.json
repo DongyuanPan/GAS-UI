@@ -1,5 +1,5 @@
 {
-  "parkingApron": {
+  "resources": {
     "dimensions": ["Name", "Type", "Near Bridge"],
     "data": [
       ["AB94", "W", true],
@@ -330,7 +330,7 @@
       ["698", "W", false]
     ]
   },
-  "flight": {
+  "tasks": {
     "dimensions": ["Parking Apron Index", "Arrival Time", "Departure Time", "Flight Number", "VIP", "Arrival Company", "Departure Company", "Arrival Line", "Departure Line", "Report Time"],
     "data": [
       [43, 1496840400000, 1496934000000, "M766OG", true, "QW", "QW", "XGF-HAC", "HAC-CFA", 1495360800000],

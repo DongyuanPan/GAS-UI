@@ -15,23 +15,23 @@ import org.cloudbus.cloudsim.core.SimEvent;
  * publicly accessible instance of this predicate in the {@link Simulation} class, called
  * {@link Simulation#SIM_NONE}, so the user does not need to create any new instances. The idea of
  * simulation predicates was copied from SimJava 2.
- * 
+ *
  * @author Marcos Dias de Assuncao
- * @since CloudSim Toolkit 1.0
  * @see Predicate
  * @see Simulation
+ * @since CloudSim Toolkit 1.0
  */
 public class PredicateNone extends Predicate {
 
-	/**
-	 * The match function called by {@link Simulation}, not used directly by the user.
-	 * 
-	 * @param ev the event to check
-	 * @return <code>true</code> if the event matches the predicate, <code>false</code> otherwise
-	 */
-	@Override
-	public boolean match(SimEvent ev) {
-		return false;
-	}
+    /**
+     * The match function called by {@link Simulation}, not used directly by the user.
+     *
+     * @param ev the event to check
+     * @return <code>true</code> if the event matches the predicate, <code>false</code> otherwise
+     */
+    @Override
+    public boolean match(SimEvent ev) {
+        return false;
+    }
 
 }
