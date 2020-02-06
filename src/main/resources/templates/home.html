@@ -62,6 +62,23 @@
                         </div>
                     </div>
                     <div class="layui-col-md6">
+                        <blockquote class="layui-elem-quote">上传Java算法文件</blockquote>
+                        <div class="layui-form" action="">
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">选择Java文件</label>
+                                <div class="layui-upload">
+                                    <button type="button" class="layui-btn layui-btn-normal" id="choose_algo_file">选择Java文件</button>
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item">
+                                <div class="layui-input-block">
+                                    <button type="button" class="layui-btn" id="submit_algo_file">立即提交</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-col-md6">
                         <blockquote class="layui-elem-quote">仿真绘制</blockquote>
                         <form class="layui-form" action="">
                             <div class="layui-form-item">
@@ -80,13 +97,8 @@
                             <div class="layui-form-item">
                                 <label class="layui-form-label">调度算法</label>
                                 <div class="layui-input-block must">
-                                    <select name="algorithm" lay-verify="required">
+                                    <select name="algorithm" lay-verify="required" id="select_algo">
                                         <option color= value=""></option>
-                                        <option value="0">FCFS</option>
-                                        <option value="1">MAXMIN</option>
-                                        <option value="2">MINMIN</option>
-                                        <option value="3">ROUNDROBIN</option>
-                                        <option value="4">MCT</option>
                                     </select>
                                 </div>
                             </div>
@@ -159,14 +171,18 @@ var color = [
     "#757474",
     "#955555"
 ];
+// 初始化主界面
 $.ajax({
     type: "GET",
     url: "/init",
     success: function (result) {
         if (result.code == 200) {
+			// 初始化绘图
             _rawData = result.data;
             myChart.setOption(option = makeOption());
             initDrag();
+			// 初始化算法选择列表
+			updateAlgoSelect(result.algoNameList);
         }
     }
 });
@@ -637,11 +653,30 @@ layui.use('element', function(){
 
 });
 
+//重新渲染表单
+function renderForm(){
+  layui.use('form', function(){
+   var form = layui.form;
+   form.render();
+  });
+}
+
+function updateAlgoSelect(algoNameList) {
+	$('#select_algo').empty();//清空select，不然每点一次都循环添加一遍数据越来越多
+	for(var i=0;i < algoNameList.length;i++){
+		var algoName = algoNameList[i];
+		//为select添加option
+		$("#select_algo").append("<option value="+ i +">"+ algoName +"</option>");  
+		renderForm();//表单重新渲染，要不然添加完显示不出来新的option
+	};
+
+}
+
 layui.use('upload', function(){
     var $ = layui.jquery
         ,upload = layui.upload;
 
-    //选完文件后不自动上传
+    // json文件上传
     upload.render({
         elem: '#chooseFile'
         ,url: '/uploadJsonFile'
@@ -665,6 +700,31 @@ layui.use('upload', function(){
             alert("上传文件失败");
         }
     });
+
+    // 算法文件上传
+    upload.render({
+        elem: '#choose_algo_file'
+        ,url: '/uploadAlgoFile'
+        ,auto: false
+        //,multiple: true
+        ,accept: 'file' //允许上传的文件类型
+        ,bindAction: '#submit_algo_file'
+        ,done: function(result){
+            if (result.code == 200) {
+                var algoNameList = result.data;
+                updateAlgoSelect(algoNameList);
+				alert("上传文件成功");
+            } else {
+                alert("上传文件失败");
+            }
+        }
+        ,error: function(){
+            //请求异常回调
+            alert("上传文件失败");
+        }
+    });
+
+
 });
 
 layui.use(['form', 'upload', 'layedit', 'laydate'], function(){
@@ -676,6 +736,7 @@ layui.use(['form', 'upload', 'layedit', 'laydate'], function(){
     var upload = layui.upload;
     var $ = layui.jquery;
 
+    // 任务文件上传
     upload.render({
         elem: '#chooseFileForSim',
         url: '/taskFileUpload',

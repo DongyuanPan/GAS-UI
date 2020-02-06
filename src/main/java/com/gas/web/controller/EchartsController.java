@@ -1,12 +1,12 @@
 package com.gas.web.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.gas.web.constant.Constant;
 import com.gas.web.bean.Res;
 import com.gas.web.bean.Schedule;
 import com.gas.web.bean.Task;
 import com.gas.web.display.Display;
 import com.google.gson.Gson;
-import org.cloudbus.cloudsim.Log;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.workflowsim.CondorVM;
 import org.workflowsim.Job;
+import org.workflowsim.WorkflowScheduler;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
@@ -32,6 +33,12 @@ public class EchartsController {
         HashMap<String, Object> res = new HashMap<>();
         res.put("code", "200");
         res.put("data", genJson());
+        List<Class<?>> classList =  WorkflowScheduler.getClasses(Constant.algorithmPackageName);
+        List<String> algoNameList = new ArrayList<>();
+        for (Class<?> aClass : classList) {
+            algoNameList.add(aClass.getSimpleName());
+        }
+        res.put("algoNameList", algoNameList);
         return res;
     }
 
@@ -165,7 +172,7 @@ public class EchartsController {
 
 
     /**
-     * 文件上传
+     * Json文件上传
      * @param file 接收前端的formdata
      * @return 返回响应结果
      */
