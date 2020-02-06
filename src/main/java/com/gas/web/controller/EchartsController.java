@@ -64,7 +64,7 @@ public class EchartsController {
         res.put("data", toDisplay(f.getCondorVMList(), f.getTaskList()));
         return res;
    }
-      
+
     private Display toDisplay(List<CondorVM> vmList, List<Job> jobList) {
         Schedule schedule = new Schedule();
         List<Res> resList = new ArrayList<>();

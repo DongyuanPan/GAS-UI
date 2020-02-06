@@ -8,6 +8,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Display {
+    private ParkingApr resources;
+    private Flight tasks;
+
+    public Display() {
+
+    }
+
+    public Display(Schedule schedule) {
+        setParkingApron(schedule);
+        setFlight(schedule);
+    }
+
     public ParkingApr getResources() {
         return resources;
     }
@@ -22,18 +34,6 @@ public class Display {
 
     public void setTasks(Flight tasks) {
         this.tasks = tasks;
-    }
-
-    private ParkingApr resources;
-    private Flight tasks;
-
-    public Display() {
-
-    }
-
-    public Display(Schedule schedule) {
-        setParkingApron(schedule);
-        setFlight(schedule);
     }
 
     public void setParkingApron(Schedule schedule) {

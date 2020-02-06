@@ -1,12 +1,12 @@
 /**
  * Copyright 2012-2013 University Of Southern California
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- *
+ * <p>
  * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -57,6 +57,7 @@ public class SchedulingAlgorithm extends DataAwareSchedulingAlgorithmExample {
     }
 
     ////////////////////////// STATIC METHODS ///////////////////////
+
     /**
      * Creates main() to run this example This example has only one datacenter
      * and one storage
@@ -94,24 +95,31 @@ public class SchedulingAlgorithm extends DataAwareSchedulingAlgorithmExample {
              *                                     <option value="3">ROUNDROBIN</option>
              *                                     <option value="4">MCT</option>
              */
-            Parameters.SchedulingAlgorithm sch_method  = Parameters.SchedulingAlgorithm.FCFS;;
-            switch (algorithm){
-                case 0:
-                    sch_method = Parameters.SchedulingAlgorithm.FCFS;
-                    break;
-                case 1:
-                    sch_method = Parameters.SchedulingAlgorithm.MAXMIN;
-                    break;
-                case 2:
-                    sch_method = Parameters.SchedulingAlgorithm.MINMIN;
-                    break;
-                case 3:
-                    sch_method = Parameters.SchedulingAlgorithm.ROUNDROBIN;
-                    break;
-                case 4:
-                    sch_method = Parameters.SchedulingAlgorithm.MCT;
-                    break;
-            }
+            Parameters.SchedulingAlgorithm sch_method = Parameters.SchedulingAlgorithm.FCFS;
+//            switch (algorithm){
+//                case 0:
+//                    sch_method = Parameters.SchedulingAlgorithm.FCFS;
+//                    Parameters.AlgorithmIndex = 0;
+//                    break;
+//                case 1:
+//                    sch_method = Parameters.SchedulingAlgorithm.MAXMIN;
+//                    Parameters.AlgorithmIndex = 1;
+//                    break;
+//                case 2:
+//                    sch_method = Parameters.SchedulingAlgorithm.MINMIN;
+//                    Parameters.AlgorithmIndex = 2;
+//                    break;
+//                case 3:
+//                    sch_method = Parameters.SchedulingAlgorithm.ROUNDROBIN;
+//                    Parameters.AlgorithmIndex = 3;
+//                    break;
+//                case 4:
+//                    sch_method = Parameters.SchedulingAlgorithm.MCT;
+//                    Parameters.AlgorithmIndex = 4;
+//                    break;
+//            }
+
+            Parameters.AlgorithmIndex = algorithm;
 
             Parameters.PlanningAlgorithm pln_method = Parameters.PlanningAlgorithm.INVALID;
             ReplicaCatalog.FileSystem file_system = ReplicaCatalog.FileSystem.LOCAL;
