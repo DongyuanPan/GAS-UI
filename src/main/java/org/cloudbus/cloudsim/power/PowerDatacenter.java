@@ -59,7 +59,7 @@ public class PowerDatacenter extends Datacenter {
      * @param name               the name
      * @param characteristics    the res config
      * @param schedulingInterval the scheduling interval
-     * @param utilizationBound   the utilization bound
+     * @param //utilizationBound   the utilization bound
      * @param vmAllocationPolicy the vm provisioner
      * @param storageList        the storage list
      * @throws Exception the exception

@@ -42,7 +42,7 @@ public class CloudSimShutdown extends SimEntity {
      * @pre name != null
      * @pre numUser >= 0
      * @post $none
-     * @see gridsim.CloudSim#init(int, Calendar, boolean)
+     * @see (int, Calendar, boolean)
      */
     public CloudSimShutdown(String name, int numUser) throws Exception {
         // NOTE: This entity doesn't use any I/O port.

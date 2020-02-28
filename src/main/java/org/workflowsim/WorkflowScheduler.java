@@ -61,7 +61,7 @@ public class WorkflowScheduler extends DatacenterBroker {
     /**
      * 从包package中获取所有的Class
      *
-     * @param pack
+    // * @param pack
      * @return
      */
     public static List<Class<?>> getClasses(String packageName) {
@@ -315,7 +315,7 @@ public class WorkflowScheduler extends DatacenterBroker {
     /**
      * Switch between multiple schedulers. Based on algorithm.method
      *
-     * @param name the SchedulingAlgorithm name
+     //* @param name the SchedulingAlgorithm name
      * @return the algorithm that extends BaseSchedulingAlgorithm
      */
     private BaseSchedulingAlgorithm getScheduler(int AlgorithmIndex) {

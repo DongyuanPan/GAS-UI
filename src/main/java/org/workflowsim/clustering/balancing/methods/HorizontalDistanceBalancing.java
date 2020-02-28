@@ -98,7 +98,7 @@ public class HorizontalDistanceBalancing extends HorizontalImpactBalancing {
     /**
      * Sort taskSet in an ascending order of impact factor
      *
-     * @param taskList taskSets to be sorted
+     * @param //taskList taskSets to be sorted
      */
     private List<Integer> sortDistanceIncreasing(int[][] distances, int size, int num) {
         List<Integer> newList = new ArrayList<>();

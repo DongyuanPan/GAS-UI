@@ -14,11 +14,11 @@ import java.util.List;
 import java.util.ListIterator;
 
 /**
- * This class implements the deferred event queue used by {@link Simulation}. The event queue uses a
+ * This class implements the deferred event queue used by {@link //Simulation}. The event queue uses a
  * linked list to store the events.
  *
  * @author Marcos Dias de Assuncao
- * @see Simulation
+ * @see //Simulation
  * @see SimEvent
  * @since CloudSim Toolkit 1.0
  */

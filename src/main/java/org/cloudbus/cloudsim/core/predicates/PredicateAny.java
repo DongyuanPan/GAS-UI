@@ -18,7 +18,7 @@ import org.cloudbus.cloudsim.core.SimEvent;
  *
  * @author Marcos Dias de Assuncao
  * @see Predicate
- * @see Simulation
+ * @see //Simulation
  * @since CloudSim Toolkit 1.0
  */
 public class PredicateAny extends Predicate {
