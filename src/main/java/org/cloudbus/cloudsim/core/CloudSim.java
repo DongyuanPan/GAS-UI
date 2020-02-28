@@ -159,15 +159,15 @@ public class CloudSim {
      * <p>
      *
      * @param numUser   the number of User Entities created. This parameters indicates that
-     *                  {@link gridsim.CloudSimShutdown} first waits for all user entities's
+     *                  {@link } first waits for all user entities's
      *                  END_OF_SIMULATION signal before issuing terminate signal to other entities
      * @param cal       starting time for this simulation. If it is <tt>null</tt>, then the time will be
      *                  taken from <tt>Calendar.getInstance()</tt>
      * @param traceFlag <tt>true</tt> if CloudSim trace need to be written
      * @pre numUser >= 0
      * @post $none
-     * @see gridsim.CloudSimShutdown
-     * @see CloudInformationService.CloudInformationService
+     * @see
+     * @see CloudInformationService
      */
     public static void init(int numUser, Calendar cal, boolean traceFlag) {
         try {
@@ -198,7 +198,7 @@ public class CloudSim {
      * <p>
      *
      * @param numUser             the number of User Entities created. This parameters indicates that
-     *                            {@link gridsim.CloudSimShutdown} first waits for all user entities's
+     *                            {@link} first waits for all user entities's
      *                            END_OF_SIMULATION signal before issuing terminate signal to other entities
      * @param cal                 starting time for this simulation. If it is <tt>null</tt>, then the time will be
      *                            taken from <tt>Calendar.getInstance()</tt>
@@ -207,8 +207,8 @@ public class CloudSim {
      *                            after the last event are discarded.
      * @pre numUser >= 0
      * @post $none
-     * @see gridsim.CloudSimShutdown
-     * @see CloudInformationService.CloudInformationService
+     * @see
+     * @see CloudInformationService
      */
     public static void init(int numUser, Calendar cal, boolean traceFlag, double periodBetweenEvents) {
         if (periodBetweenEvents <= 0) {
@@ -231,7 +231,7 @@ public class CloudSim {
      *                              CloudSim package or this entity name is <tt>null</tt> or empty.
      * @pre $none
      * @post $none
-     * @see gridsim.CloudSim#init(int, Calendar, boolean)
+     * @see
      */
     public static double startSimulation() throws NullPointerException {
         Log.printLine("Starting CloudSim version " + CLOUDSIM_VERSION_STRING);
@@ -254,7 +254,7 @@ public class CloudSim {
     }
 
     /**
-     * Stops Cloud Simulation (based on {@link Simulation#runStop()}). This should be only called if
+     * Stops Cloud Simulation (based on {@link }). This should be only called if
      * any of the user defined entities <b>explicitly</b> want to terminate simulation during
      * execution.
      *
@@ -262,8 +262,8 @@ public class CloudSim {
      *                              CloudSim package or this entity name is <tt>null</tt> or empty
      * @pre $none
      * @post $none
-     * @see gridsim.CloudSim#init(int, Calendar, boolean)
-     * @see Simulation#runStop()
+     * @see (int, Calendar, boolean)
+     * @see ()
      */
     public static void stopSimulation() throws NullPointerException {
         try {
@@ -317,8 +317,8 @@ public class CloudSim {
      * @return a new copy of Calendar object or if CloudSim hasn't been initialized
      * @pre $none
      * @post $none
-     * @see gridsim.CloudSim#init(int, Calendar, boolean, String[], String[], String)
-     * @see gridsim.CloudSim#init(int, Calendar, boolean)
+     * @see (int, Calendar, boolean, String[], String[], String)
+     * @see (int, Calendar, boolean)
      */
     public static Calendar getSimulationCalendar() {
         // make a new copy

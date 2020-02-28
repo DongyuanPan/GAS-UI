@@ -61,8 +61,8 @@ public abstract class VmAllocationPolicy {
 	 * Optimize allocation of the VMs according to current utilization.
 	 * 
 	 * @param vmList the vm list
-	 * @param utilizationBound the utilization bound
-	 * @param time the time
+	 * @param //utilizationBound the utilization bound
+	 * @param //time the time
 	 * @return the array list< hash map< string, object>>
 	 */
 	public abstract List<Map<String, Object>> optimizeAllocation(List<? extends Vm> vmList);

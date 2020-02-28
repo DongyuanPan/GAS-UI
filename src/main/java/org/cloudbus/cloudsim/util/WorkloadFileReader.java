@@ -32,8 +32,8 @@ import java.util.zip.ZipFile;
  * <li>If size of the trace file is huge or contains lots of traces please increase the JVM heap
  * size accordingly by using <tt>java -Xmx</tt> option when running the simulation.
  * <li>The default job file size for sending to and receiving from a resource is
- * {@link gridsim.net.Link#DEFAULT_MTU}. However, you can specify the file size by using
- * {@link #setGridletFileSize(int)}.
+ * {@link //gridsim.net.Link#DEFAULT_MTU}. However, you can specify the file size by using
+ * {@link #//setGridletFileSize(int)}.
  * <li>A job run time is only for 1 PE <tt>not</tt> the total number of allocated PEs. Therefore, a
  * Gridlet length is also calculated for 1 PE.<br>
  * For example, job #1 in the trace has a run time of 100 seconds for 2 processors. This means each
@@ -50,7 +50,7 @@ import java.util.zip.ZipFile;
  * </ul>
  *
  * @author Anthony Sulistio and Marcos Dias de Assuncao
- * @see Workload
+ * @see //Workload
  * @since 5.0
  */
 public class WorkloadFileReader implements WorkloadModel {

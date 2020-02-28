@@ -81,7 +81,7 @@ public class PowerVmAllocationPolicyMigrationMedianAbsoluteDeviation extends
     /**
      * Checks if is host over utilized.
      *
-     * @param _host the _host
+     * @param host the _host
      * @return true, if is host over utilized
      */
     @Override

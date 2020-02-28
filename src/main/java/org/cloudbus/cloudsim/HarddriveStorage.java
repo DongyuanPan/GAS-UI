@@ -166,7 +166,7 @@ public class HarddriveStorage implements Storage {
 
 	/**
 	 * Adds a file for which the space has already been reserved. The time taken (in seconds) for
-	 * adding the file can also be found using {@link gridsim.datagrid.File#getTransactionTime()}.
+	 * adding the file can also be found using {@link //gridsim.datagrid.File#getTransactionTime()}.
 	 * 
 	 * @param file the file to be added
 	 * @return the time (in seconds) required to add the file
@@ -346,7 +346,7 @@ public class HarddriveStorage implements Storage {
 
 	/**
 	 * Gets the file with the specified name. The time taken (in seconds) for getting the file can
-	 * also be found using {@link gridsim.datagrid.File#getTransactionTime()}.
+	 * also be found using {@link //gridsim.datagrid.File#getTransactionTime()}.
 	 * 
 	 * @param fileName the name of the needed file
 	 * @return the file with the specified filename
@@ -467,7 +467,7 @@ public class HarddriveStorage implements Storage {
 	 * Adds a file to the storage. First, the method checks if there is enough space on the storage,
 	 * then it checks if the file with the same name is already taken to avoid duplicate filenames. <br>
 	 * The time taken (in seconds) for adding the file can also be found using
-	 * {@link gridsim.datagrid.File#getTransactionTime()}.
+	 * {@link //gridsim.datagrid.File#getTransactionTime()}.
 	 * 
 	 * @param file the file to be added
 	 * @return the time taken (in seconds) for adding the specified file
@@ -503,7 +503,7 @@ public class HarddriveStorage implements Storage {
 	/**
 	 * Adds a set of files to the storage. Runs through the list of files and save all of them. The
 	 * time taken (in seconds) for adding each file can also be found using
-	 * {@link gridsim.datagrid.File#getTransactionTime()}.
+	 * {@link //gridsim.datagrid.File#getTransactionTime()}.
 	 * 
 	 * @param list the files to be added
 	 * @return the time taken (in seconds) for adding the specified files
@@ -527,7 +527,7 @@ public class HarddriveStorage implements Storage {
 
 	/**
 	 * Removes a file from the storage. The time taken (in seconds) for deleting the file can also
-	 * be found using {@link gridsim.datagrid.File#getTransactionTime()}.
+	 * be found using {@link //gridsim.datagrid.File#getTransactionTime()}.
 	 * 
 	 * @param fileName the name of the file to be removed
 	 * @return the deleted file
@@ -558,7 +558,7 @@ public class HarddriveStorage implements Storage {
 
 	/**
 	 * Removes a file from the storage. The time taken (in seconds) for deleting the file can also
-	 * be found using {@link gridsim.datagrid.File#getTransactionTime()}.
+	 * be found using {@link //gridsim.datagrid.File#getTransactionTime()}.
 	 * 
 	 * @param fileName the name of the file to be removed
 	 * @param file the file which is removed from the storage is returned through this parameter
@@ -571,7 +571,7 @@ public class HarddriveStorage implements Storage {
 
 	/**
 	 * Removes a file from the storage. The time taken (in seconds) for deleting the file can also
-	 * be found using {@link gridsim.datagrid.File#getTransactionTime()}.
+	 * be found using {@link //gridsim.datagrid.File#getTransactionTime()}.
 	 * 
 	 * @param file the file which is removed from the storage is returned through this parameter
 	 * @return the time taken (in seconds) for deleting the specified file
@@ -641,7 +641,7 @@ public class HarddriveStorage implements Storage {
 
 	/**
 	 * Renames a file on the storage. The time taken (in seconds) for renaming the file can also be
-	 * found using {@link gridsim.datagrid.File#getTransactionTime()}.
+	 * found using {@link //gridsim.datagrid.File#getTransactionTime()}.
 	 * 
 	 * @param file the file we would like to rename
 	 * @param newName the new name of the file

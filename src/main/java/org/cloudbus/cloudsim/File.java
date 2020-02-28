@@ -232,7 +232,7 @@ public class File {
 	/**
 	 * Sets the last update time of this file (in seconds)<br>
 	 * NOTE: This time is relative to the start time. Preferably use
-	 * {@link gridsim.CloudSim#clock()} method.
+	 * {@link //gridsim.CloudSim#clock()} method.
 	 * 
 	 * @param time the last update time (in seconds)
 	 * @return <tt>true</tt> if successful, <tt>false</tt> otherwise
@@ -387,14 +387,14 @@ public class File {
 	 * 
 	 * @param time the transaction time (in second)
 	 * @return <tt>true</tt> if successful, <tt>false</tt> otherwise
-	 * @see gridsim.datagrid.storage.Storage#addFile(File)
-	 * @see gridsim.datagrid.storage.Storage#addFile(List)
-	 * @see gridsim.datagrid.storage.Storage#addReservedFile(File)
-	 * @see gridsim.datagrid.storage.Storage#deleteFile(File)
-	 * @see gridsim.datagrid.storage.Storage#deleteFile(String)
-	 * @see gridsim.datagrid.storage.Storage#deleteFile(String, File)
-	 * @see gridsim.datagrid.storage.Storage#getFile(String)
-	 * @see gridsim.datagrid.storage.Storage#renameFile(File, String)
+	 * @see //gridsim.datagrid.storage.Storage#addFile(File)
+	 * @see //gridsim.datagrid.storage.Storage#addFile(List)
+	 * @see //gridsim.datagrid.storage.Storage#addReservedFile(File)
+	 * @see //gridsim.datagrid.storage.Storage#deleteFile(File)
+	 * @see //gridsim.datagrid.storage.Storage#deleteFile(String)
+	 * @see //gridsim.datagrid.storage.Storage#deleteFile(String, File)
+	 * @see //gridsim.datagrid.storage.Storage#getFile(String)
+	 * @see //gridsim.datagrid.storage.Storage#renameFile(File, String)
 	 */
 	public boolean setTransactionTime(double time) {
 		if (time < 0) {

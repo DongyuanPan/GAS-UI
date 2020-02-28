@@ -13,7 +13,7 @@ import java.util.Date;
 import org.cloudbus.cloudsim.core.CloudSim;
 
 /**
- * A class for storing related information regarding to a {@link gridsim.datagrid.File} entity.
+ * A class for storing related information regarding to a {@link //gridsim.datagrid.File} entity.
  * 
  * @author Uros Cibej
  * @author Anthony Sulistio
@@ -244,7 +244,7 @@ public class FileAttribute {
 	/**
 	 * Sets the last update time of this file (in seconds)<br>
 	 * NOTE: This time is relative to the start time. Preferably use
-	 * {@link gridsim.CloudSim#clock()} method.
+	 * {@link //gridsim.CloudSim#clock()} method.
 	 * 
 	 * @param time the last update time (in seconds)
 	 * @return <tt>true</tt> if successful, <tt>false</tt> otherwise

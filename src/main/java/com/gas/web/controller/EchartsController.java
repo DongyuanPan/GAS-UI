@@ -1,10 +1,14 @@
 package com.gas.web.controller;
 
+//import com.alibaba.fastjson.JSON;
+//import com.alibaba.fastjson.JSONArray;
+//import net.sf.json.JSONArray;
+//import net.sf.json.JSONObject;
 import com.alibaba.fastjson.JSONObject;
-import com.gas.web.constant.Constant;
 import com.gas.web.bean.Res;
 import com.gas.web.bean.Schedule;
 import com.gas.web.bean.Task;
+import com.gas.web.constant.Constant;
 import com.gas.web.display.Display;
 import com.google.gson.Gson;
 import org.springframework.stereotype.Controller;
@@ -19,14 +23,12 @@ import org.workflowsim.WorkflowScheduler;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 @Controller
 public class EchartsController {
-
+    int datacenter=0;
+    public Map<String,String> map = new HashMap<String,String>();
     @ResponseBody
     @RequestMapping("/init")
     public HashMap<String, Object> init() {
@@ -70,7 +72,7 @@ public class EchartsController {
         res.put("code", "200");
         res.put("data", toDisplay(f.getCondorVMList(), f.getTaskList()));
         return res;
-   }
+    }
 
     private Display toDisplay(List<CondorVM> vmList, List<Job> jobList) {
         Schedule schedule = new Schedule();
@@ -193,7 +195,7 @@ public class EchartsController {
         }
         try {
             jsonObject.put("code", 200);
-            JSONObject jsonobject = JSONObject.parseObject(new String(file.getBytes()));
+            JSONObject jsonobject = JSONObject.parseObject(new String(file.getBytes()));//
             //jsonObject.put("data", new String(file.getBytes(),"UTF-8"));
             jsonObject.put("data", jsonobject);
             jsonObject.put("url", stringBuilder.append(path).append(fileName).toString());
@@ -238,6 +240,28 @@ public class EchartsController {
     }
 
     /**
+     * 表格数据上传
+     * @return 返回响应结果
+     */
+    @RequestMapping(value = "/tableUpload", method = RequestMethod.POST)
+    @ResponseBody
+    public JSONObject tableUpload(HttpServletRequest request){
+        JSONObject jsonObject = new JSONObject();
+        String name=request.getParameter("tabledata");
+        name =name.substring(1, name.length()-1);
+        name=name.replaceAll("\\\\","");
+        JSONObject json=JSONObject.parseObject(name);
+        Iterator iter = json.keySet().iterator();
+        while (iter.hasNext()) {
+            datacenter++;
+            String key = (String) iter.next();
+            String value = json.getString(key);
+            map.put(key, value);
+        }
+        jsonObject.put("code",200);
+        return jsonObject;
+    }
+    /**
      * 表单数据上传
      * @return 返回响应结果
      */
@@ -245,16 +269,19 @@ public class EchartsController {
     @ResponseBody
     public JSONObject addQuestionnaire(HttpServletRequest request) {
         JSONObject jsonObject = new JSONObject();
-
         String vmnum = request.getParameter("vmnum");
         String path = "src/main/resources/static/tasksim/";
-        String algorithm = request.getParameter("algorithm");;
+        String algorithm = request.getParameter("algorithm");
         boolean whetherSave = Boolean.parseBoolean(request.getParameter("switch"));
-
-        while (true){
+        while (true) {
             System.out.println("sleep");
             File daxFile = new File(path + getLastFileName());
             if (daxFile.exists())
+                break;
+        }
+        while (true) {
+            System.out.println("tablenone");
+            if (map.size()!=0)
                 break;
         }
 
@@ -265,14 +292,13 @@ public class EchartsController {
 //        while (!finishUpload) {
 //            System.out.println("sleep");
 //        }
-
         SchedulingAlgorithm f = new SchedulingAlgorithm();
-        f.process(path + getLastFileName(), Integer.parseInt(vmnum), Integer.parseInt(algorithm));
-
-        jsonObject.put("code", 200);
-        jsonObject.put("data", toDisplay(f.getCondorVMList(), f.getTaskList()));
-        setFinishUpload(false);
-        return jsonObject;
-    }
-
+            f.process(path + getLastFileName(), Integer.parseInt(vmnum), Integer.parseInt(algorithm), map, datacenter);
+            // f.process(path + getLastFileName(),Integer.parseInt(vmnum),Integer.parseInt(algorithm));
+            jsonObject.put("code", 200);
+            jsonObject.put("data", toDisplay(f.getCondorVMList(), f.getTaskList()));
+            System.out.println(jsonObject);
+            setFinishUpload(false);
+            return jsonObject;
+        }
 }

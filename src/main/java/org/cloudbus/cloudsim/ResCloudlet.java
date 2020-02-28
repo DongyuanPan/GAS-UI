@@ -83,10 +83,10 @@ public class ResCloudlet {
 
 	/**
 	 * Allocates a new ResCloudlet object upon the arrival of a Cloudlet object. The arriving time
-	 * is determined by {@link gridsim.CloudSim#clock()}.
+	 * is determined by {@link //gridsim.CloudSim#clock()}.
 	 * 
 	 * @param cloudlet a cloudlet object
-	 * @see gridsim.CloudSim#clock()
+	 * @see// gridsim.CloudSim#clock()
 	 * @pre cloudlet != null
 	 * @post $none
 	 */
@@ -104,7 +104,7 @@ public class ResCloudlet {
 	/**
 	 * Allocates a new ResCloudlet object upon the arrival of a Cloudlet object. Use this
 	 * constructor to store reserved Cloudlets, i.e. Cloudlets that done reservation before. The
-	 * arriving time is determined by {@link gridsim.CloudSim#clock()}.
+	 * arriving time is determined by {@link //gridsim.CloudSim#clock()}.
 	 * 
 	 * @param cloudlet a cloudlet object
 	 * @param startTime a reservation start time. Can also be interpreted as starting time to
@@ -112,7 +112,7 @@ public class ResCloudlet {
 	 * @param duration a reservation duration time. Can also be interpreted as how long to execute
 	 *            this Cloudlet.
 	 * @param reservID a reservation ID that owns this Cloudlet
-	 * @see gridsim.CloudSim#clock()
+	 * @see //gridsim.CloudSim#clock()
 	 * @pre cloudlet != null
 	 * @pre startTime > 0
 	 * @pre duration > 0
