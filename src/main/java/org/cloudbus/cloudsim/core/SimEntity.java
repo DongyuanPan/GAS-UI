@@ -16,11 +16,11 @@ import org.cloudbus.cloudsim.core.predicates.Predicate;
  * This class represents a simulation entity. An entity handles events and can send events to other
  * entities. When this class is extended, there are a few methods that need to be implemented:
  * <ul>
- * <li> {@link #startEntity()} is invoked by the {@link Simulation} class when the simulation is
+ * <li> {@link #startEntity()} is invoked by the {@link } class when the simulation is
  * started. This method should be responsible for starting the entity up.
- * <li> {@link #processEvent(SimEvent)} is invoked by the {@link Simulation} class whenever there is
+ * <li> {@link #processEvent(SimEvent)} is invoked by the {@link } class whenever there is
  * an event in the deferred queue, which needs to be processed by the entity.
- * <li> {@link #shutdownEntity()} is invoked by the {@link Simulation} before the simulation
+ * <li> {@link #shutdownEntity()} is invoked by the {@link } before the simulation
  * finishes. If you want to save data in log files this is the method in which the corresponding
  * code would be placed.
  * </ul>
@@ -423,13 +423,13 @@ public abstract class SimEntity implements Cloneable {
     // --------------- PACKAGE LEVEL METHODS ------------------
 
     /**
-     * This method is invoked by the {@link Simulation} class when the simulation is started. This
+     * This method is invoked by the {@link } class when the simulation is started. This
      * method should be responsible for starting the entity up.
      */
     public abstract void startEntity();
 
     /**
-     * This method is invoked by the {@link Simulation} class whenever there is an event in the
+     * This method is invoked by the {@link } class whenever there is an event in the
      * deferred queue, which needs to be processed by the entity.
      *
      * @param ev the event to be processed by the entity
@@ -439,7 +439,7 @@ public abstract class SimEntity implements Cloneable {
     // The entity states
 
     /**
-     * This method is invoked by the {@link Simulation} before the simulation finishes. If you want
+     * This method is invoked by the {@link } before the simulation finishes. If you want
      * to save data in log files this is the method in which the corresponding code would be placed.
      */
     public abstract void shutdownEntity();
@@ -610,7 +610,7 @@ public abstract class SimEntity implements Cloneable {
      * current time, with a tag representing the event type.
      *
      * @param entityId    the id number of the destination entity
-     * @param delay       how long from the current simulation time the event should be sent. If delay is
+     * @param  //long from the current simulation time the event should be sent. If delay is
      *                    a negative number, then it will be changed to 0
      * @param cloudSimTag an user-defined number representing the type of an event/message
      * @param data        A reference to data to be sent with the event
@@ -628,7 +628,7 @@ public abstract class SimEntity implements Cloneable {
      * current time, with a tag representing the event type.
      *
      * @param entityId    the id number of the destination entity
-     * @param delay       how long from the current simulation time the event should be sent. If delay is
+     * @param //delay       how long from the current simulation time the event should be sent. If delay is
      *                    a negative number, then it will be changed to 0
      * @param cloudSimTag an user-defined number representing the type of an event/message
      * @pre entityID > 0
@@ -644,7 +644,7 @@ public abstract class SimEntity implements Cloneable {
      * current time, with a tag representing the event type.
      *
      * @param entityName  the name of the destination entity
-     * @param delay       how long from the current simulation time the event should be sent. If delay is
+     * @param //delay       how long from the current simulation time the event should be sent. If delay is
      *                    a negative number, then it will be changed to 0
      * @param cloudSimTag an user-defined number representing the type of an event/message
      * @param data        A reference to data to be sent with the event
@@ -662,7 +662,7 @@ public abstract class SimEntity implements Cloneable {
      * current time, with a tag representing the event type.
      *
      * @param entityName  the name of the destination entity
-     * @param delay       how long from the current simulation time the event should be sent. If delay is
+     * @param //delay       how long from the current simulation time the event should be sent. If delay is
      *                    a negative number, then it will be changed to 0
      * @param cloudSimTag an user-defined number representing the type of an event/message
      * @pre entityName != null

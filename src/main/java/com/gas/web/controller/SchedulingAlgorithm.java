@@ -14,8 +14,12 @@
  * the License.
  */
 package com.gas.web.controller;
-
+//import net.sf.json.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.JSONArray;
+import org.cloudbus.cloudsim.CloudletSchedulerSpaceShared;
 import org.cloudbus.cloudsim.Log;
+import org.cloudbus.cloudsim.Vm;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.workflowsim.*;
 import org.workflowsim.examples.scheduling.DataAwareSchedulingAlgorithmExample;
@@ -25,8 +29,7 @@ import org.workflowsim.utils.Parameters;
 import org.workflowsim.utils.ReplicaCatalog;
 
 import java.io.File;
-import java.util.Calendar;
-import java.util.List;
+import java.util.*;
 
 /**
  * This FCFS Scheduling Algorithm
@@ -39,7 +42,7 @@ public class SchedulingAlgorithm extends DataAwareSchedulingAlgorithmExample {
 
     public List<CondorVM> CondorVMList;
     public List<Job> taskList;
-
+    static int totalvm=0;
     public List<CondorVM> getCondorVMList() {
         return CondorVMList;
     }
@@ -62,16 +65,40 @@ public class SchedulingAlgorithm extends DataAwareSchedulingAlgorithmExample {
      * Creates main() to run this example This example has only one datacenter
      * and one storage
      */
-    public void process(String path, int vmnum, int algorithm) {
-
+    public static List<CondorVM> SchedulecreateVM(int userId, int vms,long s,int r,int m,long band,int cpu) {
+        //Creates a container to store VMs. This list is passed to the broker later
+        int lastnum=totalvm;
+        int i=0;
+        totalvm=totalvm+vms;
+        LinkedList<CondorVM> list = new LinkedList<>();
+        //VM Parameters
+        long size = s; //image size (MB)10000
+        int ram =r; //vm memory (MB)512
+        int mips = m;
+        long bw = band;
+        int pesNumber = cpu; //number of cpus
+        String vmm = "Xen"; //VMM name
+        //create VMs
+        CondorVM[] vm = new CondorVM[vms];
+        Random bwRandom = new Random(System.currentTimeMillis());
+        for ( ; lastnum <totalvm; lastnum++) {
+            double ratio = bwRandom.nextDouble();
+            vm[i] = new CondorVM(lastnum, userId, mips * ratio, pesNumber, ram, (long) (bw * ratio), size, vmm, new CloudletSchedulerSpaceShared());
+            list.add(vm[i]);
+            i++;
+        }
+        return list;
+    }
+   public void process(String path, int vmnumber, int algorithm, Map<String,String> map, int centernum) {
+   //public void process(String path, int vmnumber, int algorithm) {
         try {
-            // First step: Initialize the WorkflowSim package. 
+            // First step: Initialize the WorkflowSim package.
             /**
              * However, the exact number of vms may not necessarily be vmNum If
              * the data center or the host doesn't have sufficient resources the
              * exact vmNum would be smaller than that. Take care.
              */
-            int vmNum = vmnum;//number of vms;
+            int vmNum = vmnumber;//number of vms;
             /**
              * Should change this based on real physical path
              */
@@ -96,11 +123,11 @@ public class SchedulingAlgorithm extends DataAwareSchedulingAlgorithmExample {
              *                                     <option value="4">MCT</option>
              */
             Parameters.SchedulingAlgorithm sch_method = Parameters.SchedulingAlgorithm.FCFS;
-//            switch (algorithm){
-//                case 0:
-//                    sch_method = Parameters.SchedulingAlgorithm.FCFS;
-//                    Parameters.AlgorithmIndex = 0;
-//                    break;
+            //           switch (algorithm){
+            //              case 0:
+            //                  sch_method = Parameters.SchedulingAlgorithm.FCFS;
+            //                  Parameters.AlgorithmIndex = 0;
+            //                   break;
 //                case 1:
 //                    sch_method = Parameters.SchedulingAlgorithm.MAXMIN;
 //                    Parameters.AlgorithmIndex = 1;
@@ -143,46 +170,60 @@ public class SchedulingAlgorithm extends DataAwareSchedulingAlgorithmExample {
                     null, 0);
             ReplicaCatalog.init(file_system);
 
-            // before creating any entities.
+            // before creating any entities
             int num_user = 1;   // number of grid users
             Calendar calendar = Calendar.getInstance();
             boolean trace_flag = false;  // mean trace events
 
             // Initialize the CloudSim library
             CloudSim.init(num_user, calendar, trace_flag);
-
-            WorkflowDatacenter datacenter0 = createDatacenter("Datacenter_0");
-
-            /**
-             * Create a WorkflowPlanner with one schedulers.
-             */
-            WorkflowPlanner wfPlanner = new WorkflowPlanner("planner_0", 1);
-            /**
-             * Create a WorkflowEngine.
-             */
-            WorkflowEngine wfEngine = wfPlanner.getWorkflowEngine();
-            /**
-             * Create a list of VMs.The userId of a vm is basically the id of
-             * the scheduler that controls this vm.
-             */
-            List<CondorVM> vmlist0 = createVM(wfEngine.getSchedulerId(0), Parameters.getVmNum());
-
-            /**
-             * Submits this list of vms to this WorkflowEngine.
-             */
-            wfEngine.submitVmList(vmlist0, 0);
-
-            /**
-             * Binds the data centers with the scheduler.
-             */
-            wfEngine.bindSchedulerDatacenter(datacenter0.getId(), 0);
-
-            CloudSim.startSimulation();
-            List<Job> outputList0 = wfEngine.getJobsReceivedList();
-            CloudSim.stopSimulation();
-            CondorVMList = vmlist0;
-            taskList = outputList0;
-            printJobList(outputList0);
+            int number=0;
+            for(String key:map.keySet()) {
+                String vmlist = map.get(key);
+                JSONArray jsonArray = JSONArray.parseArray(vmlist);
+                /**
+                 * Create a datacenter.
+                 */
+                WorkflowDatacenter datacenter0 = createDatacenter("Datacenter_"+String.valueOf(number));
+                /**
+                 * Create a WorkflowPlanner with one schedulers.
+                 */
+                WorkflowPlanner wfPlanner = new WorkflowPlanner("planner_0"+String.valueOf(number), 1);
+                /**
+                 * Create a WorkflowEngine.
+                 */
+                WorkflowEngine wfEngine = wfPlanner.getWorkflowEngine();
+                List<CondorVM> vmlist0 = new ArrayList<CondorVM>();
+                for (int i = 0; i < jsonArray.size(); i++) {
+                    int num = Integer.parseInt((String) jsonArray.getJSONObject(i).get("num"));
+                    long size = Long.parseLong((String) jsonArray.getJSONObject(i).get("size"));
+                    int memo = Integer.parseInt((String) jsonArray.getJSONObject(i).get("memo"));
+                    int mips = Integer.parseInt((String) jsonArray.getJSONObject(i).get("mips"));
+                    long bandwidth = Long.parseLong((String) jsonArray.getJSONObject(i).get("bw"));
+                    int cpu = Integer.parseInt((String) jsonArray.getJSONObject(i).get("cpu"));
+                    /**
+                     * Create a list of VMs.The userId of a vm is basically the id of
+                     * the scheduler that controls this vm.
+                     */
+                    List<CondorVM> vmlistemp = SchedulecreateVM(wfEngine.getSchedulerId(0), num, size, memo, mips, bandwidth, cpu);
+                    vmlist0.addAll(vmlist0.size(), vmlistemp);
+                }
+                /**
+                 * Submits this list of vms to this WorkflowEngine.
+                 */
+                wfEngine.submitVmList(vmlist0, 0);
+                /**
+                 * Binds the data centers with the scheduler.
+                 */
+                wfEngine.bindSchedulerDatacenter(datacenter0.getId(), 0);
+                CloudSim.startSimulation();
+                List<Job> outputList0 = wfEngine.getJobsReceivedList();
+                CloudSim.stopSimulation();
+                CondorVMList = vmlist0;
+                taskList = outputList0;
+                printJobList(outputList0);
+                number++;
+            }
         } catch (Exception e) {
             Log.printLine("The simulation has been terminated due to an unexpected error");
         }

@@ -24,7 +24,7 @@ import org.cloudbus.cloudsim.core.CloudSimTags;
 
 /**
  * InfoPacket class can be used to gather information from the network layer. An InfoPacket
- * traverses the network topology similar to a {@link gridsim.net.NetPacket}, but it collects
+ * traverses the network topology similar to a {@link //gridsim.net.NetPacket}, but it collects
  * information like bandwidths, and Round Trip Time etc. It is the equivalent of ICMP in physical
  * networks.
  * <p>
@@ -352,7 +352,7 @@ public class InfoPacket implements Packet {
 	 * This method should be called by routers and other entities when this InfoPacket reaches them
 	 * along with the current simulation time.
 	 * 
-	 * @param time current simulation time, use {@link gridsim.CloudSim#clock()} to obtain this
+	 * @param time current simulation time, use {@link //gridsim.CloudSim#clock()} to obtain this
 	 * @pre time >= 0
 	 * @post $none
 	 */
@@ -372,7 +372,7 @@ public class InfoPacket implements Packet {
 	 * This method should be called by routers and other entities when this InfoPacket is leaving
 	 * them. It should also supply the current simulation time.
 	 * 
-	 * @param time current simulation time, use {@link gridsim.CloudSim#clock()} to obtain this
+	 * @param time current simulation time, use {@link //gridsim.CloudSim#clock()} to obtain this
 	 * @pre time >= 0
 	 * @post $none
 	 */

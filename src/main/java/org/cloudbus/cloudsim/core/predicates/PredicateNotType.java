@@ -44,7 +44,7 @@ public class PredicateNotType extends Predicate {
     }
 
     /**
-     * The match function called by {@link Simulation}, not used directly by the user.
+     * The match function called by {@link //Simulation}, not used directly by the user.
      *
      * @param ev the ev
      * @return true, if match

@@ -14,10 +14,10 @@ import java.util.List;
 
 /**
  * This interface defines what a workload model should provide. A workload model generates a list of
- * jobs that can be dispatched to a resource by {@link Workload}.
+ * jobs that can be dispatched to a resource by {@link //Workload}.
  *
  * @author Marcos Dias de Assuncao
- * @see Workload
+ * @see //Workload
  * @see WorkloadFileReader
  * @since 5.0
  */

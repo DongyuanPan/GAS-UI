@@ -103,7 +103,7 @@ public class Datacenter extends SimEntity {
 
 	/**
 	 * Overrides this method when making a new and different type of resource. <br>
-	 * <b>NOTE:</b> You do not need to override {@link #body()} method, if you use this method.
+	 * <b>NOTE:</b> You do not need to override {@link #//body()} method, if you use this method.
 	 * 
 	 * @pre $none
 	 * @post $none
