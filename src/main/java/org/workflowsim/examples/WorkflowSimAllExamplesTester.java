@@ -88,7 +88,7 @@ public class WorkflowSimAllExamplesTester {
              * Scheduling Algorithms
              */
             DataAwareSchedulingAlgorithmExample.main(args);
-            FCFSSchedulingAlgorithmExample.main(args);
+            //FCFSSchedulingAlgorithmExample.main(args);
             MAXMINSchedulingAlgorithmExample.main(args);
             MCTSchedulingAlgorithmExample.main(args);
             MINMINSchedulingAlgorithmExample.main(args);
