@@ -4,6 +4,7 @@ package com.gas.web.controller;
 //import com.alibaba.fastjson.JSONArray;
 //import net.sf.json.JSONArray;
 //import net.sf.json.JSONObject;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.gas.web.bean.Res;
 import com.gas.web.bean.Schedule;
@@ -27,7 +28,7 @@ import java.util.*;
 
 @Controller
 public class EchartsController {
-    int datacenter=0;
+    int datacenter=0,vmnumber=0;
     public Map<String,String> map = new HashMap<String,String>();
     @ResponseBody
     @RequestMapping("/init")
@@ -257,6 +258,11 @@ public class EchartsController {
             String key = (String) iter.next();
             String value = json.getString(key);
             map.put(key, value);
+            JSONArray jsonArray = JSONArray.parseArray(value);
+            for (int i = 0; i < jsonArray.size(); i++){
+                int num = Integer.parseInt((String) jsonArray.getJSONObject(i).get("num"));
+                vmnumber+=num;
+            }
         }
         jsonObject.put("code",200);
         return jsonObject;
@@ -269,7 +275,7 @@ public class EchartsController {
     @ResponseBody
     public JSONObject addQuestionnaire(HttpServletRequest request) {
         JSONObject jsonObject = new JSONObject();
-        String vmnum = request.getParameter("vmnum");
+       // String vmnum = request.getParameter("vmnum");
         String path = "src/main/resources/static/tasksim/";
         String algorithm = request.getParameter("algorithm");
         boolean whetherSave = Boolean.parseBoolean(request.getParameter("switch"));
@@ -293,7 +299,7 @@ public class EchartsController {
 //            System.out.println("sleep");
 //        }
         SchedulingAlgorithm f = new SchedulingAlgorithm();
-            f.process(path + getLastFileName(), Integer.parseInt(vmnum), Integer.parseInt(algorithm), map, datacenter);
+            f.process(path + getLastFileName(), vmnumber, Integer.parseInt(algorithm), map, datacenter);
             // f.process(path + getLastFileName(),Integer.parseInt(vmnum),Integer.parseInt(algorithm));
             jsonObject.put("code", 200);
             jsonObject.put("data", toDisplay(f.getCondorVMList(), f.getTaskList()));

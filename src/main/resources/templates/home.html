@@ -61,7 +61,8 @@
                             </div>
                         </div>
                     </div>
-                    <div class="layui-col-md7">
+                    <div class="layui-row layui-col-space30">
+                   <div class="layui-col-md5">
                         <blockquote class="layui-elem-quote">上传Java算法文件</blockquote>
                         <div class="layui-form" action="">
                             <div class="layui-form-item">
@@ -78,6 +79,7 @@
                             </div>
                         </div>
                     </div>
+                    </div>
                     <div class="layui-col-md8">
                         <blockquote class="layui-elem-quote">仿真绘制</blockquote>
                         <form class="layui-form" action="">
@@ -85,13 +87,6 @@
                                 <label class="layui-form-label">选择任务</label>
                                 <div class="layui-upload">
                                     <button type="button" class="layui-btn layui-btn-normal" id="chooseFileForSim">选择文件</button>
-                                </div>
-                            </div>
-
-                            <div class="layui-form-item">
-                                <label class="layui-form-label">虚拟机个数</label>
-                                <div class="layui-input-block">
-                                    <input type="text" name="vmnum" required  lay-verify="required" placeholder="请输入虚拟机个数" autocomplete="off" class="layui-input">
                                 </div>
                             </div>
                             <div class="layui-form-item">
@@ -195,7 +190,7 @@ jsonT+='}';
 				"tabledata" : JSON.stringify(jsonT)
 			},
        success: function (data) {
-           alert("表格数据提交成功");
+          // alert("表格数据提交成功");
             },
         error: function (request) {
            tooltip("请求数据失败，可能是服务器开小差了");
