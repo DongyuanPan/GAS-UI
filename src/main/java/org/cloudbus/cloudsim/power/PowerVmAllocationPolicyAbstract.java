@@ -14,6 +14,7 @@ import org.cloudbus.cloudsim.Vm;
 import org.cloudbus.cloudsim.VmAllocationPolicy;
 import org.cloudbus.cloudsim.core.CloudSim;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,7 +54,7 @@ public abstract class PowerVmAllocationPolicyAbstract extends VmAllocationPolicy
      * @see org.cloudbus.cloudsim.VmAllocationPolicy#allocateHostForVm(org.cloudbus.cloudsim.Vm)
      */
     @Override
-    public boolean allocateHostForVm(Vm vm) {
+    public boolean allocateHostForVm(Vm vm) throws IOException {
         return allocateHostForVm(vm, findHostForVm(vm));
     }
 
@@ -63,7 +64,7 @@ public abstract class PowerVmAllocationPolicyAbstract extends VmAllocationPolicy
      * org.cloudbus.cloudsim.Host)
      */
     @Override
-    public boolean allocateHostForVm(Vm vm, Host host) {
+    public boolean allocateHostForVm(Vm vm, Host host) throws IOException {
         if (host == null) {
             Log.formatLine("%.2f: No suitable host found for VM #" + vm.getId() + "\n", CloudSim.clock());
             return false;
@@ -87,7 +88,7 @@ public abstract class PowerVmAllocationPolicyAbstract extends VmAllocationPolicy
      * @param vm the vm
      * @return the power host
      */
-    public PowerHost findHostForVm(Vm vm) {
+    public PowerHost findHostForVm(Vm vm) throws IOException {
         for (PowerHost host : this.<PowerHost>getHostList()) {
             if (host.isSuitableForVm(vm)) {
                 return host;

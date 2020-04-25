@@ -227,5 +227,6 @@ public class SchedulingAlgorithm extends DataAwareSchedulingAlgorithmExample {
         } catch (Exception e) {
             Log.printLine("The simulation has been terminated due to an unexpected error");
         }
+        totalvm=0;
     }
 }

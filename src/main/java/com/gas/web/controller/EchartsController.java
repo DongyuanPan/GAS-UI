@@ -28,8 +28,8 @@ import java.util.*;
 
 @Controller
 public class EchartsController {
-    int datacenter=0,vmnumber=0;
-    public Map<String,String> map = new HashMap<String,String>();
+    int datacenter=0,vmnumber=0,tableload=0;
+    public Map<String,String> map;
     @ResponseBody
     @RequestMapping("/init")
     public HashMap<String, Object> init() {
@@ -222,7 +222,11 @@ public class EchartsController {
             return jsonObject;
         }
         String fileName = file.getOriginalFilename();
-        setLastFileName(fileName);
+        File taskfile=new File("src/main/resources/static/tasksim"+fileName);
+        if(taskfile.exists() && taskfile.isFile()) {
+           System.out.println("file has existed");
+            taskfile.delete();
+        }
         File fileDir = new File("src/main/resources/static/tasksim");
         String path = fileDir.getAbsolutePath();
         if(!fileDir.exists()){
@@ -247,6 +251,7 @@ public class EchartsController {
     @RequestMapping(value = "/tableUpload", method = RequestMethod.POST)
     @ResponseBody
     public JSONObject tableUpload(HttpServletRequest request){
+        map=new HashMap<String, String>();
         JSONObject jsonObject = new JSONObject();
         String name=request.getParameter("tabledata");
         name =name.substring(1, name.length()-1);
@@ -265,6 +270,7 @@ public class EchartsController {
             }
         }
         jsonObject.put("code",200);
+        tableload=1;
         return jsonObject;
     }
     /**
@@ -275,19 +281,19 @@ public class EchartsController {
     @ResponseBody
     public JSONObject addQuestionnaire(HttpServletRequest request) {
         JSONObject jsonObject = new JSONObject();
-       // String vmnum = request.getParameter("vmnum");
         String path = "src/main/resources/static/tasksim/";
         String algorithm = request.getParameter("algorithm");
         boolean whetherSave = Boolean.parseBoolean(request.getParameter("switch"));
+        File daxFile;
         while (true) {
             System.out.println("sleep");
-            File daxFile = new File(path + getLastFileName());
-            if (daxFile.exists())
+            daxFile = new File(path + getLastFileName());
+            if (daxFile.exists()&&daxFile.isFile())
                 break;
         }
         while (true) {
             System.out.println("tablenone");
-            if (map.size()!=0)
+            if (tableload==1)
                 break;
         }
 
@@ -299,12 +305,13 @@ public class EchartsController {
 //            System.out.println("sleep");
 //        }
         SchedulingAlgorithm f = new SchedulingAlgorithm();
-            f.process(path + getLastFileName(), vmnumber, Integer.parseInt(algorithm), map, datacenter);
-            // f.process(path + getLastFileName(),Integer.parseInt(vmnum),Integer.parseInt(algorithm));
+            f.process(path+getLastFileName(), vmnumber, Integer.parseInt(algorithm), map, datacenter);
             jsonObject.put("code", 200);
             jsonObject.put("data", toDisplay(f.getCondorVMList(), f.getTaskList()));
             System.out.println(jsonObject);
             setFinishUpload(false);
+            tableload=0;
+            lastFileName=null;
             return jsonObject;
         }
 }

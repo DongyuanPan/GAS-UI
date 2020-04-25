@@ -7,6 +7,7 @@
 
 package org.cloudbus.cloudsim;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -120,7 +121,7 @@ public class Datacenter extends SimEntity {
 	 * @post $none
 	 */
 	@Override
-	public void processEvent(SimEvent ev) {
+	public void processEvent(SimEvent ev) throws IOException {
 		int srcId = -1;
 
 		switch (ev.getTag()) {
@@ -425,7 +426,7 @@ public class Datacenter extends SimEntity {
 	 * @pre ev != null
 	 * @post $none
 	 */
-	protected void processVmCreate(SimEvent ev, boolean ack) {
+	protected void processVmCreate(SimEvent ev, boolean ack) throws IOException {
 		Vm vm = (Vm) ev.getData();
 
 		boolean result = getVmAllocationPolicy().allocateHostForVm(vm);
@@ -490,7 +491,7 @@ public class Datacenter extends SimEntity {
 	 * @pre ev != null
 	 * @post $none
 	 */
-	protected void processVmMigrate(SimEvent ev, boolean ack) {
+	protected void processVmMigrate(SimEvent ev, boolean ack) throws IOException {
 		Object tmp = ev.getData();
 		if (!(tmp instanceof Map<?, ?>)) {
 			throw new ClassCastException("The data object must be Map<String, Object>");
@@ -606,7 +607,7 @@ public class Datacenter extends SimEntity {
 	 * @pre type > 0
 	 * @post $none
 	 */
-	protected void processCloudletMove(int[] receivedData, int type) {
+	protected void processCloudletMove(int[] receivedData, int type) throws IOException {
 		updateCloudletProcessing();
 
 		int[] array = receivedData;
@@ -675,7 +676,7 @@ public class Datacenter extends SimEntity {
 	 * @pre ev != null
 	 * @post $none
 	 */
-	protected void processCloudletSubmit(SimEvent ev, boolean ack) {
+	protected void processCloudletSubmit(SimEvent ev, boolean ack) throws IOException {
 		updateCloudletProcessing();
 
 		try {
@@ -862,7 +863,7 @@ public class Datacenter extends SimEntity {
 	 * @pre $none
 	 * @post $none
 	 */
-	protected void updateCloudletProcessing() {
+	protected void updateCloudletProcessing() throws IOException {
 		// if some time passed since last processing
 		// R: for term is to allow loop at simulation start. Otherwise, one initial
 		// simulation step is skipped and schedulers are not properly initialized

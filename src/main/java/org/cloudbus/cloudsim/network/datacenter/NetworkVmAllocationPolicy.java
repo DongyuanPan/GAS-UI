@@ -14,6 +14,7 @@ import org.cloudbus.cloudsim.Vm;
 import org.cloudbus.cloudsim.VmAllocationPolicy;
 import org.cloudbus.cloudsim.core.CloudSim;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -74,7 +75,7 @@ public class NetworkVmAllocationPolicy extends VmAllocationPolicy {
      * @post $none
      */
     @Override
-    public boolean allocateHostForVm(Vm vm) {
+    public boolean allocateHostForVm(Vm vm) throws IOException {
 
         int requiredPes = vm.getNumberOfPes();
         boolean result = false;
@@ -255,7 +256,7 @@ public class NetworkVmAllocationPolicy extends VmAllocationPolicy {
      * org.cloudbus.cloudsim.Host)
      */
     @Override
-    public boolean allocateHostForVm(Vm vm, Host host) {
+    public boolean allocateHostForVm(Vm vm, Host host) throws IOException {
         if (host.vmCreate(vm)) { // if vm has been succesfully created in the host
             getVmTable().put(vm.getUid(), host);
 

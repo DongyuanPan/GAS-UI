@@ -12,6 +12,8 @@ import org.cloudbus.cloudsim.Log;
 import org.cloudbus.cloudsim.NetworkTopology;
 import org.cloudbus.cloudsim.core.predicates.Predicate;
 
+import java.io.IOException;
+
 /**
  * This class represents a simulation entity. An entity handles events and can send events to other
  * entities. When this class is extended, there are a few methods that need to be implemented:
@@ -434,7 +436,7 @@ public abstract class SimEntity implements Cloneable {
      *
      * @param ev the event to be processed by the entity
      */
-    public abstract void processEvent(SimEvent ev) throws IllegalAccessException, InstantiationException;
+    public abstract void processEvent(SimEvent ev) throws IllegalAccessException, InstantiationException, IOException;
 
     // The entity states
 
@@ -444,7 +446,7 @@ public abstract class SimEntity implements Cloneable {
      */
     public abstract void shutdownEntity();
 
-    public void run() throws InstantiationException, IllegalAccessException {
+    public void run() throws InstantiationException, IllegalAccessException, IOException {
         SimEvent ev = evbuf != null ? evbuf : getNextEvent();
 
         while (ev != null) {

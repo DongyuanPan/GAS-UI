@@ -43,7 +43,7 @@
         <div style="width:100%;height:100%;" id="formDiv">
             <div class="layui-container">
                 <div class="layui-row layui-col-space30">
-                    <div class="layui-col-md8">
+                    <div class="layui-col-md9">
                         <blockquote class="layui-elem-quote">直接绘制</blockquote>
                         <div class="layui-form" action="">
 
@@ -62,7 +62,7 @@
                         </div>
                     </div>
                     <div class="layui-row layui-col-space30">
-                   <div class="layui-col-md8">
+                   <div class="layui-col-md9">
                         <blockquote class="layui-elem-quote">上传算法文件</blockquote>
                         <div class="layui-form" action="">
                             <div class="layui-form-item">
@@ -80,7 +80,7 @@
                         </div>
                     </div>
                     </div>
-                    <div class="layui-col-md8">
+                    <div class="layui-col-md9">
                         <blockquote class="layui-elem-quote">仿真绘制</blockquote>
                         <form class="layui-form" action="">
                             <div class="layui-form-item">
@@ -101,12 +101,12 @@
                                 <a class="layui-btn layui-btn-xs addtable">添加数据中心</a>
                             </div>
                             <div  id="tablelist">
-                                <table class="layui-table" lay-filter="table" id="table1">
+                                <table class="layui-table" lay-filter="table" id="table1" name="table1">
                                     <thead>
                                     <tr>
                                         <td>中心编号</td>
                                         <td>台数</td>
-                                        <td>size</td>
+                                        <td>镜像大小(MB)</td>
                                         <td>内存(MB)</td>
                                         <td>处理速度(mips)</td>
                                         <td>带宽</td>
@@ -119,12 +119,12 @@
                                     <tbody>
                                     <tr>
                                         <td><input type="text" id="layui-input1" class="layui-input" name="type1" value="1" disabled="disabled"></td>
-                                        <td><input type="text" id="layui-input2" class="layui-input" name="num1"></td>
-                                        <td><input type="text" id="layui-input3" class="layui-input" name="size1"></td>
-                                        <td><input type="text" id="layui-input4" class="layui-input" name="memo1"></td>
-                                        <td><input type="text" id="layui-input5" class="layui-input" name="mips1"></td>
-                                        <td><input type="text" id="layui-input6" class="layui-input" name="bw1"></td>
-                                        <td><input type="text" id="layui-input7" class="layui-input" name="cpu1"></td>
+                                        <td><input type="text" id="layui-input2" class="layui-input inp-fon" name="num1" required="required" value="10" onkeyup="check(this)"></td>
+                                        <td><input type="text" id="layui-input3" class="layui-input inp-fon" name="size1" value="10000" onkeyup="check(this)"></td>
+                                        <td><input type="text" id="layui-input4" class="layui-input inp-fon" name="memo1" value="512" onkeyup="check(this)"></td>
+                                        <td><input type="text" id="layui-input5" class="layui-input inp-fon" name="mips1" value="1000" onkeyup="check(this)"></td>
+                                        <td><input type="text" id="layui-input6" class="layui-input inp-fon" name="bw1" value="1000" onkeyup="check(this)"></td>
+                                        <td><input type="text" id="layui-input7" class="layui-input inp-fon" name="cpu1" value="1" onkeyup="check(this)"></td>
                                         <td>
                                             <a class="layui-btn layui-btn-primary layui-icon layui-btn-sm del" id="101" onclick="test(this.id)">&#xe640;</a>
                                         </td>
@@ -153,8 +153,30 @@ var tablenum=1;
  var clickid;
  var remain=1;
  var jsonT='{';
+ $(".inp-fon").focus(function(){
+          var oldValue = $(this).val();
+          if(oldValue == this.defaultValue){
+              $(this).val("").addClass('focus-fon');
+
+          }
+      }).blur(function(){
+          var oldValue = $(this).val();
+          if(oldValue == ""){
+               $(this).val(this.defaultValue).removeClass('focus-fon');;
+           }
+      });
+ function check(obj)
+{
+var number = obj.value;
+var number2 = parseInt(number);
+if(!isNaN(number))
+   return;
+else
+   obj.value = number.substring(0,number.length-1);
+}
 function jstable(){
 //var number=tablenum;
+jsonT='{';
 var limit=remain;
 for(var i=1;i<=parseInt(tablenum)&&(document.getElementById("table"+parseInt(i)))!=null;i=parseInt(i)+1){
   limit=parseInt(limit)-1;
@@ -164,7 +186,17 @@ for(var i=1;i<=parseInt(tablenum)&&(document.getElementById("table"+parseInt(i))
       var vmnum =tabLen.rows[j].cells[1].getElementsByTagName("input")[0].value;
       var size= tabLen.rows[j].cells[2].getElementsByTagName("input")[0].value;
       var memo= tabLen.rows[j].cells[3].getElementsByTagName("input")[0].value;
+      if(parseInt(memo)>2048){
+        alert("内存最大为2048M");
+        memo=2048;
+        tabLen.rows[j].cells[3].getElementsByTagName("input")[0].value=2048
+      }
       var mips= tabLen.rows[j].cells[4].getElementsByTagName("input")[0].value;
+      if(parseInt(mips)>1600){
+        alert("处理速度最大为1600");
+        mips=1600;
+        tabLen.rows[j].cells[4].getElementsByTagName("input")[0].value=1600
+      }
       var bw=tabLen.rows[j].cells[5].getElementsByTagName("input")[0].value;
       var cpu= tabLen.rows[j].cells[6].getElementsByTagName("input")[0].value;
       if(parseInt(j)==parseInt(tabLen.rows.length)-1){
@@ -204,7 +236,7 @@ jsonT+='}';
       var newdelid=parseInt(tablenum)+100;
       var deltablenum=parseInt(tablenum)+1000;
     //'<div class="layui-form-item">'
-               var str= '<table class="layui-table" id="table'+tablenum+'" lay-filter="table">'+
+               var str= '<table class="layui-table" id="table'+tablenum+'" lay-filter="table" name="table'+tablenum+'">'+
                     '<thead>'+
                        '<tr>'+
                          '<td>中心编号</td>'+
@@ -222,12 +254,12 @@ jsonT+='}';
                           '<tbody>'+
                           '<tr>'+
                           '<td><input type="text" id="layui-input1" class="layui-input" name="type1" value="'+tablenum+'" disabled="disabled"></td>'+
-                                        '<td><input type="text" id="layui-input2" class="layui-input" name="num1"></td>'+
-                                        '<td><input type="text" id="layui-input3" class="layui-input" name="size1"></td>'+
-                                        '<td><input type="text" id="layui-input4" class="layui-input" name="memo1"></td>'+
-                                        '<td><input type="text" id="layui-input5" class="layui-input" name="mips1"></td>'+
-                                        '<td><input type="text" id="layui-input6" class="layui-input" name="bw1"></td>'+
-                                        '<td><input type="text" id="layui-input7" class="layui-input" name="cpu1"></td>'+
+                                        '<td><input type="text" id="layui-input2" class="layui-input inp-fon" name="num1" required="required" value="10" onkeyup="check(this)"></td>'+
+                                        '<td><input type="text" id="layui-input3" class="layui-input inp-fon" name="size1" value="10000" onkeyup="check(this)"></td>'+
+                                        '<td><input type="text" id="layui-input4" class="layui-input inp-fon" name="memo1" value="512" onkeyup="check(this)"></td>'+
+                                        '<td><input type="text" id="layui-input5" class="layui-input inp-fon" name="mips1" value="1000" onkeyup="check(this)"></td>'+
+                                        '<td><input type="text" id="layui-input6" class="layui-input inp-fon" name="bw1" value="1000" onkeyup="check(this)"></td>'+
+                                        '<td><input type="text" id="layui-input7" class="layui-input inp-fon" name="cpu1" value="1" onkeyup="check(this)"></td>'+
                                         '<td>'+
                                             '<a class="layui-btn layui-btn-primary layui-icon layui-btn-sm del" id="'+newdelid+'" onclick="test(this.id)">&#xe640;</a>'+
                                         '</td>'+
@@ -242,18 +274,17 @@ jsonT+='}';
    });
 function test(id){
 clickid=id;
-//alert(id);
 }
    $('body').on('click', '.add', function() {
    var delid=parseInt(clickid)+100;
    var str ='<tr>'+
             '<td><input type="text" id="layui-input1" class="layui-input" name="type1" value="'+clickid+'" disabled="disabled"></td>'+
-            '<td><input type="text" id="layui-input2" class="layui-input" name="num1"></td>'+
-            '<td><input type="text" id="layui-input3" class="layui-input" name="size1"></td>'+
-            '<td><input type="text" id="layui-input4" class="layui-input" name="memo1"></td>'+
-            '<td><input type="text" id="layui-input5" class="layui-input" name="mips1"></td>'+
-            '<td><input type="text" id="layui-input6" class="layui-input" name="bw1"></td>'+
-            '<td><input type="text" id="layui-input7" class="layui-input" name="cpu1"></td>'+
+            '<td><input type="text" id="layui-input2" class="layui-input inp-fon" name="num1" required="required" value="10" onkeyup="check(this)"></td>'+
+            '<td><input type="text" id="layui-input3" class="layui-input inp-fon" name="size1" value="10000" onkeyup="check(this)"></td>'+
+            '<td><input type="text" id="layui-input4" class="layui-input inp-fon" name="memo1" value="512" onkeyup="check(this)"></td>'+
+            '<td><input type="text" id="layui-input5" class="layui-input inp-fon" name="mips1" value="1000" onkeyup="check(this)"></td>'+
+            '<td><input type="text" id="layui-input6" class="layui-input inp-fon" name="bw1" value="1000" onkeyup="check(this)"></td>'+
+            '<td><input type="text" id="layui-input7" class="layui-input inp-fon" name="cpu1" value="1" onkeyup="check(this)"></td>'+
             '<td><a class="layui-btn layui-btn-primary layui-icon layui-btn-sm del" id="'+delid+'" onclick="test(this.id)">&#xe640;</a></td>'+
         '</tr>';
     //添加到表格最后
@@ -310,7 +341,7 @@ var DIM_NAME = 7;
 var DIM_COLOR = 8;
 
 var DATA_ZOOM_AUTO_MOVE_THROTTLE = 30;
-var DATA_ZOOM_X_INSIDE_INDEX = 1;
+var DATA_ZOOM_X_INSIDE_INDEX = 2;
 var DATA_ZOOM_Y_INSIDE_INDEX = 3;
 var DATA_ZOOM_AUTO_MOVE_SPEED = 0.2;
 
@@ -474,7 +505,7 @@ function makeOption() {
             top: 70,
             bottom: 20,
             startValue: 0,
-            endValue: 15,
+            endValue: 50,
             handleSize: 0,
             showDetail: false,
         }, {
@@ -906,7 +937,7 @@ layui.use(['form', 'upload', 'layedit', 'laydate'], function(){
         done: function (res) {
             if (res.code == 200) {
 
-            } else {
+            } else{
             }
         }
         ,error: function(){
@@ -922,7 +953,7 @@ layui.use(['form', 'upload', 'layedit', 'laydate'], function(){
         console.log(data.form) //被执行提交的form对象，一般在存在form标签时才会返回
         console.log(data.field) //当前容器的全部表单字段，名值对形式：{name: value}
          */
-        jstable();
+       jstable();
        $.ajax({
             url:'/formUpload',
             method:'post',

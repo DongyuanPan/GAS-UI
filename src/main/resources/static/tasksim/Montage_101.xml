@@ -822,6 +822,7 @@
     <uses file="shrunken_ID00098_ID00098.fits" link="input" register="false" transfer="false" optional="false" type="data" size="2778398"/>
     <uses file="shrunken_ID00098_ID00098.jpg" link="output" register="true" transfer="true" optional="false" type="data" size="420195"/>
   </job>
+
 <!-- part 3: list of control-flow dependencies (may be empty) -->
   <child ref="ID00016">
     <parent ref="ID00001"/>

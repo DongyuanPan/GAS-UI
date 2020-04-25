@@ -7,6 +7,7 @@
 
 package org.cloudbus.cloudsim;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -200,7 +201,7 @@ public class Host {
 	 * @pre $none
 	 * @post $none
 	 */
-	public boolean vmCreate(Vm vm) {
+	public boolean vmCreate(Vm vm){
 		if (getStorage() < vm.getSize()) {
 			Log.printLine("[VmScheduler.vmCreate] Allocation of VM #" + vm.getId() + " to Host #" + getId()
 					+ " failed by storage");

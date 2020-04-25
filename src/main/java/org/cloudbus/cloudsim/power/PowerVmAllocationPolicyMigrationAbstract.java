@@ -16,6 +16,7 @@ import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.power.lists.PowerVmList;
 import org.cloudbus.cloudsim.util.ExecutionTimeMeasurer;
 
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -92,7 +93,7 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
      * @return the array list< hash map< string, object>>
      */
     @Override
-    public List<Map<String, Object>> optimizeAllocation(List<? extends Vm> vmList) {
+    public List<Map<String, Object>> optimizeAllocation(List<? extends Vm> vmList) throws IOException {
         ExecutionTimeMeasurer.start("optimizeAllocationTotal");
 
         ExecutionTimeMeasurer.start("optimizeAllocationHostSelection");
@@ -132,7 +133,7 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
      * @return the migration map from under utilized hosts
      */
     protected List<Map<String, Object>> getMigrationMapFromUnderUtilizedHosts(
-            List<PowerHostUtilizationHistory> overUtilizedHosts) {
+            List<PowerHostUtilizationHistory> overUtilizedHosts) throws IOException {
         List<Map<String, Object>> migrationMap = new LinkedList<Map<String, Object>>();
         List<PowerHost> switchedOffHosts = getSwitchedOffHosts();
 
@@ -212,7 +213,7 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
      * @param excludedHosts the excluded hosts
      * @return the power host
      */
-    public PowerHost findHostForVm(Vm vm, Set<? extends Host> excludedHosts) {
+    public PowerHost findHostForVm(Vm vm, Set<? extends Host> excludedHosts) throws IOException {
         double minPower = Double.MAX_VALUE;
         PowerHost allocatedHost = null;
 
@@ -248,7 +249,7 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
      * @param vm   the vm
      * @return true, if is host over utilized after allocation
      */
-    protected boolean isHostOverUtilizedAfterAllocation(PowerHost host, Vm vm) {
+    protected boolean isHostOverUtilizedAfterAllocation(PowerHost host, Vm vm) throws IOException {
         boolean isHostOverUtilizedAfterAllocation = true;
         if (host.vmCreate(vm)) {
             isHostOverUtilizedAfterAllocation = isHostOverUtilized(host);
@@ -264,7 +265,7 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
      * @return the power host
      */
     @Override
-    public PowerHost findHostForVm(Vm vm) {
+    public PowerHost findHostForVm(Vm vm) throws IOException {
         Set<Host> excludedHosts = new HashSet<Host>();
         if (vm.getHost() != null) {
             excludedHosts.add(vm.getHost());
@@ -295,7 +296,7 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
      */
     protected List<Map<String, Object>> getNewVmPlacement(
             List<? extends Vm> vmsToMigrate,
-            Set<? extends Host> excludedHosts) {
+            Set<? extends Host> excludedHosts) throws IOException {
         List<Map<String, Object>> migrationMap = new LinkedList<Map<String, Object>>();
         PowerVmList.sortByCpuUtilization(vmsToMigrate);
         for (Vm vm : vmsToMigrate) {
@@ -322,7 +323,7 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
      */
     protected List<Map<String, Object>> getNewVmPlacementFromUnderUtilizedHost(
             List<? extends Vm> vmsToMigrate,
-            Set<? extends Host> excludedHosts) {
+            Set<? extends Host> excludedHosts) throws IOException {
         List<Map<String, Object>> migrationMap = new LinkedList<Map<String, Object>>();
         PowerVmList.sortByCpuUtilization(vmsToMigrate);
         for (Vm vm : vmsToMigrate) {
@@ -512,7 +513,7 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
     /**
      * Restore allocation.
      */
-    protected void restoreAllocation() {
+    protected void restoreAllocation() throws IOException {
         for (Host host : getHostList()) {
             host.vmDestroyAll();
             host.reallocateMigratingInVms();
