@@ -1,13 +1,13 @@
 package com.gas.web.entity;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 
-@Getter//自动给成员变量创建Get函数
-@Setter//自动给成员变量创建Set函数
-@Entity//表明这个是一个实体类，对应数据库的
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity
 @Table(name = "student")//对应的表名
 public class Student {
 
