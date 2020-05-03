@@ -10,20 +10,24 @@ CREATE TABLE `student` (
                            `id` int(10) NOT NULL,
                            `studentNum` varchar(255) default NULL,
                            `name` varchar(255) default NULL,
-                           `age` int(10) default NULL,
                            `sex` varchar(255) default NULL,
+                           `enrollmentTime` varchar(255) default NULL,
+                           `phone` varchar(255) default NULL,
                            `email` varchar(255) default NULL,
+                           `degree` varchar(255) default NULL,
+                           `type` varchar(255) default NULL,
+                           `employment` varchar(255) default NULL,
                            PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of student 给表添加一些初始化数据用来测试
 -- ----------------------------
-INSERT INTO `student` VALUES ('1', '110', '潘潘潘', '18', '男', '614613461@qq.com');
-INSERT INTO `student` VALUES ('2', '111', '嘻嘻嘻', '19', '女', '614613461@qq.com');
-INSERT INTO `student` VALUES ('3', '112', '哈哈哈', '19', '男', '614613461@qq.com');
-INSERT INTO `student` VALUES ('4', '113', '叶叶叶', '20', '男', '614613461@qq.com');
-INSERT INTO `student` VALUES ('5', '114', '捞捞捞', '22', '女', '614613461@qq.com');
+INSERT INTO `student` VALUES ('0', '110', '潘潘潘', '男', '2018.9', '15151269930','614613461@qq.com','硕士', '在籍', '未知');
+INSERT INTO `student` VALUES ('1', '111', '嘻嘻嘻', '女', '2018.9', '15151269930','614613461@qq.com','硕士', '在籍', '未知');
+INSERT INTO `student` VALUES ('2', '112', '哈哈哈', '男', '2018.9', '15151269930','614613461@qq.com','硕士', '在籍', '未知');
+INSERT INTO `student` VALUES ('3', '113', '叶叶叶', '男', '2018.9', '15151269930','614613461@qq.com','硕士', '在籍', '未知');
+INSERT INTO `student` VALUES ('4', '114', '捞捞捞', '女', '2018.9', '15151269930','614613461@qq.com','硕士', '在籍', '未知');
 
 # XXX表
 

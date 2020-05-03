@@ -84,13 +84,17 @@
             }],
             cols: [[
                 {type: "checkbox", width: 50},
-                {field: 'id', width: 80, title: 'ID', sort: true},
-                {field: 'studentNum', width: 80, title: '学号'},
-                {field: 'name', width: 80, title: '姓名'},
-                {field: 'sex', width: 80, title: '性别'},
-                {field: 'age', width: 80, title: '年龄', sort: true},
-                {field: 'email', width: 80, title: '邮箱'},
-                {title: '操作', minWidth: 150, toolbar: '#currentTableBar', align: "center"}
+                {field: 'id', width: 80, title: 'ID', sort: true, align: "center"},
+                {field: 'studentNum', width: 80, title: '学号', align: "center"},
+                {field: 'name', width: 80, title: '姓名', align: "center"},
+                {field: 'sex', width: 80, title: '性别', align: "center"},
+                {field: 'enrollmentTime', width: 110, title: '入学日期', sort: true, align: "center"},
+                {field: 'phone', minWidth: 80 , title: '手机', align: "center"},
+                {field: 'degree', width: 80 , title: '学位', align: "center"},
+                {field: 'type', width: 80 , title: '状态', align: "center"},
+                {field: 'employment', width: 80 , title: '去向', align: "center"},
+                {field: 'email', minWidth: 120 , title: '邮箱', align: "center"},
+                {title: '操作', minWidth: 100, toolbar: '#currentTableBar', align: "center"}
             ]],
             limits: [10, 15, 20, 25, 50, 100],
             limit: 15,
@@ -124,21 +128,24 @@
         table.on('toolbar(currentTableFilter)', function (obj) {
             if (obj.event === 'add') {  // 监听添加操作
                 var index = layer.open({
-                    title: '添加用户',
+                    title: '添加人员',
                     type: 2,
                     shade: 0.2,
                     maxmin:true,
                     shadeClose: true,
                     area: ['100%', '100%'],
-                    content: '../page/table/add.html',
+                    content: '../page/table/addStudent.html',
                 });
+
                 $(window).on("resize", function () {
                     layer.full(index);
                 });
+
             } else if (obj.event === 'delete') {  // 监听删除操作
                 var checkStatus = table.checkStatus('currentTableId')
                     , data = checkStatus.data;
                 layer.alert(JSON.stringify(data));
+
             }
         });
 
@@ -168,6 +175,24 @@
                 layer.confirm('真的删除行么', function (index) {
                     obj.del();
                     layer.close(index);
+
+                    //调用后端函数 删除数据库中的该行
+                    var delete_url = '/studentDelete/' + obj.data.id;
+                    $.ajax({
+                        url: delete_url,
+                        method:'delete',
+                        success:function(res){
+                            //如果需要判断 可以判断一下，我这里没判断
+                            if(res.code = 200){
+
+                            } else {
+                                alert("删除失败");
+                            }
+                        },
+                        error:function () {
+                            alert("删除失败");
+                        }
+                    });
                 });
             }
         });
