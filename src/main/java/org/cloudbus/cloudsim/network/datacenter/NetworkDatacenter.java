@@ -13,6 +13,7 @@ import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.core.CloudSimTags;
 import org.cloudbus.cloudsim.core.SimEvent;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -94,7 +95,7 @@ public class NetworkDatacenter extends Datacenter {
      * Create the VM within the NetworkDatacenter. It can be directly accessed by Datacenter Broker
      * which manage allocation of Cloudlets.
      */
-    public boolean processVmCreateNetwork(Vm vm) {
+    public boolean processVmCreateNetwork(Vm vm) throws IOException {
 
         boolean result = getVmAllocationPolicy().allocateHostForVm(vm);
 
@@ -120,7 +121,7 @@ public class NetworkDatacenter extends Datacenter {
      * @post $none
      */
     @Override
-    protected void processCloudletSubmit(SimEvent ev, boolean ack) {
+    protected void processCloudletSubmit(SimEvent ev, boolean ack) throws IOException {
         updateCloudletProcessing();
 
         try {

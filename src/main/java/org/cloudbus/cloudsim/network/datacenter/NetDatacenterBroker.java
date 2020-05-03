@@ -19,6 +19,7 @@ import org.cloudbus.cloudsim.core.SimEvent;
 import org.cloudbus.cloudsim.distributions.UniformDistr;
 import org.cloudbus.cloudsim.lists.VmList;
 
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -159,7 +160,7 @@ public class NetDatacenterBroker extends SimEntity {
      * @post $none
      */
     @Override
-    public void processEvent(SimEvent ev) {
+    public void processEvent(SimEvent ev) throws IOException {
         switch (ev.getTag()) {
             // Resource characteristics request
             case CloudSimTags.RESOURCE_CHARACTERISTICS_REQUEST:
@@ -199,7 +200,7 @@ public class NetDatacenterBroker extends SimEntity {
      * @pre ev != $null
      * @post $none
      */
-    protected void processResourceCharacteristics(SimEvent ev) {
+    protected void processResourceCharacteristics(SimEvent ev) throws IOException {
         DatacenterCharacteristics characteristics = (DatacenterCharacteristics) ev.getData();
         getDatacenterCharacteristicsList().put(characteristics.getId(), characteristics);
 
@@ -245,7 +246,7 @@ public class NetDatacenterBroker extends SimEntity {
      * @pre ev != $null
      * @post $none
      */
-    protected void processCloudletReturn(SimEvent ev) {
+    protected void processCloudletReturn(SimEvent ev) throws IOException {
         Cloudlet cloudlet = (Cloudlet) ev.getData();
         getCloudletReceivedList().add(cloudlet);
         cloudletsSubmitted--;
@@ -290,7 +291,7 @@ public class NetDatacenterBroker extends SimEntity {
      * @pre $none
      * @post $none
      */
-    protected void createVmsInDatacenterBase(int datacenterId) {
+    protected void createVmsInDatacenterBase(int datacenterId) throws IOException {
         // send as much vms as possible for this datacenter before trying the
         // next one
         int requestedVms = 0;
@@ -355,7 +356,7 @@ public class NetDatacenterBroker extends SimEntity {
         setVmsAcks(0);
     }
 
-    private void CreateVMs(int datacenterId) {
+    private void CreateVMs(int datacenterId) throws IOException {
         // two VMs per host
         int numVM = linkDC.getHostList().size() * NetworkConstants.maxhostVM;
         for (int i = 0; i < numVM; i++) {

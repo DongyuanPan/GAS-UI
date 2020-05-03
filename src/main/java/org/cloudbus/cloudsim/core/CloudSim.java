@@ -13,6 +13,7 @@ import org.cloudbus.cloudsim.core.predicates.Predicate;
 import org.cloudbus.cloudsim.core.predicates.PredicateAny;
 import org.cloudbus.cloudsim.core.predicates.PredicateNone;
 
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -246,7 +247,7 @@ public class CloudSim {
             traceFlag = false;
 
             return clock;
-        } catch (IllegalArgumentException | InstantiationException | IllegalAccessException e) {
+        } catch (IllegalArgumentException | InstantiationException | IllegalAccessException | IOException e) {
             e.printStackTrace();
             throw new NullPointerException("CloudSim.startCloudSimulation() :"
                     + " Error - you haven't initialized CloudSim.");
@@ -520,7 +521,7 @@ public class CloudSim {
      *
      * @return true, if successful otherwise
      */
-    public static boolean runClockTick() throws IllegalAccessException, InstantiationException {
+    public static boolean runClockTick() throws IllegalAccessException, InstantiationException, IOException {
         SimEntity ent;
         boolean queue_empty;
 
@@ -888,7 +889,7 @@ public class CloudSim {
      *
      * @return the double last clock value
      */
-    public static double run() throws InstantiationException, IllegalAccessException {
+    public static double run() throws InstantiationException, IllegalAccessException, IOException {
         if (!running) {
             runStart();
         }
@@ -932,7 +933,7 @@ public class CloudSim {
      * Internal method that allows the entities to terminate. This method should <b>not</b> be used
      * in user simulations.
      */
-    public static void finishSimulation() throws IllegalAccessException, InstantiationException {
+    public static void finishSimulation() throws IllegalAccessException, InstantiationException, IOException {
         // Allow all entities to exit their body method
         if (!abruptTerminate) {
             for (SimEntity ent : entities) {
