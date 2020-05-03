@@ -44,7 +44,7 @@ public class PredicateNotFrom extends Predicate {
     }
 
     /**
-     * The match function called by {@link Simulation}, not used directly by the user.
+     * The match function called by {@link //Simulation}, not used directly by the user.
      *
      * @param ev the event to check
      * @return <code>true</code> if the event matches the predicate, <code>false</code> otherwise

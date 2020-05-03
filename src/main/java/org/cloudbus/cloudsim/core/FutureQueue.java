@@ -14,11 +14,11 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 /**
- * This class implements the future event queue used by {@link Simulation}. The event queue uses a
+ * This class implements the future event queue used by {@link //Simulation}. The event queue uses a
  * {@link TreeSet} in order to store the events.
  *
  * @author Marcos Dias de Assuncao
- * @see Simulation
+ * @see //Simulation
  * @see java.util.TreeSet
  * @since CloudSim Toolkit 1.0
  */

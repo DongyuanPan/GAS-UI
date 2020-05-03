@@ -14,6 +14,7 @@ import org.cloudbus.cloudsim.core.CloudSimTags;
 import org.cloudbus.cloudsim.core.SimEvent;
 import org.cloudbus.cloudsim.core.predicates.PredicateType;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -59,7 +60,7 @@ public class PowerDatacenter extends Datacenter {
      * @param name               the name
      * @param characteristics    the res config
      * @param schedulingInterval the scheduling interval
-     * @param utilizationBound   the utilization bound
+     * @param //utilizationBound   the utilization bound
      * @param vmAllocationPolicy the vm provisioner
      * @param storageList        the storage list
      * @throws Exception the exception
@@ -87,7 +88,7 @@ public class PowerDatacenter extends Datacenter {
      * @post $none
      */
     @Override
-    protected void updateCloudletProcessing() {
+    protected void updateCloudletProcessing() throws IOException {
         if (getCloudletSubmitted() == -1 || getCloudletSubmitted() == CloudSim.clock()) {
             CloudSim.cancelAll(getId(), new PredicateType(CloudSimTags.VM_DATACENTER_EVENT));
             schedule(getId(), getSchedulingInterval(), CloudSimTags.VM_DATACENTER_EVENT);
@@ -254,7 +255,7 @@ public class PowerDatacenter extends Datacenter {
      * boolean)
      */
     @Override
-    protected void processVmMigrate(SimEvent ev, boolean ack) {
+    protected void processVmMigrate(SimEvent ev, boolean ack) throws IOException {
         updateCloudetProcessingWithoutSchedulingFutureEvents();
         super.processVmMigrate(ev, ack);
         SimEvent event = CloudSim.findFirstDeferred(getId(), new PredicateType(CloudSimTags.VM_MIGRATE));
@@ -268,7 +269,7 @@ public class PowerDatacenter extends Datacenter {
      * @see cloudsim.Datacenter#processCloudletSubmit(cloudsim.core.SimEvent, boolean)
      */
     @Override
-    protected void processCloudletSubmit(SimEvent ev, boolean ack) {
+    protected void processCloudletSubmit(SimEvent ev, boolean ack) throws IOException {
         super.processCloudletSubmit(ev, ack);
         setCloudletSubmitted(CloudSim.clock());
     }

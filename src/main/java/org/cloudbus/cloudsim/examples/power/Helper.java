@@ -133,7 +133,7 @@ public class Helper {
 	 * @param datacenterClass the datacenter class
 	 * @param hostList the host list
 	 * @param vmAllocationPolicy the vm allocation policy
-	 * @param simulationLength
+	 * @param //simulationLength
 	 * 
 	 * @return the power datacenter
 	 * 

@@ -29,7 +29,7 @@ public class HostList {
      * @return the Machine object or <tt>null</tt> if no machine exists
      * @pre id >= 0
      * @post $none
-     * @see gridsim.Machine
+     * @see //gridsim.Machine
      */
     public static <T extends Host> T getById(List<T> hostList, int id) {
         for (T host : hostList) {

@@ -235,7 +235,7 @@ public class CloudInformationService extends SimEntity {
 
     /**
      * This method needs to override by a child class for processing other events. These events are
-     * based on tags that are not mentioned in {@link #body()} method.
+     * based on tags that are not mentioned in {@link //#body()} method.
      *
      * @param ev a Sim_event object
      * @pre ev != null

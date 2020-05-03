@@ -13,6 +13,7 @@ import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.core.CloudSimTags;
 import org.cloudbus.cloudsim.core.predicates.PredicateType;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -39,7 +40,7 @@ public class PowerDatacenterNonPowerAware extends PowerDatacenter {
      * @param name               the name
      * @param characteristics    the res config
      * @param schedulingInterval the scheduling interval
-     * @param utilizationBound   the utilization bound
+     * @param //utilizationBound   the utilization bound
      * @param vmAllocationPolicy the vm provisioner
      * @param storageList        the storage list
      * @throws Exception the exception
@@ -62,7 +63,7 @@ public class PowerDatacenterNonPowerAware extends PowerDatacenter {
      * @post $none
      */
     @Override
-    protected void updateCloudletProcessing() {
+    protected void updateCloudletProcessing() throws IOException {
         if (getCloudletSubmitted() == -1 || getCloudletSubmitted() == CloudSim.clock()) {
             CloudSim.cancelAll(getId(), new PredicateType(CloudSimTags.VM_DATACENTER_EVENT));
             schedule(getId(), getSchedulingInterval(), CloudSimTags.VM_DATACENTER_EVENT);

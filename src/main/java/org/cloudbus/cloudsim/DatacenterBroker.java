@@ -290,7 +290,7 @@ public class DatacenterBroker extends SimEntity {
 
 	/**
 	 * Overrides this method when making a new and different type of Broker. This method is called
-	 * by {@link #body()} for incoming unknown tags.
+	 * by {@link #//body()} for incoming unknown tags.
 	 * 
 	 * @param ev a SimEvent object
 	 * @pre ev != null

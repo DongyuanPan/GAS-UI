@@ -52,7 +52,7 @@ public class PowerVmAllocationPolicyMigrationStaticThreshold extends PowerVmAllo
     /**
      * Checks if is host over utilized.
      *
-     * @param _host the _host
+     * @param //_host the _host
      * @return true, if is host over utilized
      */
     @Override

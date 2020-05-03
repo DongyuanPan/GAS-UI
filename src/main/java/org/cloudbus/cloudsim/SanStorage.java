@@ -111,7 +111,7 @@ public class SanStorage extends HarddriveStorage {
 	/**
 	 * Adds a set of files to the storage. Runs through the list of files and save all of them. The
 	 * time taken (in seconds) for adding each file can also be found using
-	 * {@link gridsim.datagrid.File#getTransactionTime()}.
+	 * {@link //gridsim.datagrid.File#getTransactionTime()}.
 	 * 
 	 * @param list the files to be added
 	 * @return the time taken (in seconds) for adding the specified files
@@ -135,7 +135,7 @@ public class SanStorage extends HarddriveStorage {
 
 	/**
 	 * Removes a file from the storage. The time taken (in seconds) for deleting the file can also
-	 * be found using {@link gridsim.datagrid.File#getTransactionTime()}.
+	 * be found using {@link //gridsim.datagrid.File#getTransactionTime()}.
 	 * 
 	 * @param fileName the name of the file to be removed
 	 * @param file the file which is removed from the storage is returned through this parameter
@@ -148,7 +148,7 @@ public class SanStorage extends HarddriveStorage {
 
 	/**
 	 * Removes a file from the storage. The time taken (in seconds) for deleting the file can also
-	 * be found using {@link gridsim.datagrid.File#getTransactionTime()}.
+	 * be found using {@link //gridsim.datagrid.File#getTransactionTime()}.
 	 * 
 	 * @param file the file which is removed from the storage is returned through this parameter
 	 * @return the time taken (in seconds) for deleting the specified file

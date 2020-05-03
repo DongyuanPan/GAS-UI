@@ -187,7 +187,7 @@ public class PeList {
     /**
      * Sets the status of PEs of this machine to FAILED. NOTE: <tt>resName</tt> and
      * <tt>machineID</tt> are used for debugging purposes, which is <b>ON</b> by default. Use
-     * {@link #setStatusFailed(boolean)} if you do not want this information.
+     * {@link //#setStatusFailed(boolean)} if you do not want this information.
      *
      * @param resName the name of the resource
      * @param hostId  the id of this machine

@@ -8,6 +8,7 @@
 
 package org.cloudbus.cloudsim;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -45,7 +46,7 @@ public abstract class VmAllocationPolicy {
 	 * @pre $none
 	 * @post $none
 	 */
-	public abstract boolean allocateHostForVm(Vm vm);
+	public abstract boolean allocateHostForVm(Vm vm) throws IOException;
 
 	/**
 	 * Allocates a specified host for a given VM.
@@ -55,17 +56,17 @@ public abstract class VmAllocationPolicy {
 	 * @pre $none
 	 * @post $none
 	 */
-	public abstract boolean allocateHostForVm(Vm vm, Host host);
+	public abstract boolean allocateHostForVm(Vm vm, Host host) throws IOException;
 
 	/**
 	 * Optimize allocation of the VMs according to current utilization.
 	 * 
 	 * @param vmList the vm list
-	 * @param utilizationBound the utilization bound
-	 * @param time the time
+	 * @param //utilizationBound the utilization bound
+	 * @param //time the time
 	 * @return the array list< hash map< string, object>>
 	 */
-	public abstract List<Map<String, Object>> optimizeAllocation(List<? extends Vm> vmList);
+	public abstract List<Map<String, Object>> optimizeAllocation(List<? extends Vm> vmList) throws IOException;
 
 	/**
 	 * Releases the host used by a VM.

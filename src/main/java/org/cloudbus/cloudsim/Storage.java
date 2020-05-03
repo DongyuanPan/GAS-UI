@@ -91,7 +91,7 @@ public interface Storage {
 	/**
 	 * Adds a file for which the space has already been reserved. The time taken (in seconds) for
 	 * adding the specified file can also be found using
-	 * {@link gridsim.datagrid.File#getTransactionTime()}.
+	 * {@link //gridsim.datagrid.File#getTransactionTime()}.
 	 * 
 	 * @param file the file to be added
 	 * @return the time (in seconds) required to add the file
@@ -108,7 +108,7 @@ public interface Storage {
 
 	/**
 	 * Gets the file with the specified name. The time taken (in seconds) for getting the specified
-	 * file can also be found using {@link gridsim.datagrid.File#getTransactionTime()}.
+	 * file can also be found using {@link //gridsim.datagrid.File#getTransactionTime()}.
 	 * 
 	 * @param fileName the name of the needed file
 	 * @return the file with the specified filename
@@ -124,7 +124,7 @@ public interface Storage {
 
 	/**
 	 * Adds a file to the storage. The time taken (in seconds) for adding the specified file can
-	 * also be found using {@link gridsim.datagrid.File#getTransactionTime()}.
+	 * also be found using {@link //gridsim.datagrid.File#getTransactionTime()}.
 	 * 
 	 * @param file the file to be added
 	 * @return the time taken (in seconds) for adding the specified file
@@ -133,7 +133,7 @@ public interface Storage {
 
 	/**
 	 * Adds a set of files to the storage. The time taken (in seconds) for adding each file can also
-	 * be found using {@link gridsim.datagrid.File#getTransactionTime()}.
+	 * be found using {@link //gridsim.datagrid.File#getTransactionTime()}.
 	 * 
 	 * @param list the files to be added
 	 * @return the time taken (in seconds) for adding the specified files
@@ -142,7 +142,7 @@ public interface Storage {
 
 	/**
 	 * Removes a file from the storage. The time taken (in seconds) for deleting the specified file
-	 * can be found using {@link gridsim.datagrid.File#getTransactionTime()}.
+	 * can be found using {@link //gridsim.datagrid.File#getTransactionTime()}.
 	 * 
 	 * @param fileName the name of the file to be removed
 	 * @return the deleted file.
@@ -151,7 +151,7 @@ public interface Storage {
 
 	/**
 	 * Removes a file from the storage. The time taken (in seconds) for deleting the specified file
-	 * can also be found using {@link gridsim.datagrid.File#getTransactionTime()}.
+	 * can also be found using {@link //gridsim.datagrid.File#getTransactionTime()}.
 	 * 
 	 * @param fileName the name of the file to be removed
 	 * @param file the file which is removed from the storage is returned through this parameter
@@ -161,7 +161,7 @@ public interface Storage {
 
 	/**
 	 * Removes a file from the storage. The time taken (in seconds) for deleting the specified file
-	 * can also be found using {@link gridsim.datagrid.File#getTransactionTime()}.
+	 * can also be found using {@link //gridsim.datagrid.File#getTransactionTime()}.
 	 * 
 	 * @param file the file which is removed from the storage is returned through this parameter
 	 * @return the time taken (in seconds) for deleting the specified file
@@ -186,7 +186,7 @@ public interface Storage {
 
 	/**
 	 * Renames a file on the storage. The time taken (in seconds) for renaming the specified file
-	 * can also be found using {@link gridsim.datagrid.File#getTransactionTime()}.
+	 * can also be found using {@link //gridsim.datagrid.File#getTransactionTime()}.
 	 * 
 	 * @param file the file we would like to rename
 	 * @param newName the new name of the file

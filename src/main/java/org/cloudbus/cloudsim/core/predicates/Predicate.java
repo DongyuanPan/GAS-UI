@@ -20,7 +20,7 @@ import org.cloudbus.cloudsim.core.SimEvent;
  * @see PredicateFrom
  * @see PredicateAny
  * @see PredicateNone
- * @see Simulation
+ * @see //Simulation
  * @since CloudSim Toolkit 1.0
  */
 public abstract class Predicate {
