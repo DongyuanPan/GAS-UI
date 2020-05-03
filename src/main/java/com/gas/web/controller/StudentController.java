@@ -1,44 +1,32 @@
 package com.gas.web.controller;
 
 import com.gas.web.entity.Student;
-import com.gas.web.reposiroty.StudentRepository;
+import com.gas.web.service.IStudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * @author rongrong
- * @version 1.0
- * @description:
- * @date 2019/12/30 20:40
- */
 @RestController
+@RequestMapping("/student")
 public class StudentController {
 
+    private final IStudentService studentService;
+
     @Autowired
-    StudentRepository studentRepository;
+    public StudentController(IStudentService studentService) {
+        this.studentService = studentService;
+    }
 
     /**
      * 查询所有学生列表
      *
      * @return
      */
-    @GetMapping("/students")
+    @GetMapping("")
     public Map<String, Object> studentFindAll() {
-        //构造返回的 JSON 注意有格式要求   参见  resources/static/api/table.json
-        Map<String, Object> res = new HashMap<>();
-        List<Student> studentData = studentRepository.findAll();
-        String resCode = "0";
-        if (studentData == null)
-            resCode = "1";
-        res.put("code", resCode);
-        res.put("msg", "");
-        res.put("count", studentData.size());
-        res.put("data", studentData);
-        return res;
+        return studentService.studentFindAll();
     }
 
     /**
@@ -47,25 +35,16 @@ public class StudentController {
      * @param enrollmentTime
      * @return
      */
-    @GetMapping("/studentFindByAge/{age}")
+    @GetMapping("/{age}")
     public List<Student> studentFindByAge(@PathVariable("age") String enrollmentTime) {
-        return studentRepository.findByEnrollmentTime(enrollmentTime);
+        return studentService.studentFindByAge(enrollmentTime);
     }
 
     /**
      * 新增一个学生
-     * @param studentNum
-     * @param name
-     * @param sex
-     * @param enrollmentTime
-     * @param phone
-     * @param email
-     * @param degree
-     * @param type
-     * @param employment
      * @return
      */
-    @PostMapping("/studentAdd")
+    @PostMapping("/add")
     public Student studentAdd(@RequestParam("studentNum") String studentNum, @RequestParam("name") String name,
                               @RequestParam("sex") String sex, @RequestParam("enrollmentTime") String enrollmentTime,
                               @RequestParam("phone") String phone, @RequestParam("email") String email,
@@ -81,33 +60,26 @@ public class StudentController {
         student.setDegree(degree);
         student.setType(type);
         student.setEmployment(employment);
-
         //保存和更新都用该方法
-        return studentRepository.save(student);
+        return studentService.studentAdd(student);
 
     }
 
 
     /**
      * 通过ID更新一个学生信息
-     *
-     * @param id
-     * @param name
-     * @param age
-     * @param sex
-     * @param email
      * @return
      */
-    @PutMapping("/studentUpdate/{id}")
+    @PutMapping("/update/{id}")
     public Student studentUpdate(@PathVariable("id") Integer id, @RequestParam("name") String name, @RequestParam("age") Integer age,
-                                @RequestParam("sex") String sex, @RequestParam("email") String email) {
+                                 @RequestParam("sex") String sex, @RequestParam("email") String email) {
         Student student = new Student();
         student.setId(id);
         student.setName(name);
         student.setSex(sex);
         student.setEmail(email);
         //保存和更新都用该方法
-        return studentRepository.save(student);
+        return studentService.studentUpdate(student);
     }
 
     /**
@@ -115,11 +87,15 @@ public class StudentController {
      *
      * @param id
      */
-    @DeleteMapping("/studentDelete/{id}")
+    @DeleteMapping("/delete/{id}")
     public void studentDelete(@PathVariable("id") Integer id) {
-        studentRepository.deleteById(id);
+        studentService.studentDelete(id);
     }
 
 
+    @PostMapping("/delete")
+    public void studentDeleteBatch(@RequestParam List<Integer> stuList) {
+        studentService.studentDeleteBatch(stuList);
+    }
 
 }

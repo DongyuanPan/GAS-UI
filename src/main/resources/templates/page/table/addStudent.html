@@ -102,7 +102,6 @@
             var index = layer.alert("确认添加吗", {
                 title: '信息'
             }, function () {
-
                 // 关闭弹出层
                 layer.close(index);
 
@@ -110,7 +109,7 @@
                 parent.layer.close(iframeIndex);
 
                 $.ajax({
-                    url:'/studentAdd',
+                    url:'/student/add',
                     method:'post',
                     data:data.field,
                     dataType:'JSON',
@@ -118,10 +117,12 @@
                         if(res.code = 200){
                             alert("添加成功");
                         } else {
+                            // alert(data.field);
                             alert("添加失败");
                         }
                     },
                     error:function () {
+                        // alert(data.field);
                         alert("添加失败");
                     }
                 });

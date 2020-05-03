@@ -75,7 +75,7 @@
 
         table.render({
             elem: '#currentTableId',
-            url: '/students',
+            url: '/student',
             toolbar: '#toolbarDemo',
             defaultToolbar: ['filter', 'exports', 'print', {
                 title: '提示',
@@ -177,14 +177,14 @@
                     layer.close(index);
 
                     //调用后端函数 删除数据库中的该行
-                    var delete_url = '/studentDelete/' + obj.data.id;
+                    var delete_url = '/student/delete/' + obj.data.id;
                     $.ajax({
                         url: delete_url,
                         method:'delete',
                         success:function(res){
                             //如果需要判断 可以判断一下，我这里没判断
                             if(res.code = 200){
-
+                                alert("删除成功");
                             } else {
                                 alert("删除失败");
                             }
