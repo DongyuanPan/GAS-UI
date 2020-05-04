@@ -17,12 +17,20 @@
 <body>
 <div class="layui-form layuimini-form">
     <div class="layui-form-item">
-        <label class="layui-form-label required">用户名</label>
+        <label class="layui-form-label required">学号</label>
         <div class="layui-input-block">
-            <input type="text" name="username" lay-verify="required" lay-reqtext="用户名不能为空" placeholder="请输入用户名" value="" class="layui-input">
-            <tip>填写自己管理账号的名称。</tip>
+            <input type="text" name="studentNum" lay-verify="required" lay-reqtext="学号不能为空" placeholder="请输入学号" value="" class="layui-input">
+            <tip>或者一卡通号</tip>
         </div>
     </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label required">姓名</label>
+        <div class="layui-input-block">
+            <input type="text" name="name" lay-verify="required" lay-reqtext="姓名不能为空" placeholder="请输入姓名" value="" class="layui-input">
+        </div>
+    </div>
+
     <div class="layui-form-item">
         <label class="layui-form-label required">性别</label>
         <div class="layui-input-block">
@@ -30,28 +38,48 @@
             <input type="radio" name="sex" value="女" title="女">
         </div>
     </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label required">入学时间</label>
+        <div class="layui-input-block">
+            <input type="number" name="enrollmentTime" lay-verify="required" lay-reqtext="入学时间不能为空" placeholder="请输入入学时间" value="" class="layui-input">
+            <tip> 格式为 2019.09 </tip>
+        </div>
+    </div>
+
     <div class="layui-form-item">
         <label class="layui-form-label required">手机</label>
         <div class="layui-input-block">
             <input type="number" name="phone" lay-verify="required" lay-reqtext="手机不能为空" placeholder="请输入手机" value="" class="layui-input">
         </div>
     </div>
+
     <div class="layui-form-item">
         <label class="layui-form-label">邮箱</label>
         <div class="layui-input-block">
             <input type="email" name="email" placeholder="请输入邮箱" value="" class="layui-input">
         </div>
     </div>
+
     <div class="layui-form-item">
-        <label class="layui-form-label">职业</label>
+        <label class="layui-form-label">学历</label>
         <div class="layui-input-block">
-            <input type="text" name="work" placeholder="请输入职业" value="" class="layui-input">
+            <input type="text" name="degree" placeholder="请输入学历" value="" class="layui-input">
         </div>
     </div>
-    <div class="layui-form-item layui-form-text">
-        <label class="layui-form-label">备注信息</label>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label required">状态</label>
         <div class="layui-input-block">
-            <textarea name="remark" class="layui-textarea" placeholder="请输入备注信息"></textarea>
+            <input type="radio" name="type" value="在籍" title="在籍" checked="">
+            <input type="radio" name="type" value="已毕业" title="已毕业">
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">去向</label>
+        <div class="layui-input-block">
+            <input type="text" name="employment" placeholder="请输入去向" value="" class="layui-input">
         </div>
     </div>
 
@@ -61,32 +89,83 @@
         </div>
     </div>
 </div>
-</div>
 <script src="../../../static/lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
 <script>
-    layui.use(['form'], function () {
+    layui.use(['form', 'table'], function () {
         var form = layui.form,
             layer = layui.layer,
             $ = layui.$;
+
+        var stuId = getUrlParamValue("id"); // 获取从 url 传递的 id 参数
+
+        $.ajax({
+            url:'/student/' + stuId,
+            method:'get',
+            success:function(res){
+                // alert(JSON.stringify(res));
+                document.getElementsByName('studentNum')[0].setAttribute("value", res.data.studentNum);
+                document.getElementsByName('name')[0].setAttribute("value", res.data.name);
+                var radioSex = document.getElementsByName("sex");
+                for (var i = 0; i < radioSex.length; i++) {
+                    if(res.data.sex == radioSex[i].value){
+                        $(radioSex[i]).next().click();
+                    }
+                }
+                document.getElementsByName('enrollmentTime')[0].setAttribute("value", res.data.enrollmentTime);
+                document.getElementsByName('phone')[0].setAttribute("value", res.data.phone);
+                document.getElementsByName('email')[0].setAttribute("value", res.data.email);
+                document.getElementsByName('degree')[0].setAttribute("value", res.data.degree);
+                var radioType = document.getElementsByName("type");
+                for (var i = 0; i < radioType.length; i++) {
+                    if(res.data.type == radioType[i].value){
+                        $(radioType[i]).next().click();
+                    }
+                }
+                document.getElementsByName('employment')[0].setAttribute("value", res.data.employment);
+            },
+            error:function () {
+                alert("错误");
+            }
+        });
 
         //监听提交
         form.on('submit(saveBtn)', function (data) {
             var index = layer.alert(JSON.stringify(data.field), {
                 title: '最终的提交信息'
             }, function () {
-
                 // 关闭弹出层
                 layer.close(index);
-
                 var iframeIndex = parent.layer.getFrameIndex(window.name);
                 parent.layer.close(iframeIndex);
 
+                $.ajax({
+                    url:'/student/update/' + stuId,
+                    method:'post',
+                    data:data.field,
+                    dataType:'JSON',
+                    success:function(res){
+                        alert(res.msg);
+                    },
+                    error:function () {
+                        alert("错误");
+                    }
+                });
             });
 
             return false;
         });
 
     });
+
+    function getUrlParamValue(variable) {
+        var query = window.location.search.substring(1);
+        var vars = query.split("&");
+        for (var i=0;i<vars.length;i++) {
+            var pair = vars[i].split("=");
+            if(pair[0] == variable){return pair[1];}
+        }
+        return(false);
+    }
 </script>
 </body>
 </html>
