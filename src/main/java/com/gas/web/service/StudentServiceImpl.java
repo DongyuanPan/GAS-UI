@@ -1,13 +1,11 @@
 package com.gas.web.service;
 
-import com.gas.web.entity.Student;
 import com.gas.web.dao.StudentDao;
+import com.gas.web.entity.Student;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class StudentServiceImpl implements IStudentService {
@@ -35,6 +33,12 @@ public class StudentServiceImpl implements IStudentService {
     }
 
     @Override
+    public Student studentFindById(Integer id) {
+        Optional<Student> optional = studentDao.findById(id);
+        return optional.orElse(null);
+    }
+
+    @Override
     public List<Student> studentFindByAge(String enrollmentTime) {
         return studentDao.findByEnrollmentTime(enrollmentTime);
     }
@@ -55,7 +59,11 @@ public class StudentServiceImpl implements IStudentService {
     }
 
     @Override
-    public void studentDeleteBatch(List<Integer> stuList) {
-        studentDao.deleteBatch(stuList);
+    public void studentDeleteBatch(List<Student> stuList) {
+        List<Integer> idList = new ArrayList<>();
+        for (Student student : stuList) {
+            idList.add(student.getId());
+        }
+        studentDao.deleteBatch(idList);
     }
 }

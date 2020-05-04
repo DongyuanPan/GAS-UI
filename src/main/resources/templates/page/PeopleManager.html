@@ -67,40 +67,14 @@
     </div>
 </div>
 <script src="../../static/lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
+<script src="../../static/js/table/table-load.js" charset="utf-8"></script>
 <script>
     layui.use(['form', 'table'], function () {
         var $ = layui.jquery,
             form = layui.form,
             table = layui.table;
 
-        table.render({
-            elem: '#currentTableId',
-            url: '/student',
-            toolbar: '#toolbarDemo',
-            defaultToolbar: ['filter', 'exports', 'print', {
-                title: '提示',
-                layEvent: 'LAYTABLE_TIPS',
-                icon: 'layui-icon-tips'
-            }],
-            cols: [[
-                {type: "checkbox", width: 50},
-                {field: 'id', width: 80, title: 'ID', sort: true, align: "center"},
-                {field: 'studentNum', width: 80, title: '学号', align: "center"},
-                {field: 'name', width: 80, title: '姓名', align: "center"},
-                {field: 'sex', width: 80, title: '性别', align: "center"},
-                {field: 'enrollmentTime', width: 110, title: '入学日期', sort: true, align: "center"},
-                {field: 'phone', minWidth: 80 , title: '手机', align: "center"},
-                {field: 'degree', width: 80 , title: '学位', align: "center"},
-                {field: 'type', width: 80 , title: '状态', align: "center"},
-                {field: 'employment', width: 80 , title: '去向', align: "center"},
-                {field: 'email', minWidth: 120 , title: '邮箱', align: "center"},
-                {title: '操作', minWidth: 100, toolbar: '#currentTableBar', align: "center"}
-            ]],
-            limits: [10, 15, 20, 25, 50, 100],
-            limit: 15,
-            page: true,
-            skin: 'line'
-        });
+        load(table); // 请求加载数据，渲染 table
 
         // 监听搜索操作
         form.on('submit(data-search-btn)', function (data) {
@@ -135,25 +109,60 @@
                     shadeClose: true,
                     area: ['100%', '100%'],
                     content: '../page/table/addStudent.html',
+                    // yes回调触发不了，可能和弹出的页面有关系
+                    // yes: function(index, layero) {
+                    //     load(table);
+                    // },
+                    // cancel: function(index, layero) {
+                    //     layer.close(index);
+                    //     return false;
+                    // },
+                    end: function () {
+                        load(table);
+                    }
                 });
 
                 $(window).on("resize", function () {
                     layer.full(index);
                 });
 
-            } else if (obj.event === 'delete') {  // 监听删除操作
+            } else if (obj.event === 'delete') {  // 监听批量删除操作
                 var checkStatus = table.checkStatus('currentTableId')
                     , data = checkStatus.data;
-                layer.alert(JSON.stringify(data));
 
+                // layer.alert(JSON.stringify(data)); // 直接 alert data 是不行的
+
+                layer.confirm('确定删除所有选中的行', function (index) {
+                    layer.close(index); // 关闭确认框
+                    //调用后端函数，操作数据库
+                    var delete_url = '/student/delete';
+                    $.ajax({
+                        url: delete_url,
+                        method:'delete',
+                        data: JSON.stringify(data),
+                        contentType: 'application/json;',
+                        dataType: "json",
+                        success:function(res){
+                            // 批量删除成功，则更新视图
+                            if (res.code == 200) {
+                                load(table);
+                            }
+                            alert(res.msg);
+                        },
+                        error:function () {
+                            alert("错误");
+                        }
+                    });
+                });
             }
         });
 
         //监听表格复选框选择
         table.on('checkbox(currentTableFilter)', function (obj) {
-            console.log(obj)
+            console.log(obj);
         });
 
+        // 每个 item 的事件监听
         table.on('tool(currentTableFilter)', function (obj) {
             var data = obj.data;
             if (obj.event === 'edit') {
@@ -165,7 +174,10 @@
                     maxmin:true,
                     shadeClose: true,
                     area: ['100%', '100%'],
-                    content: '../page/table/edit.html',
+                    content: '../page/table/edit.html?id=' + data.id,
+                    end: function () {
+                        load(table);
+                    }
                 });
                 $(window).on("resize", function () {
                     layer.full(index);
@@ -173,24 +185,21 @@
                 return false;
             } else if (obj.event === 'delete') {
                 layer.confirm('真的删除行么', function (index) {
-                    obj.del();
                     layer.close(index);
-
                     //调用后端函数 删除数据库中的该行
                     var delete_url = '/student/delete/' + obj.data.id;
                     $.ajax({
                         url: delete_url,
                         method:'delete',
                         success:function(res){
-                            //如果需要判断 可以判断一下，我这里没判断
-                            if(res.code = 200){
-                                alert("删除成功");
-                            } else {
-                                alert("删除失败");
+                            if (res.code == 200) {
+                                // 删除成功，更新视图
+                                load(table);
                             }
+                            alert(res.msg);
                         },
                         error:function () {
-                            alert("删除失败");
+                            alert("错误");
                         }
                     });
                 });

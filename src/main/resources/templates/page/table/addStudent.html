@@ -90,21 +90,23 @@
     </div>
 </div>
 <script src="../../../static/lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
+<script src="../../../static/js/table/table-load.js" charset="utf-8"></script>
 <script>
-    layui.use(['form'], function () {
+    layui.use(['form', 'table'], function () {
         var form = layui.form,
             layer = layui.layer,
-            $ = layui.$;
+            $ = layui.$,
+            table = layui.table;
 
         //监听提交
         form.on('submit(saveBtn)', function (data) {
 
+            // layer.alert(JSON.stringify(data.field));
             var index = layer.alert("确认添加吗", {
                 title: '信息'
             }, function () {
                 // 关闭弹出层
                 layer.close(index);
-
                 var iframeIndex = parent.layer.getFrameIndex(window.name);
                 parent.layer.close(iframeIndex);
 
@@ -114,20 +116,13 @@
                     data:data.field,
                     dataType:'JSON',
                     success:function(res){
-                        if(res.code = 200){
-                            alert("添加成功");
-                        } else {
-                            // alert(data.field);
-                            alert("添加失败");
-                        }
+                        alert(res.msg);
                     },
                     error:function () {
-                        // alert(data.field);
-                        alert("添加失败");
+                        alert("错误");
                     }
                 });
             });
-
             return false;
 
         });

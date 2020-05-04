@@ -8,6 +8,8 @@ import java.util.Map;
 public interface IStudentService {
     Map<String, Object> studentFindAll();
 
+    Student studentFindById(Integer id);
+
     List<Student> studentFindByAge(String enrollmentTime);
 
     Student studentAdd(Student student);
@@ -16,5 +18,5 @@ public interface IStudentService {
 
     void studentDelete(Integer id);
 
-    void studentDeleteBatch(List<Integer> stuList);
+    void studentDeleteBatch(List<Student> stuList);
 }

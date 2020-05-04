@@ -14,6 +14,6 @@ public interface StudentDao extends JpaRepository<Student,Integer> {
 
     @Modifying
     @Transactional
-    @Query(value = "delete from student s where s.id in (:stuList)", nativeQuery = true)
-    void deleteBatch(List<Integer> stuList);
+    @Query(value = "delete s from student s where s.id in (:idList)", nativeQuery = true)
+    void deleteBatch(List<Integer> idList);
 }
