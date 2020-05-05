@@ -116,10 +116,10 @@
                     data:data.field,
                     dataType:'JSON',
                     success:function(res){
-                        alert(res.msg);
+                        parent.layer.msg(res.msg);
                     },
                     error:function () {
-                        alert("错误");
+                        parent.layer.msg("错误");
                     }
                 });
             });
