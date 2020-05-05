@@ -118,6 +118,12 @@
                     //     return false;
                     // },
                     end: function () {
+                        // var openPage = window[index.find('iframe')[0]['name']];//获得弹出页面
+                        // var res = openPage.callbackData();
+                        // layer.msg(res.msg);
+                        // if (res.code == 200) {
+                        //     load(table);
+                        // }
                         load(table);
                     }
                 });
@@ -147,10 +153,10 @@
                             if (res.code == 200) {
                                 load(table);
                             }
-                            alert(res.msg);
+                            layer.msg(res.msg);
                         },
                         error:function () {
-                            alert("错误");
+                            layer.msg("错误");
                         }
                     });
                 });
@@ -196,10 +202,10 @@
                                 // 删除成功，更新视图
                                 load(table);
                             }
-                            alert(res.msg);
+                            layer.msg(res.msg);
                         },
                         error:function () {
-                            alert("错误");
+                            layer.msg("错误");
                         }
                     });
                 });
