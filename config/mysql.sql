@@ -30,7 +30,28 @@ INSERT INTO `student` (studentNum, name, sex, enrollmentTime, phone, email, degr
 INSERT INTO `student` (studentNum, name, sex, enrollmentTime, phone, email, degree, type, employment) VALUES ('114', '捞捞捞', '女', '2018.9', '15151269930','614613461@qq.com','硕士', '在籍', '未知');
 
 # XXX表
+# paper 表
+DROP TABLE IF EXISTS `paper`;#判断student表是否存在，若存在则执行删除表操作
 
+CREATE TABLE `paper` (
+`id` int(10) NOT NULL AUTO_INCREMENT,
+    `title` varchar(255) default NULL,
+    `author1` varchar(255) default NULL,
+    `author2` varchar(255) default NULL,
+    `authorOther` varchar(255) default NULL,
+    `origin` varchar(255) default NULL,
+    PRIMARY KEY  (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of paper 给表添加一些初始化数据用来测试
+-- ----------------------------
+
+INSERT INTO `paper` (title, author1, author2, authorOther, origin)  VALUES ('sample1', 'authorA', 'authorB', 'xxx', 'seu');
+INSERT INTO `paper` (title, author1, author2, authorOther, origin)  VALUES ('sample2', 'authorA', 'authorB', 'xxx', 'seu');
+INSERT INTO `paper` (title, author1, author2, authorOther, origin)  VALUES ('sample3', 'authorA', 'authorB', 'xxx', 'seu');
+INSERT INTO `paper` (title, author1, author2, authorOther, origin)  VALUES ('sample4', 'authorA', 'authorB', 'xxx', 'seu');
+INSERT INTO `paper` (title, author1, author2, authorOther, origin)  VALUES ('sample5', 'authorA', 'authorB', 'xxx', 'seu');
 
 
 
