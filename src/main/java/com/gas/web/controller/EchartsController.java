@@ -29,6 +29,7 @@ import java.util.*;
 @Controller
 public class EchartsController {
     int datacenter=0,vmnumber=0,tableload=0;
+    boolean nonefile=false;
     public Map<String,String> map;
     @ResponseBody
     @RequestMapping("/init")
@@ -217,6 +218,7 @@ public class EchartsController {
     @ResponseBody
     public JSONObject taskFileUpload(@RequestParam("file")MultipartFile file){
         JSONObject jsonObject = new JSONObject();
+        nonefile=file.isEmpty();
         if (file.isEmpty()) {
             jsonObject.put("code", -1);
             return jsonObject;
@@ -285,6 +287,10 @@ public class EchartsController {
         String algorithm = request.getParameter("algorithm");
         boolean whetherSave = Boolean.parseBoolean(request.getParameter("switch"));
         File daxFile;
+        if(nonefile) {
+            jsonObject.put("code", -1);
+            return jsonObject;
+        }
         while (true) {
             System.out.println("sleep");
             daxFile = new File(path + getLastFileName());
