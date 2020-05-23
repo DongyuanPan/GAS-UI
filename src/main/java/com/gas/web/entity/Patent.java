@@ -18,12 +18,11 @@ public class Patent {
     private Integer id;
 
     //下面是非主键字段
-    private String studentNum;
     private String name;
-    private String degree;
+    private String secondname;
     private String enrollmentTime;
-    private String patname;
     private String type;
+    private String patname;
     private String summary;
-    private String email;
+    private String path;
 }

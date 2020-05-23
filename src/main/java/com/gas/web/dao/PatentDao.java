@@ -17,5 +17,10 @@ public interface PatentDao extends JpaRepository<Patent,Integer> {
     @Transactional
     @Query(value = "delete s from patent s where s.id in (:idList)", nativeQuery = true)
     void deleteBatch(List<Integer> idList);
-    List<Patent> findAll(Specification<Patent> mySpec);
+    @Query(value = "select p.id from patent p where p.secondname like %?1%", nativeQuery = true)
+    List<Integer> findByNameLike(String name);
+    @Query(value = "select p.id from patent p where p.patname like %?1%", nativeQuery = true)
+    List<Integer> findByPatnameLike(String patname);
+    List<Patent> findAll( Specification<Patent> specification);
+
 }

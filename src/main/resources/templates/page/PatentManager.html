@@ -21,35 +21,17 @@
                         <div class="layui-inline">
                             <label class="layui-form-label">姓名</label>
                             <div class="layui-input-inline">
-                                <input type="text" name="name" autocomplete="off" class="layui-input">
-                            </div>
-                        </div>
-                        <div class="layui-inline">
-                            <label class="layui-form-label">学位</label>
-                            <div class="layui-input-inline">
-                                <input type="text" name="degree" autocomplete="off" class="layui-input">
-                            </div>
-                        </div>
-                        <div class="layui-inline">
-                            <label class="layui-form-label">年份</label>
-                            <div class="layui-input-inline">
-                                <input type="text" name="year" autocomplete="off" class="layui-input">
-                            </div>
-                        </div>
-                        <div class="layui-inline">
-                            <label class="layui-form-label">专利类型</label>
-                            <div class="layui-input-inline">
-                                <input type="text" name="type" autocomplete="off" class="layui-input">
+                                <input type="text" id="searchname" autocomplete="off" class="layui-input">
                             </div>
                         </div>
                         <div class="layui-inline">
                             <label class="layui-form-label">关键字</label>
                             <div class="layui-input-inline">
-                                <input type="text" name="keyword" autocomplete="off" class="layui-input">
+                                <input type="text" id="keyword" autocomplete="off" class="layui-input">
                             </div>
                         </div>
                         <div class="layui-inline">
-                            <button type="submit" class="layui-btn layui-btn-primary"  lay-submit lay-filter="data-search-btn"><i class="layui-icon"></i> 搜 索</button>
+                            <button type="submit" class="layui-btn layui-btn-primary" data-type="reload"  lay-submit lay-filter="data-search-btn"><i class="layui-icon"></i> 搜 索</button>
                         </div>
                     </div>
                 </form>
@@ -60,15 +42,16 @@
             <div class="layui-btn-container">
                 <button class="layui-btn layui-btn-normal layui-btn-sm data-add-btn" lay-event="add"> 添加 </button>
                 <button class="layui-btn layui-btn-sm layui-btn-danger data-delete-btn" lay-event="delete"> 删除 </button>
+                <button class="layui-btn layui-btn-normal layui-btn-sm data-show-btn" lay-event="showAll"> 显示全部 </button>
             </div>
         </script>
 
         <table class="layui-hide" id="currentTableId" lay-filter="currentTableFilter"></table>
-
         <script type="text/html" id="currentTableBar">
+            <a class="layui-btn layui-btn-primary layui-btn-xs data-count-view" lay-event="view">查看详情</a>
             <a class="layui-btn layui-btn-normal layui-btn-xs data-count-edit" lay-event="edit">编辑</a>
             <a class="layui-btn layui-btn-xs layui-btn-danger data-count-delete" lay-event="delete">删除</a>
-            <a class="layui-btn layui-btn-normal layui-btn-xs data-count-view" lay-event="view">查看专利</a>
+
         </script>
 
     </div>
@@ -76,30 +59,19 @@
 <script src="../../static/lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
 <script src="../../static/js/table/table-load.js" charset="utf-8"></script>
 <script>
+var name="";
+var keyword="";
     layui.use(['form', 'table'], function () {
         var $ = layui.jquery,
             form = layui.form,
             table = layui.table;
-            loadpatent(table);
-
+            loadpatent(table,"","");
 
         // 监听搜索操作
          form.on('submit(data-search-btn)', function (data) {
-            var result = JSON.stringify(data.field);
-            layer.alert(result, {
-                title: '最终的搜索信息'
-            });
-
-            //执行搜索重载
-            table.reload('currentTableId', {
-                page: {
-                    curr: 1
-                }
-                , where: {
-                    searchParams: result
-                }
-            }, 'data');
-
+            name=$('#searchname').val();
+            keyword=$('#keyword').val();
+            loadpatent(table,name,keyword);
             return false;
         });
 
@@ -117,7 +89,7 @@
                     area: ['100%', '100%'],
                     content: '../page/table/addpatent.html',
                      end: function () {
-                     loadpatent(table);
+                     loadpatent(table,"","");
                      }
                 });
                 $(window).on("resize", function () {
@@ -139,7 +111,7 @@
                         success:function(res){
                             // 批量删除成功，则更新视图
                             if (res.code == 200) {
-                                loadpatent(table);
+                                loadpatent(table,"","");
                             }
                             layer.msg(res.msg);
                         },
@@ -148,6 +120,10 @@
                         }
                     });
                 });
+            } else if(obj.event==='showAll'){   //显示所有记录
+                   loadpatent(table,"","");
+                   name="";
+                   keyword="";
             }
         });
 
@@ -170,7 +146,7 @@
                     area: ['100%', '100%'],
                     content: '../page/table/editpat.html?id=' + data.id,
                     end: function () {
-                        loadpatent(table);
+                        loadpatent(table,name,keyword);
                     }
                 });
                 $(window).on("resize", function () {
@@ -188,7 +164,7 @@
                         success:function(res){
                             if (res.code == 200) {
                                 // 删除成功，更新视图
-                                loadpatent(table);
+                                loadpatent(table,name,keyword);
                             }
                             layer.msg(res.msg);
                         },
@@ -207,7 +183,7 @@
                     area: ['100%', '100%'],
                     content: '../page/table/Viewpat.html?id=' + data.id,
                     end: function () {
-                        loadpatent(table);
+                        loadpatent(table,name,keyword);
                     }
                 });
             }

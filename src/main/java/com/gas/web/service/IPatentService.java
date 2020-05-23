@@ -19,4 +19,10 @@ public interface IPatentService {
     void patentDelete(Integer id);
 
     void patentDeleteBatch(List<Patent> patList);
+
+    Map<String, Object> findByNameLike(String name);
+
+    Map<String, Object> findByDynamicCases(String secondname,String keyword);
+
+    Map<String, Object> findByPatnameLike(String patname);
 }
