@@ -12,10 +12,7 @@ import javax.persistence.*;
 public class Student {
 
     //主键按照下面的设置
-   @Id//表明这个成员变量是 主键
-   /* @GeneratedValue
-    @GenericGenerator(name = "system-uuid", strategy = "identity")
-    @Column(name = "ID", nullable = false)*/
+    @Id//表明这个成员变量是 主键
     @GeneratedValue(generator="generator")
     @GenericGenerator(name="generator",strategy="increment")
     @Column(name = "ID", nullable = false)
