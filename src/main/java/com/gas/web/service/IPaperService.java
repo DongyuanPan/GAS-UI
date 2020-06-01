@@ -11,7 +11,7 @@ public interface IPaperService {
 
     Paper paperFindById(Integer id);
 
-    List<Paper> paperFindByAge(String author1);
+    List<Paper> paperFindByAuthor(String author);
 
     Paper paperAdd(Paper paper);
 

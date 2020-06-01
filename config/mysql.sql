@@ -54,5 +54,16 @@ INSERT INTO `paper` (title, author1, author2, authorOther, origin)  VALUES ('sam
 INSERT INTO `paper` (title, author1, author2, authorOther, origin)  VALUES ('sample5', 'authorA', 'authorB', 'xxx', 'seu');
 
 
+# XXX表
+# workflow表
+DROP TABLE IF EXISTS `workflow`;#判断student表是否存在，若存在则执行删除表操作
 
+CREATE TABLE `workflow` (
+`id` int(10) NOT NULL AUTO_INCREMENT,
+    `title` varchar(255) default NULL,
+    `localAddress` varchar(255) default NULL,
+    `fileName` varchar(255) default NULL,
+    `information` varchar(255) default NULL,
+    PRIMARY KEY  (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

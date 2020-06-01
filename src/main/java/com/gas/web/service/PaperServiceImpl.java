@@ -41,8 +41,8 @@ public class PaperServiceImpl implements IPaperService {
     }
 
     @Override
-    public List<Paper> paperFindByAge(String author1) {
-        return paperDao.findByAuthor1(author1);
+    public List<Paper> paperFindByAuthor(String author) {
+        return paperDao.findByAuthor1(author);
     }
 
     @Override
