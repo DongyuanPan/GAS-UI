@@ -12,9 +12,9 @@ public interface IStudentService {
 
     List<Student> studentFindByAge(String enrollmentTime);
 
-    Student studentAdd(Student student);
-
     Student studentUpdate(Student student);
+
+    Student studentAdd(Student student);
 
     void studentDelete(Integer id);
 

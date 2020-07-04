@@ -54,6 +54,41 @@ INSERT INTO `patent` (name, secondname, enrollmentTime, type, patname, summary) 
 INSERT INTO `patent` (name, secondname, enrollmentTime, type, patname, summary) VALUES ('李小平', 'victor', '2018-10-01', '实用新型', 'clustering', '减少makespan');
 INSERT INTO `patent` (name, secondname, enrollmentTime, type, patname, summary) VALUES ('李小平', 'victor', '2009-09-01', '发明', '多目标优化', '减少数据传输代价及完成时间');
 
+# XXX表
+# paper 表
+DROP TABLE IF EXISTS `paper`;#判断student表是否存在，若存在则执行删除表操作
+
+CREATE TABLE `paper` (
+`id` int(10) NOT NULL AUTO_INCREMENT,
+    `title` varchar(255) default NULL,
+    `author1` varchar(255) default NULL,
+    `author2` varchar(255) default NULL,
+    `authorOther` varchar(255) default NULL,
+    `origin` varchar(255) default NULL,
+    PRIMARY KEY  (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of paper 给表添加一些初始化数据用来测试
+-- ----------------------------
+
+INSERT INTO `paper` (title, author1, author2, authorOther, origin)  VALUES ('sample1', 'authorA', 'authorB', 'xxx', 'seu');
+INSERT INTO `paper` (title, author1, author2, authorOther, origin)  VALUES ('sample2', 'authorA', 'authorB', 'xxx', 'seu');
+INSERT INTO `paper` (title, author1, author2, authorOther, origin)  VALUES ('sample3', 'authorA', 'authorB', 'xxx', 'seu');
+INSERT INTO `paper` (title, author1, author2, authorOther, origin)  VALUES ('sample4', 'authorA', 'authorB', 'xxx', 'seu');
+INSERT INTO `paper` (title, author1, author2, authorOther, origin)  VALUES ('sample5', 'authorA', 'authorB', 'xxx', 'seu');
 
 
+# XXX表
+# workflow表
+DROP TABLE IF EXISTS `workflow`;#判断student表是否存在，若存在则执行删除表操作
+
+CREATE TABLE `workflow` (
+`id` int(10) NOT NULL AUTO_INCREMENT,
+    `title` varchar(255) default NULL,
+    `localAddress` varchar(255) default NULL,
+    `fileName` varchar(255) default NULL,
+    `information` varchar(255) default NULL,
+    PRIMARY KEY  (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
