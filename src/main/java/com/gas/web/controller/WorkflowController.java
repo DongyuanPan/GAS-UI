@@ -36,7 +36,7 @@ public class WorkflowController {
     }
 
     /**
-     * 通过 id 查询论文
+     * 通过 id 查询工作流
      * @return
      */
     @GetMapping("/{id}")
@@ -61,7 +61,7 @@ public class WorkflowController {
     @PostMapping("/update/{id}")
     public Response paperUpdate(@PathVariable("id") Integer id,
                                 @RequestParam("title") String title, @RequestParam("information") String information
-                               ) {
+    ) {
         Workflow workflow = workflowService.workflowFindById(id);
         workflow.setInformation(information);
         workflow.setTitle(title);
@@ -85,7 +85,7 @@ public class WorkflowController {
     public Response paperDelete(@PathVariable("id") Integer id) {
         try {
             Workflow workflow=workflowService.workflowFindById(id);
-            File file=new File("config/dax/"+workflow.getFileName());
+            File file=new File("config/workflow/"+workflow.getFileName());
             file.delete();
             workflowService.workflowDelete(id);
         } catch (Exception e) {
@@ -112,7 +112,7 @@ public class WorkflowController {
     private boolean isUpload = false;
     private String lastFileName = null;
     //工作流所保存的文件夹
-    private String dirName = "config/dax";
+    private String dirName = "config/workflow";
 
     public boolean isFinishUpload() {
         return finishUpload;
@@ -185,7 +185,7 @@ public class WorkflowController {
         while (true) {
             System.out.println("no file");
 
-            File daxFile = new File("config/dax/" + getLastFileName());
+            File daxFile = new File("config/workflow/" + getLastFileName());
             if (daxFile.exists()&&daxFile.isFile())
             {
                 break;
