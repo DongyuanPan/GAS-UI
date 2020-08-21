@@ -14,12 +14,9 @@
  * the License.
  */
 package com.gas.web.controller;
-//import net.sf.json.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.JSONArray;
 import org.cloudbus.cloudsim.CloudletSchedulerSpaceShared;
 import org.cloudbus.cloudsim.Log;
-import org.cloudbus.cloudsim.Vm;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.workflowsim.*;
 import org.workflowsim.examples.scheduling.DataAwareSchedulingAlgorithmExample;
@@ -88,6 +85,22 @@ public class SchedulingAlgorithm extends DataAwareSchedulingAlgorithmExample {
             i++;
         }
         return list;
+    }
+    public List<CondorVM> getDatacenterVM(Map<String,String> map,String key,WorkflowEngine wfEngine ){
+        String vmlist = map.get(key);
+        JSONArray jsonArray = JSONArray.parseArray(vmlist);
+        List<CondorVM> vmlist0 = new ArrayList<CondorVM>();
+        for (int i = 0; i < jsonArray.size(); i++) {
+            int num = Integer.parseInt((String) jsonArray.getJSONObject(i).get("num"));
+            long size = Long.parseLong((String) jsonArray.getJSONObject(i).get("size"));
+            int memo = Integer.parseInt((String) jsonArray.getJSONObject(i).get("memo"));
+            int mips = Integer.parseInt((String) jsonArray.getJSONObject(i).get("mips"));
+            long bandwidth = Long.parseLong((String) jsonArray.getJSONObject(i).get("bw"));
+            int cpu = Integer.parseInt((String) jsonArray.getJSONObject(i).get("cpu"));
+            List<CondorVM> vmlistemp = SchedulecreateVM(wfEngine.getSchedulerId(0), num, size, memo, mips, bandwidth, cpu);
+            vmlist0.addAll(vmlist0.size(), vmlistemp);
+        }
+        return vmlist0;
     }
    public void process(String path, int vmnumber, int algorithm, Map<String,String> map, int centernum) {
    //public void process(String path, int vmnumber, int algorithm) {
@@ -177,10 +190,8 @@ public class SchedulingAlgorithm extends DataAwareSchedulingAlgorithmExample {
 
             // Initialize the CloudSim library
             CloudSim.init(num_user, calendar, trace_flag);
-            int number=0;
+            int number=0;//the ordering of datacenter
             for(String key:map.keySet()) {
-                String vmlist = map.get(key);
-                JSONArray jsonArray = JSONArray.parseArray(vmlist);
                 /**
                  * Create a datacenter.
                  */
@@ -193,21 +204,12 @@ public class SchedulingAlgorithm extends DataAwareSchedulingAlgorithmExample {
                  * Create a WorkflowEngine.
                  */
                 WorkflowEngine wfEngine = wfPlanner.getWorkflowEngine();
-                List<CondorVM> vmlist0 = new ArrayList<CondorVM>();
-                for (int i = 0; i < jsonArray.size(); i++) {
-                    int num = Integer.parseInt((String) jsonArray.getJSONObject(i).get("num"));
-                    long size = Long.parseLong((String) jsonArray.getJSONObject(i).get("size"));
-                    int memo = Integer.parseInt((String) jsonArray.getJSONObject(i).get("memo"));
-                    int mips = Integer.parseInt((String) jsonArray.getJSONObject(i).get("mips"));
-                    long bandwidth = Long.parseLong((String) jsonArray.getJSONObject(i).get("bw"));
-                    int cpu = Integer.parseInt((String) jsonArray.getJSONObject(i).get("cpu"));
-                    /**
-                     * Create a list of VMs.The userId of a vm is basically the id of
-                     * the scheduler that controls this vm.
-                     */
-                    List<CondorVM> vmlistemp = SchedulecreateVM(wfEngine.getSchedulerId(0), num, size, memo, mips, bandwidth, cpu);
-                    vmlist0.addAll(vmlist0.size(), vmlistemp);
-                }
+
+                /**
+                 * Create a list of VMs.The userId of a vm is basically the id of
+                 * the scheduler that controls this vm.
+                 */
+                 List<CondorVM> vmlist0=getDatacenterVM(map,key,wfEngine);
                 /**
                  * Submits this list of vms to this WorkflowEngine.
                  */
@@ -224,9 +226,9 @@ public class SchedulingAlgorithm extends DataAwareSchedulingAlgorithmExample {
                 printJobList(outputList0);
                 number++;
             }
-        } catch (Exception e) {
-            Log.printLine("The simulation has been terminated due to an unexpected error");
-        }
-        totalvm=0;
-    }
+         } catch (Exception e) {
+               Log.printLine("The simulation has been terminated due to an unexpected error");
+           }
+            totalvm=0;
+     }
 }
