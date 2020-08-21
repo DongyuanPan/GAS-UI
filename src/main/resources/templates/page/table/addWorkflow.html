@@ -17,88 +17,87 @@
 <body>
 <div class="layui-form layuimini-form">
     <div class="layui-form-item">
-        <label class="layui-form-label required">论文</label>
+        <label class="layui-form-label required">工作流名称</label>
         <div class="layui-input-block">
-            <input type="text" name="title" lay-verify="required" lay-reqtext="论文不能未空" placeholder="请输入论文名称" value="" class="layui-input">
+            <input type="text" name="title" lay-verify="required" lay-reqtext="工作流名称不能为空" placeholder="请输入工作流名称" value="" class="layui-input">
         </div>
     </div>
 
     <div class="layui-form-item">
-        <label class="layui-form-label required">第一作者</label>
-        <div class="layui-input-block">
-            <input type="text" name="author1" lay-verify="required" lay-reqtext="姓名不能为空" placeholder="请输入姓名" value="" class="layui-input">
-        </div>
-    </div>
-
-
-    <div class="layui-form-item">
-        <label class="layui-form-label">第二作者</label>
-        <div class="layui-input-block">
-            <input type="text" name="author2" placeholder="请输入姓名" value="" class="layui-input">
+        <label class="layui-form-label">选择结果</label>
+        <div class="layui-upload">
+            <button type="button" class="layui-btn layui-btn-normal" id="chooseWorkflowFile">选择结果</button>
         </div>
     </div>
 
     <div class="layui-form-item">
-        <label class="layui-form-label">其他作者</label>
+        <label class="layui-form-label">描述信息</label>
         <div class="layui-input-block">
-            <input type="text" name="authorOther" placeholder="请输入姓名" value="" class="layui-input">
-        </div>
-    </div>
-
-
-    <div class="layui-form-item">
-        <label class="layui-form-label">论文来源</label>
-        <div class="layui-input-block">
-            <input type="text" name="origin" placeholder="请输入论文来源" value="" class="layui-input">
+            <input type="text" name="information" placeholder="请输入描述信息" value="" class="layui-input">
         </div>
     </div>
 
     <div class="layui-form-item">
         <div class="layui-input-block">
-            <button class="layui-btn layui-btn-normal" lay-submit lay-filter="saveBtn">确认保存</button>
+            <button class="layui-btn layui-btn-normal" lay-submit lay-filter="saveBtn" id="saveBtn">确认保存</button>
         </div>
     </div>
 </div>
 <script src="../../../static/lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
 <script>
-    layui.use(['form'], function () {
+
+
+    layui.use(['form', 'table', 'upload', 'layedit', 'laydate'], function(){
         var form = layui.form,
             layer = layui.layer,
             $ = layui.$;
+        var upload = layui.upload;
+        var $ = layui.jquery;
 
+        upload.render({
+            elem: '#chooseWorkflowFile'
+            ,url: '/workflow/uploadFile'
+            ,auto: false
+            //,multiple: true
+            ,accept: 'file' //允许上传的文件类型
+            ,bindAction: '#saveBtn'
+            ,done: function(result){
+                if (result.code == 200) {
+                    alert("上传文件成功");
+                } else {
+                    alert("上传文件失败");
+                }
+            }
+            ,error: function(){
+                //请求异常回调
+                alert("上传文件失败");
+            }
+        });
         //监听提交
         form.on('submit(saveBtn)', function (data) {
-
-            var index = layer.alert("确认添加吗", {
-                title: '信息'
+            var index = layer.alert(JSON.stringify(data.field), {
+                title: '最终的提交信息'
             }, function () {
-
                 // 关闭弹出层
                 layer.close(index);
-
                 var iframeIndex = parent.layer.getFrameIndex(window.name);
                 parent.layer.close(iframeIndex);
 
                 $.ajax({
-                    url:'/paper/add',
+                    url:'/workflow/add',
                     method:'post',
                     data:data.field,
                     dataType:'JSON',
                     success:function(res){
-                        if(res.code = 200){
-                            alert("添加成功");
-                        } else {
-                            alert("添加失败");
-                        }
+                        parent.layer.msg(res.msg);
                     },
                     error:function () {
-                        alert("添加失败");
+                        parent.layer.msg("错误");
                     }
                 });
             });
 
             return false;
-
         });
 
     });

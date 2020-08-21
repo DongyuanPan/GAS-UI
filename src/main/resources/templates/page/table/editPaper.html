@@ -61,47 +61,68 @@
 </div>
 <script src="../../../static/lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
 <script>
-    layui.use(['form'], function () {
+    layui.use(['form', 'table'], function () {
         var form = layui.form,
             layer = layui.layer,
             $ = layui.$;
 
+        var papId = getUrlParamValue("id"); // 获取从 url 传递的 id 参数
+
+        $.ajax({
+            url:'/paper/' + papId,
+            method:'get',
+            success:function(res){
+                // alert(JSON.stringify(res));
+                document.getElementsByName('title')[0].setAttribute("value", res.data.title);
+                document.getElementsByName('author1')[0].setAttribute("value", res.data.author1);
+                document.getElementsByName('author2')[0].setAttribute("value", res.data.author2);
+                document.getElementsByName('authorOther')[0].setAttribute("value", res.data.authorOther);
+                document.getElementsByName('origin')[0].setAttribute("value", res.data.origin);
+                document.getElementsByName('degree')[0].setAttribute("value", res.data.degree);
+            },
+            error:function () {
+                alert("错误");
+            }
+        });
+
         //监听提交
         form.on('submit(saveBtn)', function (data) {
-
-            var index = layer.alert("确认添加吗", {
-                title: '信息'
+            var index = layer.alert(JSON.stringify(data.field), {
+                title: '最终的提交信息'
             }, function () {
-
                 // 关闭弹出层
                 layer.close(index);
-
                 var iframeIndex = parent.layer.getFrameIndex(window.name);
                 parent.layer.close(iframeIndex);
 
                 $.ajax({
-                    url:'/paper/add',
+                    url:'/paper/update/' + papId,
                     method:'post',
                     data:data.field,
                     dataType:'JSON',
                     success:function(res){
-                        if(res.code = 200){
-                            alert("添加成功");
-                        } else {
-                            alert("添加失败");
-                        }
+                        parent.layer.msg(res.msg);
                     },
                     error:function () {
-                        alert("添加失败");
+                        parent.layer.msg("错误");
                     }
                 });
             });
 
             return false;
-
         });
 
     });
+
+    function getUrlParamValue(variable) {
+        var query = window.location.search.substring(1);
+        var vars = query.split("&");
+        for (var i=0;i<vars.length;i++) {
+            var pair = vars[i].split("=");
+            if(pair[0] == variable){return pair[1];}
+        }
+        return(false);
+    }
 </script>
 </body>
 </html>

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>layui</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="../../../static/lib/layui-v2.5.5/css/layui.css" media="all">
+    <link rel="stylesheet" href="../../../static/css/public.css" media="all">
+    <style>
+        body {
+            background-color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+<div class="layui-form layuimini-form">
+    <div class="layui-form-item">
+        <label class="layui-form-label required">专利名称</label>
+        <div class="layui-input-block">
+            <input type="text" name="patname" lay-verify="required" lay-reqtext="专利名称不能为空" placeholder="请输入专利名称" value="" class="layui-input">
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label required">第一作者</label>
+        <div class="layui-input-block">
+            <input type="text" name="name"  value="李小平" class="layui-input" disabled="disabled">
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">其他作者</label>
+        <div class="layui-input-block">
+            <input type="text" name="secondname" placeholder="" value="" class="layui-input">
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label required">时间</label>
+        <div class="layui-input-block">
+            <input  type="text" name="enrollmentTime" id="test1" lay-verify="required" lay-reqtext="通过时间不能为空" placeholder="yyyy-MM-dd" value=""class="layui-input" autocomplete="off" lay-verify="date">
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label required">类型</label>
+        <div class="layui-input-block">
+            <select name="type" id="type" lay-verify="required" lay-reqtext="类型不能为空" placeholder="请选择专利类型" value="" >
+                <option value="发明">发明</option>
+                <option value="实用新型">实用新型</option>
+                <option value="外观设计">外观设计</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label required">摘要</label>
+        <div class="layui-input-block ">
+            <textarea name="summary" id="summary" rows="3" cols="119" lay-verify="required" lay-reqtext="摘要不能为空" placeholder="请输入专利摘要" value=""></textarea>
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">上传专利</label>
+        <div class="layui-upload">
+            <button type="button" class="layui-btn layui-btn-normal" id="chooseFile">选择文件</button>
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn layui-btn-normal" lay-submit lay-filter="saveBtn" id="saveBtn">确认保存</button>
+        </div>
+    </div>
+</div>
+<script src="../../../static/lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
+<script>
+layui.use('laydate', function(){
+  var laydate = layui.laydate;
+
+  //执行一个laydate实例
+  laydate.render({
+    elem: '#test1' //指定元素
+  });
+});
+     layui.use(['form', 'table', 'upload', 'layedit', 'laydate'], function(){
+        var form = layui.form,
+            layer = layui.layer,
+            $ = layui.$;
+        var upload = layui.upload;
+        var $ = layui.jquery;
+
+        upload.render({
+            elem: '#chooseFile',
+            url: '/patent/uploadFile',
+            auto: false,//选择文件后不自动上传
+            accept: 'file', //允许上传的文件类型
+            bindAction: '#saveBtn',
+            //操作成功的回调
+            done: function (res) {
+
+            }
+            ,error: function(){
+             //请求异常回调
+                 parent.layer.msg("专利文件上传失败");
+            }
+         });
+         //监听提交
+        form.on('submit(saveBtn)', function (data) {
+           var index = layer.alert(JSON.stringify(data.field), {
+                title: '最终的提交信息'
+            }, function () {
+                // 关闭弹出层
+                layer.close(index);
+                var iframeIndex = parent.layer.getFrameIndex(window.name);
+                parent.layer.close(iframeIndex);
+
+                $.ajax({
+                    url:'/patent/add',
+                    method:'post',
+                    data:data.field,
+                    dataType:'JSON',
+                    success:function(res){
+                        parent.layer.msg(res.msg);
+                    },
+                    error:function () {
+                        parent.layer.msg("错误");
+                    }
+                });
+            });
+
+            return false;
+        });
+
+    });
+</script>
+</body>
+</html>

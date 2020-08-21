@@ -235,7 +235,6 @@ jsonT+='}';
       tablenum=parseInt(tablenum)+1;
       var newdelid=parseInt(tablenum)+100;
       var deltablenum=parseInt(tablenum)+1000;
-    //'<div class="layui-form-item">'
                var str= '<table class="layui-table" id="table'+tablenum+'" lay-filter="table" name="table'+tablenum+'">'+
                     '<thead>'+
                        '<tr>'+
@@ -270,6 +269,7 @@ jsonT+='}';
                                 //'</div>';
     //添加到表格最后
   $("#tablelist").append(str);
+    layer.msg("添加数据中心"+tablenum+"成功");
     form.render();
    });
 function test(id){
@@ -289,6 +289,7 @@ clickid=id;
         '</tr>';
     //添加到表格最后
      $(str).appendTo($('#table'+clickid+' tbody:last'));
+     layer.msg("添加成功");
     form.render();
    });
    $('body').on('click', '.del', function() {
@@ -300,6 +301,7 @@ clickid=id;
     } else {
         //删除当前按钮所在的tr
         $(this).closest('tr').remove();
+        layer.msg("删除成功");
     }
    });
 
@@ -314,6 +316,7 @@ clickid=id;
         remain=parseInt(remain)-1;
         $("#table"+delid).remove();
         $("#"+clickid).remove();
+        layer.msg("数据中心"+delid+"删除成功");
     }
    });
 
@@ -938,6 +941,8 @@ layui.use(['form', 'upload', 'layedit', 'laydate'], function(){
             if (res.code == 200) {
 
             } else{
+                if(res.code==-1)
+                   layer.msg("请选择任务文件");
             }
         }
         ,error: function(){
@@ -960,16 +965,19 @@ layui.use(['form', 'upload', 'layedit', 'laydate'], function(){
             data:data.field,
             dataType:'JSON',
             success:function(res){
-                if(res.code = 200){
+                if(res.code == 200){
                     _rawData = res.data;
                     myChart.setOption(option = makeOption());
                     initDrag();
                     showPic();
                 } else {
+                     if(res.code==-1)
+                        layer.msg("请选择任务文件");
                 }
             },
             error:function () {
-                alert("表单提交失败");
+                //alert("表单提交失败");
+                layer.msg("表单提交失败");
             }
         });
 
