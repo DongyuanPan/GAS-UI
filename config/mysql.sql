@@ -92,3 +92,45 @@ CREATE TABLE `workflow` (
     PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+
+# XXX表
+# project 表
+DROP TABLE IF EXISTS `project`;#判断student表是否存在，若存在则执行删除表操作
+
+CREATE TABLE `project` (
+    `id` int(10) NOT NULL AUTO_INCREMENT,
+    `title` varchar(255) default NULL,
+    `pic` varchar(255) default NULL,
+    `startDate` varchar(255) default NULL,
+    `endDate` varchar(255) default NULL,
+    `type` varchar(255) default NULL,
+    PRIMARY KEY  (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of project 给表添加一些初始化数据用来测试
+-- ----------------------------
+
+INSERT INTO `project` (title, pic, startDate, endDate, type)  VALUES ('sample1','li','2020-7','2022-7','国家自然基金项目');
+INSERT INTO `project` (title, pic, startDate, endDate, type)  VALUES ('sample2','li','2020-7','2022-7','国家自然基金项目');
+INSERT INTO `project` (title, pic, startDate, endDate, type)  VALUES ('sample3','li','2020-7','2022-7','国家自然基金项目');
+INSERT INTO `project` (title, pic, startDate, endDate, type)  VALUES ('sample4','li','2020-7','2022-7','国家自然基金项目');
+INSERT INTO `project` (title, pic, startDate, endDate, type)  VALUES ('sample5','li','2020-7','2022-7','国家自然基金项目');
+
+
+# algorithm 表
+DROP TABLE IF EXISTS `algorithm`;#判断algorithm表是否存在，若存在则执行删除表操作
+CREATE TABLE `algorithm` (
+    `id` int(10) NOT NULL AUTO_INCREMENT,
+    `name` varchar(255) default NULL,
+    `summary` varchar(300) default NULL,
+    `path` varchar(200) default NULL,
+    PRIMARY KEY  (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of algorithm 给表添加一些初始化数据用来测试,暂无算法文件，自行上传
+-- ----------------------------
+INSERT INTO `algorithm` (name, summary) VALUES ('X算法', 'XXX');
+INSERT INTO `algorithm` (name, summary) VALUES ('Y算法', 'YYY');
+INSERT INTO `algorithm` (name, summary) VALUES ('Z算法', 'ZZZ');
