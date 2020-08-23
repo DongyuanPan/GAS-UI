@@ -123,3 +123,69 @@ function loadWorkflow(table) {
     });
 }
 
+// 请求加载项目数据，渲染 table，根据是否要搜索及搜索条件，映射到不同url
+function loadProject(table, title) {
+    var strurl = '/project';
+    if(title !== ""){
+        strurl = '/project/title';
+    }
+    table.render({
+        elem: '#currentTableId',
+        url: strurl,
+        where:{
+            'title':title,
+        },
+        toolbar: '#toolbarDemo',
+        defaultToolbar: ['filter', 'exports', 'print', {
+            title: '提示',
+            layEvent: 'LAYTABLE_TIPS',
+            icon: 'layui-icon-tips'
+        }],
+        cols: [[
+            {type: "checkbox", width: 50},
+            {field: 'id', width: 80, title: 'ID', sort: true, align: "center"},
+            {field: 'title', width: 200, title: '项目名称', align: "center"},
+            {field: 'pic', width: 100, title: '负责人', align: "center"},
+            {field: 'startDate', width: 150, title: '开始日期', sort: true, align: "center"},
+            {field: 'endDate', width: 150, title: '结束日期', sort: true, align: "center"},
+            {field: 'type', width: 200, title: '类型', sort: true, align: "center"},
+            {title: '操作', minWidth: 200, toolbar: '#currentTableBar', align: "center"}
+        ]],
+        limits: [10, 15, 20, 25, 50, 100],
+        limit: 15,
+        page: true,
+        skin: 'line'
+    });
+}
+
+// 请求加载算法数据，渲染 table，根据是否要搜索及搜索条件，映射到不同url
+function loadAlgorithm(table, name) {
+    var strurl='/algorithm';
+    if(name !== "") {
+        strurl = '/algorithm/name';
+    }
+    table.render({
+        elem: '#currentTableId',
+        url: strurl,
+        where:{
+            'name':name,
+        },
+        toolbar: '#toolbarDemo',
+        defaultToolbar: ['filter', 'exports', 'print', {
+            title: '提示',
+            layEvent: 'LAYTABLE_TIPS',
+            icon: 'layui-icon-tips'
+        }],
+        cols: [[
+            {type: "checkbox", width: 50},
+            {field: 'id', width: 80, title: 'ID', sort: true, align: "center"},
+            {field: 'name', width: 200, title: '算法名称', sort: true, align: "center"},
+            {field: 'summary', width: 400, title: '摘要'},
+            {title: '操作', minWidth: 200, toolbar: '#currentTableBar', align: "center"}
+        ]],
+        limits: [10, 15, 20, 25, 50, 100],
+        limit: 15,
+        page: true,
+        skin: 'line'
+    });
+}
