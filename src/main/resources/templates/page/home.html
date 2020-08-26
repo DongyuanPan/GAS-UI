@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>layui</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="../../static/lib/layui-v2.5.5/css/layui.css" media="all">
+    <link rel="stylesheet" href="../../static/css/public.css" media="all">
+</head>
+<body>
+<div class="layuimini-container">
+    <div class="layuimini-main">
+
+        <fieldset class="table-search-fieldset">
+            <legend>搜索信息</legend>
+            <div style="margin: 10px 10px 10px 10px">
+                <form class="layui-form layui-form-pane" action="">
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <div class="layui-input-inline" style="display:inline-block;position: relative">
+                                <input type="text" id="searchname" autocomplete="off" class="layui-input" placeholder="按虚拟机名称搜索">
+                            </div>
+                        </div>
+
+                        <div class="layui-inline">
+                            <button type="submit" class="layui-btn layui-btn-primary" data-type="reload"  lay-submit lay-filter="data-search-btn"><i class="layui-icon"></i> 搜 索</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </fieldset>
+        <script type="text/html" id="toolbarDemo">
+            <div class="layui-btn-container">
+                <button class="layui-btn layui-btn-normal layui-btn-sm data-add-btn" lay-event="add"> 添加 </button>
+                <button class="layui-btn layui-btn-sm layui-btn-danger data-delete-btn" lay-event="delete"> 删除 </button>
+                <button class="layui-btn layui-btn-normal layui-btn-sm data-show-btn" lay-event="showAll"> 显示全部 </button>
+                <button class="layui-btn layui-btn-normal layui-btn-sm data-sample-btn" lay-event="sample"> 参数模板 </button>
+                <button class="layui-btn layui-btn-normal layui-btn-sm data-topology-btn" lay-event="topology"> 结构图 </button>
+            </div>
+        </script>
+
+        <table class="layui-hide" id="currentTableId" lay-filter="currentTableFilter"></table>
+        <script type="text/html" id="currentTableBar">
+
+            <a class="layui-btn layui-btn-normal layui-btn-xs data-count-edit" lay-event="edit">编辑</a>
+            <a class="layui-btn layui-btn-xs layui-btn-danger data-count-delete" lay-event="delete">删除</a>
+
+        </script>
+
+        <script type="text/html" id="details">
+
+            <a href="../page/table/ViewVM.html?id={{d.id}}" >{{d.vmname}}</a>
+
+
+        </script>
+
+    </div>
+</div>
+<script src="../../static/lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
+<script src="../../static/js/table/table-load.js" charset="utf-8"></script>
+<script>
+var name="";
+    layui.use(['form', 'table'], function () {
+        var $ = layui.jquery,
+            form = layui.form,
+            table = layui.table;
+            loadresource(table,"");
+
+        // 监听搜索操作
+         form.on('submit(data-search-btn)', function (data) {
+            name=$('#searchname').val();
+            loadresource(table,name);
+            return false;
+        });
+
+        /**
+         * toolbar监听事件
+         */
+        table.on('toolbar(currentTableFilter)', function (obj) {
+            if (obj.event === 'add') {  // 监听添加操作
+                var index = layer.open({
+                    title: '创建虚拟机',
+                    type: 2,
+                    shade: 0.2,
+                    maxmin:true,
+                    shadeClose: true,
+                    area: ['100%', '100%'],
+                    content: '../page/table/addresource.html?user=susan',
+                     end: function () {
+                     loadresource(table,"");
+                     }
+                });
+                $(window).on("resize", function () {
+                    layer.full(index);
+                });
+            }else if (obj.event === 'topology') {  // 监听添加操作
+                var index = layer.open({
+                    title: '资源结构图',
+                    type: 2,
+                    shade: 0.2,
+                    maxmin:true,
+                    shadeClose: true,
+                    area: ['100%', '100%'],
+                    content: '../page/topology.html?user=susan',
+                     end: function () {
+                     loadresource(table,"");
+                     }
+                });
+                $(window).on("resize", function () {
+                    layer.full(index);
+                });
+            }else if (obj.event === 'delete') {  // 监听删除操作
+                var checkStatus = table.checkStatus('currentTableId')
+                    , data = checkStatus.data;
+                layer.confirm('确定删除所有选中的行', function (index) {
+                    layer.close(index); // 关闭确认框
+                    //调用后端函数，操作数据库
+                    var delete_url = '/resource/delete';
+                    $.ajax({
+                        url: delete_url,
+                        method:'delete',
+                        data: JSON.stringify(data),
+                        contentType: 'application/json;',
+                        dataType: "json",
+                        success:function(res){
+                            // 批量删除成功，则更新视图
+                            if (res.code == 200) {
+                                loadresource(table,"");
+                            }
+                            layer.msg(res.msg);
+                        },
+                        error:function () {
+                            layer.msg("错误");
+                        }
+                    });
+                });
+            } else if(obj.event==='showAll'){   //显示所有记录
+                   loadresource(table,"");
+                   name="";
+            }else if(obj.event=='sample'){
+                var index = layer.open({
+                    title: '虚拟机参数模板',
+                    type: 2,
+                    shade: 0.2,
+                    maxmin:true,
+                    shadeClose: true,
+                    area: ['100%', '100%'],
+                    content: '../page/table/resSample.html?user=susan',
+                     end: function () {
+                     loadresource(table,"");
+                     }
+                });
+                $(window).on("resize", function () {
+                    layer.full(index);
+                });
+            }
+        });
+
+        //监听表格复选框选择
+        table.on('checkbox(currentTableFilter)', function (obj) {
+            console.log(obj)
+        });
+
+         // 每个 item 的事件监听
+        table.on('tool(currentTableFilter)', function (obj) {
+            var data = obj.data;
+            if (obj.event === 'edit') {
+                var index = layer.open({
+                    title: '编辑虚拟机',
+                    type: 2,
+                    shade: 0.2,
+                    maxmin:true,
+                    shadeClose: true,
+                    area: ['100%', '100%'],
+                    content: '../page/table/editresource.html?id=' + data.id,
+                    end: function () {
+                        loadresource(table,name);
+                    }
+                });
+                $(window).on("resize", function () {
+                    layer.full(index);
+                });
+                return false;
+            }else if (obj.event === 'delete') {
+                layer.confirm('真的删除此类型虚拟机吗？', function (index) {
+                    layer.close(index);
+                    //调用后端函数 删除数据库中的该行
+                    var delete_url = '/resource/delete/' + obj.data.id;
+                    $.ajax({
+                        url: delete_url,
+                        method:'delete',
+                        success:function(res){
+                            if (res.code == 200) {
+                                // 删除成功，更新视图
+                                loadresource(table,name);
+                            }
+                            layer.msg(res.msg);
+                        },
+                        error:function () {
+                            layer.msg("错误");
+                        }
+                    });
+                });
+            }
+        });
+
+    });
+</script>
+
+</body>
+</html>

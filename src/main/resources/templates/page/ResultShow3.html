@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>首页三</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="../../static/lib/layui-v2.5.5/css/layui.css" media="all">
+    <link rel="stylesheet" href="../../static/lib/font-awesome-4.7.0/css/font-awesome.min.css" media="all">
+    <link rel="stylesheet" href="../../static/css/public.css" media="all">
+    <!-- 引入 echarts.js -->
+    <script src="../static/dist/echarts.min.js"></script>
+    <!-- 引入 jquery.js -->
+    <script src="../static/js/jquery-3.4.1.js"></script>
+    <style>
+        .top-panel {
+            border: 1px solid #eceff9;
+            border-radius: 5px;
+            text-align: center;
+        }
+        .top-panel > .layui-card-body{
+            height: 60px;
+        }
+        .top-panel-number{
+            line-height:60px;
+            font-size: 30px;
+            border-right:1px solid #eceff9;
+        }
+        .top-panel-tips{
+            line-height:30px;
+            font-size: 12px
+        }
+    </style>
+</head>
+<body>
+<!--<div class="layuimini-container">-->
+<div class="layuimini-main">
+
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-xs12 layui-col-md3">
+
+            <div class="layui-card top-panel">
+                <div class="layui-card-header">要展示的指标名称</div>
+                <div class="layui-card-body">
+                    <div class="layui-row layui-col-space5">
+                        <div class="layui-col-xs9 layui-col-md9 top-panel-number">
+                            9,054,056
+                        </div>
+                        <div class="layui-col-xs3 layui-col-md3 top-panel-tips">
+                            比昨天 <a style="color: #1aa094">▲0.12</a><br>
+                            比七日 <a style="color: #bd3004">▼0.06</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="layui-col-xs12 layui-col-md3">
+
+            <div class="layui-card top-panel">
+                <div class="layui-card-header">要展示的指标名称</div>
+                <div class="layui-card-body">
+                    <div class="layui-row layui-col-space5">
+                        <div class="layui-col-xs9 layui-col-md9 top-panel-number">
+                            9,054,056
+                        </div>
+                        <div class="layui-col-xs3 layui-col-md3 top-panel-tips">
+                            比昨天 <a style="color: #1aa094">▲0.12</a><br>
+                            比七日 <a style="color: #bd3004">▼0.06</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="layui-col-xs12 layui-col-md3">
+
+            <div class="layui-card top-panel">
+                <div class="layui-card-header">要展示的指标名称</div>
+                <div class="layui-card-body">
+                    <div class="layui-row layui-col-space5">
+                        <div class="layui-col-xs9 layui-col-md9 top-panel-number">
+                            9,054,056
+                        </div>
+                        <div class="layui-col-xs3 layui-col-md3 top-panel-tips">
+                            比昨天 <a style="color: #1aa094">▲0.12</a><br>
+                            比七日 <a style="color: #bd3004">▼0.06</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="layui-col-xs12 layui-col-md3">
+
+            <div class="layui-card top-panel">
+                <div class="layui-card-header">要展示的指标名称</div>
+                <div class="layui-card-body">
+                    <div class="layui-row layui-col-space5">
+                        <div class="layui-col-xs9 layui-col-md9 top-panel-number">
+                            9,054,056
+                        </div>
+                        <div class="layui-col-xs3 layui-col-md3 top-panel-tips">
+                            比昨天 <a style="color: #1aa094">▲0.12</a><br>
+                            比七日 <a style="color: #bd3004">▼0.06</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="layui-row layui-col-space15">
+        <ul class="layui-nav" style="background-color: white">
+            <li class="layui-nav-item layui-left">
+                <a href="javascript:;" style="background-color: white; color: #486aaa">主题风格</a>
+                <dl class="layui-nav-child">
+                    <dd><a href="javascript: refresh1()">青春靓丽</a></dd>
+                    <dd><a href="javascript: refresh2()">热情活泼</a></dd>
+                    <dd><a href="javascript: refresh3()">暗灰风格</a></dd>
+                </dl>
+            </li>
+            <li class="layui-nav-item"><a href="javascript: downLoadJson()" style="color: #486aaa"> 下载结果</a></li>
+        </ul>
+        <div class="layui-col-xs12 layui-col-md9">
+            <div id="echarts-records" style="background-color:#ffffff;min-height:400px;padding: 10px"></div>
+        </div>
+        <div class="layui-col-xs12 layui-col-md3">
+            <div id="echarts-pies" style="background-color:#ffffff;min-height:400px;padding: 10px"></div>
+        </div>
+    </div>
+
+
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-xs12 layui-col-md6">
+            <div id="echarts-dataset" style="background-color:#ffffff;min-height:300px;padding: 10px"></div>
+        </div>
+        <div class="layui-col-xs12 layui-col-md6">
+            <div id="echarts-map" style="background-color:#ffffff;min-height:300px;padding: 10px"></div>
+        </div>
+    </div>
+
+
+</div>
+<!--</div>-->
+<script src="../../static/lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
+<script src="../../static/js/lay-config.js?v=1.0.4" charset="utf-8"></script>
+<script>
+    /*layui.use(['layer', 'echarts'], function () {
+        var $ = layui.jquery,
+            layer = layui.layer,
+            echarts = layui.echarts;*/
+        var HEIGHT_RATIO = 0.6;
+        /**
+         * 甘特图显示
+         */
+        var echartsRecords = echarts.init(document.getElementById('echarts-records'), 'walden');
+
+
+        var DIM_CATEGORY_INDEX = 0;
+        var DIM_TIME_ARRIVAL = 1;
+        var DIM_TIME_DEPARTURE = 2;
+        var DIM_SUCTASK_LIST = 4;
+        var DIM_PRETASK_LIST = 5;
+        var HIGHLIGHT = 6;
+        var DIM_NAME = 7;
+        var DIM_COLOR = 8;
+
+        var DATA_ZOOM_AUTO_MOVE_THROTTLE = 30;
+        var DATA_ZOOM_X_INSIDE_INDEX = 2;
+        var DATA_ZOOM_Y_INSIDE_INDEX = 3;
+        var DATA_ZOOM_AUTO_MOVE_SPEED = 0.2;
+
+        var _cartesianXBounds = [];
+        var _cartesianYBounds = [];
+        var _rawData;
+        var _autoDataZoomAnimator;
+        var color = [
+            "#b5b0b0",
+            "#7d7676",
+            "#a29696",
+            "#c7bcbc",
+            "#dabfbf",
+            "#d6cfcf",
+            "#000000",
+            "#795c5c",
+            "#757474",
+            "#955555"
+        ];
+        function refresh1() {
+            color =  [
+                "#516b91",
+                "#59c4e6",
+                "#edafda",
+                "#93b7e3",
+                "#a5e7f0",
+                "#cbb0e3",
+                "#a2f3c3",
+                "#0ef1ec",
+                "#b4fae9",
+                "#e179e1"
+            ];
+            echartsRecords.setOption(option = makeOption());
+            initDrag();
+        }
+        function refresh2() {
+            color = [
+                "#2ec7c9",
+                "#b6a2de",
+                "#5ab1ef",
+                "#ffb980",
+                "#d87a80",
+                "#8d98b3",
+                "#dc69aa",
+                "#07a2a4",
+                "#9a7fd1",
+                "#588dd5"
+            ];
+            echartsRecords.setOption(option = makeOption());
+            initDrag();
+        }
+        function refresh3() {
+            color = [
+                "#b5b0b0",
+                "#7d7676",
+                "#a29696",
+                "#c7bcbc",
+                "#dabfbf",
+                "#d6cfcf",
+                "#000000",
+                "#795c5c",
+                "#757474",
+                "#955555"
+            ];
+            echartsRecords.setOption(option = makeOption());
+            initDrag();
+        }
+
+
+        function downLoadJson() {
+            var eleTextarea = _rawData;
+
+            // 下载文件方法
+            var funDownload = function (content, filename) {
+                var eleLink = document.createElement('a');
+                eleLink.download = filename;
+                eleLink.style.display = 'none';
+                // 字符内容转变成blob地址
+                var blob = new Blob([content]);
+                eleLink.href = URL.createObjectURL(blob);
+                // 触发点击
+                document.body.appendChild(eleLink);
+                eleLink.click();
+                // 然后移除
+                document.body.removeChild(eleLink);
+            };
+
+            var jsonstr = JSON.stringify(eleTextarea);
+            var myDate = new Date();
+            var time = myDate.toISOString();
+            funDownload(jsonstr, time+".json");
+
+        }
+
+        function makeOption() {
+            return {
+                tooltip: {
+                },
+                animation: false,
+                title: {
+                    text: 'Gantt of Task',
+                    left: 'center'
+                },
+                dataZoom: [{
+                    type: 'slider',
+                    xAxisIndex: 0,
+                    filterMode: 'weakFilter',
+                    height: 20,
+                    bottom: 0,
+                    start: 0,
+                    end: 26,
+                    handleIcon: 'M10.7,11.9H9.3c-4.9,0.3-8.8,4.4-8.8,9.4c0,5,3.9,9.1,8.8,9.4h1.3c4.9-0.3,8.8-4.4,8.8-9.4C19.5,16.3,15.6,12.2,10.7,11.9z M13.3,24.4H6.7V23h6.6V24.4z M13.3,19.6H6.7v-1.4h6.6V19.6z',
+                    handleSize: '80%',
+                    showDetail: false
+                }, {
+                    type: 'inside',
+                    id: 'insideX',
+                    xAxisIndex: 0,
+                    filterMode: 'weakFilter',
+                    start: 0,
+                    end: 26,
+                    zoomOnMouseWheel: false,
+                    moveOnMouseMove: true
+                }, {
+                    type: 'slider',
+                    yAxisIndex: 0,
+                    zoomLock: true,
+                    width: 10,
+                    right: 10,
+                    top: 70,
+                    bottom: 20,
+                    startValue: 0,
+                    endValue: 50,
+                    handleSize: 0,
+                    showDetail: false,
+                }, {
+                    type: 'inside',
+                    id: 'insideY',
+                    yAxisIndex: 0,
+                    start: 95,
+                    end: 100,
+                    zoomOnMouseWheel: false,
+                    moveOnMouseMove: true,
+                    moveOnMouseWheel: true
+                }],
+                grid: {
+                    show: true,
+                    top: 70,
+                    bottom: 20,
+                    left: 100,
+                    right: 20,
+                    backgroundColor: '#fff',
+                    borderWidth: 0
+                },
+                xAxis: {
+                    type: 'value',
+                    position: 'bottom',
+                    splitLine: {
+                        lineStyle: {
+                            color: ['#E9EDFF']
+                        }
+                    },
+                    axisLine: {
+                        show: true
+                    },
+                    axisTick: {
+                        lineStyle: {
+                            color: '#929ABA'
+                        }
+                    },
+                    axisLabel: {
+                        color: '#929ABA',
+                        inside: false,
+                        align: 'center'
+                    }
+                },
+                yAxis: {
+                    axisTick: {show: false},
+                    splitLine: {show: false},
+                    axisLine: {show: false},
+                    axisLabel: {show: false},
+                    min: 0,
+                    max: _rawData.resources.data.length
+                },
+                series: [{
+                    id: 'taskData',
+                    type: 'custom',
+                    renderItem: renderGanttItem,
+                    dimensions: _rawData.tasks.dimensions,
+                    encode: {
+                        x: [DIM_TIME_ARRIVAL, DIM_TIME_DEPARTURE],
+                        y: DIM_CATEGORY_INDEX,
+                        tooltip: [DIM_NAME, DIM_CATEGORY_INDEX, DIM_TIME_ARRIVAL, DIM_TIME_DEPARTURE]
+                    },
+                    data: _rawData.tasks.data
+                }, {
+                    type: 'custom',
+                    renderItem: renderAxisLabelItem,
+                    dimensions: _rawData.resources.dimensions,
+                    encode: {
+                        x: -1, // Then this series will not controlled by x.
+                        y: 0
+                    },
+                    data: echarts.util.map(_rawData.resources.data, function (item, index) {
+                        return [index].concat(item);
+                    })
+                }]
+            };
+        }
+
+        function renderGanttItem(params, api) {
+            var categoryIndex = api.value(DIM_CATEGORY_INDEX);
+            var timeArrival = api.coord([api.value(DIM_TIME_ARRIVAL), categoryIndex]);
+            var timeDeparture = api.coord([api.value(DIM_TIME_DEPARTURE), categoryIndex]);
+
+            var coordSys = params.coordSys;
+            _cartesianXBounds[0] = coordSys.x;
+            _cartesianXBounds[1] = coordSys.x + coordSys.width;
+            _cartesianYBounds[0] = coordSys.y;
+            _cartesianYBounds[1] = coordSys.y + coordSys.height;
+
+            var barLength = timeDeparture[0] - timeArrival[0];
+            // Get the heigth corresponds to length 1 on y axis.
+            var itemHeight = Math.min(api.size([0, 1])[1], 50);
+            var barHeight = itemHeight * HEIGHT_RATIO;
+            var x = timeArrival[0];
+            var y = timeArrival[1] - barHeight;
+
+            var flightNumber = api.value(3) + '';
+            var flightNumberWidth = echarts.format.getTextRect(flightNumber).width;
+            var text = (barLength > flightNumberWidth + 40 && x + barLength >= 180)
+                ? flightNumber : '';
+
+            var rectNormal = clipRectByRect(params, {
+                x: x, y: y, width: barLength, height: barHeight
+            });
+            var rectVIP = clipRectByRect(params, {
+                x: x, y: y, width: (barLength) / 2, height: barHeight
+            });
+            var rectText = clipRectByRect(params, {
+                x: x, y: y, width: barLength, height: barHeight
+            });
+
+            return {
+                type: 'group',
+                children: [{
+                    type: 'rect',
+                    ignore: !rectNormal,
+                    shape: rectNormal,
+                    style: api.style({fill: color[api.value(DIM_COLOR)]})
+                },
+                    //     {
+                    //     type: 'rect',
+                    //     ignore: !rectVIP && !api.value(4),
+                    //     shape: rectVIP,
+                    //     style: api.style({fill: '#ddb30b'})
+                    // },
+                    {
+                        type: 'rect',
+                        ignore: !rectText,
+                        shape: rectText,
+                        style: api.style({
+                            fill: 'transparent',
+                            stroke: 'transparent',
+                            text: text,
+                            textFill: '#fff'
+                        })
+                    }]
+            };
+        }
+
+        function renderAxisLabelItem(params, api) {
+            var y = api.coord([0, api.value(0)])[1];
+            if (y < params.coordSys.y + 5) {
+                return;
+            }
+            return {
+                type: 'group',
+                position: [
+                    10,
+                    y
+                ],
+                children: [{
+                    type: 'path',
+                    shape: {
+                        d: 'M0,0 L0,-20 L30,-20 C42,-20 38,-1 50,-1 L70,-1 L70,0 Z',
+                        x: 0,
+                        y: -20,
+                        width: 90,
+                        height: 20,
+                        layout: 'cover'
+                    },
+                    style: {
+                        fill: '#8d98b3'
+                    }
+                }, {
+                    type: 'text',
+                    style: {
+                        x: 24,
+                        y: -3,
+                        text: api.value(0),
+                        textVerticalAlign: 'bottom',
+                        textAlign: 'center',
+                        textFill: '#fff'
+                    }
+                }, {
+                    type: 'text',
+                    style: {
+                        x: 75,
+                        y: -2,
+                        textVerticalAlign: 'bottom',
+                        textAlign: 'center',
+                        text: api.value(1),
+                        textFill: '#000'
+                    }
+                }]
+            };
+        }
+
+
+        function clipRectByRect(params, rect) {
+            return echarts.graphic.clipRectByRect(rect, {
+                x: params.coordSys.x,
+                y: params.coordSys.y,
+                width: params.coordSys.width,
+                height: params.coordSys.height
+            });
+        }
+
+        function light(ophighlight, seriesIndex, dataIndex) {
+            echartsRecords.dispatchAction({
+                type: ophighlight,
+                seriesIndex: seriesIndex,
+                dataIndex: dataIndex
+            });
+        }
+
+        function initDrag() {
+
+            _autoDataZoomAnimator = makeAnimator(dispatchDataZoom);
+            echartsRecords.off('click')
+            echartsRecords.on('click', function (param) {
+                var highlight = _rawData.flight.data[param.dataIndex][HIGHLIGHT];
+                var sucTask = _rawData.flight.data[param.dataIndex][DIM_SUCTASK_LIST];
+                var preTask = _rawData.flight.data[param.dataIndex][DIM_PRETASK_LIST];
+
+                var sucQue = [];
+                var preQue = [];
+                for (var i = 0; i < sucTask.length; i++) {
+                    sucQue.push(sucTask[i]);
+                }
+
+                for (var i = 0; i < preTask.length; i++) {
+                    preQue.push(preTask[i]);
+                }
+
+
+                var ophighlight = '';
+                if (highlight){
+                    ophighlight = 'downplay';
+                }else{
+                    ophighlight = 'highlight';
+                }
+
+
+                _rawData.flight.data[param.dataIndex][HIGHLIGHT] = !_rawData.flight.data[param.dataIndex][HIGHLIGHT];
+                light(ophighlight, 0, param.dataIndex);
+                while (sucQue.length !== 0 ){
+                    light(ophighlight, 0, sucQue[0]);
+                    var node = _rawData.flight.data[sucQue[0]];
+                    node[HIGHLIGHT] = !node[HIGHLIGHT];
+                    var node_suc = node[DIM_SUCTASK_LIST];
+                    for (var i = 0; i < node_suc.length; i++) {
+                        if (sucQue.indexOf(node_suc[i]) > -1)
+                            continue;
+                        sucQue.push(node_suc[i]);
+                    }
+                    sucQue.shift();
+                }
+
+                while (preQue.length !== 0 ){
+                    light(ophighlight, 0, preQue[0]);
+                    var node = _rawData.flight.data[preQue[0]];
+                    node[HIGHLIGHT] = !node[HIGHLIGHT];
+                    var node_pre = node[DIM_SUCTASK_LIST];
+                    for (var i = 0; i < node_pre.length; i++) {
+                        if (preQue.indexOf(node_pre[i]) > -1)
+                            continue;
+                        preQue.push(node_pre[i]);
+                    }
+                    preQue.shift();
+                }
+            })
+
+            function dispatchDataZoom(params) {
+                var option = echartsRecords.getOption();
+                var optionInsideX = option.dataZoom[DATA_ZOOM_X_INSIDE_INDEX];
+                var optionInsideY = option.dataZoom[DATA_ZOOM_Y_INSIDE_INDEX];
+                var batch = [];
+
+                prepareBatch(batch, 'insideX', optionInsideX.start, optionInsideX.end, params.cursorDistX);
+                prepareBatch(batch, 'insideY', optionInsideY.start, optionInsideY.end, -params.cursorDistY);
+
+                batch.length && echartsRecords.dispatchAction({
+                    type: 'dataZoom',
+                    batch: batch
+                });
+
+                function prepareBatch(batch, id, start, end, cursorDist) {
+                    if (cursorDist === 0) {
+                        return;
+                    }
+                    var sign = cursorDist / Math.abs(cursorDist);
+                    var size = end - start;
+                    var delta = DATA_ZOOM_AUTO_MOVE_SPEED * sign;
+
+                    start += delta;
+                    end += delta;
+
+                    if (end > 100) {
+                        end = 100;
+                        start = end - size;
+                    }
+                    if (start < 0) {
+                        start = 0;
+                        end = start + size;
+                    }
+                    batch.push({
+                        dataZoomId: id,
+                        start: start,
+                        end: end
+                    });
+                }
+            }
+
+            function makeAnimator(callback) {
+                var requestId;
+                var callbackParams;
+                // Use throttle to prevent from calling dispatchAction frequently.
+                callback = echarts.throttle(callback, DATA_ZOOM_AUTO_MOVE_THROTTLE);
+
+                function onFrame() {
+                    callback(callbackParams);
+                    requestId = requestAnimationFrame(onFrame);
+                }
+
+                return {
+                    start: function (params) {
+                        callbackParams = params;
+                        if (requestId == null) {
+                            onFrame();
+                        }
+                    },
+                    stop: function () {
+                        if (requestId != null) {
+                            cancelAnimationFrame(requestId);
+                        }
+                        requestId = callbackParams = null;
+                    }
+                };
+            }
+
+        }
+
+        //JavaScript代码区域
+        layui.use('element', function(){
+            var element = layui.element;
+
+        });
+
+        //重新渲染表单
+        function renderForm(){
+            layui.use('form', function(){
+                var form = layui.form;
+                form.render();
+            });
+        }
+        _rawData = JSON.parse(window.localStorage.getItem("result"));
+        echartsRecords.setOption(option = makeOption());
+        initDrag();
+
+        /**
+         * 玫瑰图表
+         */
+        var echartsPies = echarts.init(document.getElementById('echarts-pies'), 'walden');
+        var optionPies = {
+            title: {
+                text: '指标名称-玫瑰图',
+                left: 'center'
+            },
+            tooltip: {
+                trigger: 'item',
+                formatter: '{a} <br/>{b} : {c} ({d}%)'
+            },
+            legend: {
+                orient: 'vertical',
+                left: 'left',
+                data: ['直接访问', '邮件营销', '联盟广告', '视频广告', '搜索引擎']
+            },
+            series: [
+                {
+                    name: '访问来源',
+                    type: 'pie',
+                    radius: '55%',
+                    center: ['50%', '60%'],
+                    roseType: 'radius',
+                    data: [
+                        {value: 335, name: '直接访问'},
+                        {value: 310, name: '邮件营销'},
+                        {value: 234, name: '联盟广告'},
+                        {value: 135, name: '视频广告'},
+                        {value: 368, name: '搜索引擎'}
+                    ],
+                    emphasis: {
+                        itemStyle: {
+                            shadowBlur: 10,
+                            shadowOffsetX: 0,
+                            shadowColor: 'rgba(0, 0, 0, 0.5)'
+                        }
+                    }
+                }
+            ]
+        };
+        echartsPies.setOption(optionPies);
+
+
+        /**
+         * 柱状图
+         */
+        var echartsDataset = echarts.init(document.getElementById('echarts-dataset'), 'walden');
+
+        var optionDataset = {
+            legend: {},
+            tooltip: {},
+            dataset: {
+                dimensions: ['product', '2015', '2016', '2017'],
+                source: [
+                    {product: 'Matcha Latte', '2015': 43.3, '2016': 85.8, '2017': 93.7},
+                    {product: 'Milk Tea', '2015': 83.1, '2016': 73.4, '2017': 55.1},
+                    {product: 'Cheese Cocoa', '2015': 86.4, '2016': 65.2, '2017': 82.5},
+                    {product: 'Walnut Brownie', '2015': 72.4, '2016': 53.9, '2017': 39.1}
+                ]
+            },
+            xAxis: {type: 'category'},
+            yAxis: {},
+            // Declare several bar series, each will be mapped
+            // to a column of dataset.source by default.
+            series: [
+                {type: 'bar'},
+                {type: 'bar'},
+                {type: 'bar'}
+            ]
+        };
+
+        echartsDataset.setOption(optionDataset);
+
+
+        /**
+         * 中国地图
+         */
+        var echartsMap = echarts.init(document.getElementById('echarts-map'), 'walden');
+
+
+        var optionMap = {
+            legend: {},
+            tooltip: {
+                trigger: 'axis',
+                showContent: false
+            },
+            dataset: {
+                source: [
+                    ['product', '2012', '2013', '2014', '2015', '2016', '2017'],
+                    ['Matcha Latte', 41.1, 30.4, 65.1, 53.3, 83.8, 98.7],
+                    ['Milk Tea', 86.5, 92.1, 85.7, 83.1, 73.4, 55.1],
+                    ['Cheese Cocoa', 24.1, 67.2, 79.5, 86.4, 65.2, 82.5],
+                    ['Walnut Brownie', 55.2, 67.1, 69.2, 72.4, 53.9, 39.1]
+                ]
+            },
+            xAxis: {type: 'category'},
+            yAxis: {gridIndex: 0},
+            grid: {top: '55%'},
+            series: [
+                {type: 'line', smooth: true, seriesLayoutBy: 'row'},
+                {type: 'line', smooth: true, seriesLayoutBy: 'row'},
+                {type: 'line', smooth: true, seriesLayoutBy: 'row'},
+                {type: 'line', smooth: true, seriesLayoutBy: 'row'},
+                {
+                    type: 'pie',
+                    id: 'pie',
+                    radius: '30%',
+                    center: ['50%', '25%'],
+                    label: {
+                        formatter: '{b}: {@2012} ({d}%)'
+                    },
+                    encode: {
+                        itemName: 'product',
+                        value: '2012',
+                        tooltip: '2012'
+                    }
+                }
+            ]
+        };
+
+        echartsMap.setOption(optionMap);
+
+
+        // echarts 窗口缩放自适应
+        window.onresize = function () {
+            echartsRecords.resize();
+        }
+
+</script>
+</body>
+</html>

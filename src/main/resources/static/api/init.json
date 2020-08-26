@@ -95,13 +95,13 @@
         },
         {
           "title": "直接绘图",
-          "href": "page/DirectDraw.html",
+          "href": "page/ResultShow3.html",
           "icon": "fa fa-superpowers",
           "target": "_self"
         },
         {
           "title": "结果展示",
-          "href": "page/ResultShow.html",
+          "href": "page/ResultShow2.html",
           "icon": "fa fa-superpowers",
           "target": "_self"
         }

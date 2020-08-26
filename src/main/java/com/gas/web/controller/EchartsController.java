@@ -220,9 +220,10 @@ public class EchartsController {
             return jsonObject;
         }
         String fileName = file.getOriginalFilename();
+        System.out.println(fileName);
         File taskfile=new File("src/main/resources/static/tasksim"+fileName);
         if(taskfile.exists() && taskfile.isFile()) {
-           System.out.println("file has existed");
+            System.out.println("file has existed");
             taskfile.delete();
         }
         File fileDir = new File("src/main/resources/static/tasksim");
@@ -252,7 +253,8 @@ public class EchartsController {
         map=new HashMap<String, String>();
         JSONObject jsonObject = new JSONObject();
         String name=request.getParameter("tabledata");
-        name =name.substring(1, name.length()-1);
+        System.out.println(name);
+        //name =name.substring(1, name.length()-1);
         name=name.replaceAll("\\\\","");
         JSONObject json=JSONObject.parseObject(name);
         Iterator iter = json.keySet().iterator();
@@ -263,7 +265,7 @@ public class EchartsController {
             map.put(key, value);
             JSONArray jsonArray = JSONArray.parseArray(value);
             for (int i = 0; i < jsonArray.size(); i++){
-                int num = Integer.parseInt((String) jsonArray.getJSONObject(i).get("num"));
+                int num = Integer.parseInt(jsonArray.getJSONObject(i).get("count").toString());
                 vmnumber+=num;
             }
         }
@@ -281,6 +283,7 @@ public class EchartsController {
         JSONObject jsonObject = new JSONObject();
         String path = "src/main/resources/static/tasksim/";
         String algorithm = request.getParameter("algorithm");
+        System.out.println(algorithm);
         boolean whetherSave = Boolean.parseBoolean(request.getParameter("switch"));
         File daxFile;
         if(nonefile) {
@@ -298,7 +301,6 @@ public class EchartsController {
             if (tableload==1)
                 break;
         }
-
 //        while (getLastFileName() == null) {
 //            System.out.println("sleep");
 //        }
@@ -307,13 +309,13 @@ public class EchartsController {
 //            System.out.println("sleep");
 //        }
         SchedulingAlgorithm f = new SchedulingAlgorithm();
-            f.process(path+getLastFileName(), vmnumber, Integer.parseInt(algorithm), map, datacenter);
-            jsonObject.put("code", 200);
-            jsonObject.put("data", toDisplay(f.getCondorVMList(), f.getTaskList()));
-            System.out.println(jsonObject);
-            setFinishUpload(false);
-            tableload=0;
-            lastFileName=null;
-            return jsonObject;
-        }
+        f.process(path+getLastFileName(), vmnumber, Integer.parseInt(algorithm), map, datacenter);
+        jsonObject.put("code", 200);
+        jsonObject.put("data", toDisplay(f.getCondorVMList(), f.getTaskList()));
+        System.out.println(jsonObject);
+        setFinishUpload(false);
+        tableload=0;
+        lastFileName=null;
+        return jsonObject;
+    }
 }

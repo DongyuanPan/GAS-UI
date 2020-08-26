@@ -54,12 +54,43 @@ INSERT INTO `patent` (name, secondname, enrollmentTime, type, patname, summary) 
 INSERT INTO `patent` (name, secondname, enrollmentTime, type, patname, summary) VALUES ('李小平', 'victor', '2018-10-01', '实用新型', 'clustering', '减少makespan');
 INSERT INTO `patent` (name, secondname, enrollmentTime, type, patname, summary) VALUES ('李小平', 'victor', '2009-09-01', '发明', '多目标优化', '减少数据传输代价及完成时间');
 
+# resource 表
+DROP TABLE IF EXISTS `resource`;#判断resource表是否存在，若存在则执行删除表操作
+CREATE TABLE `resource` (
+    `id` int(10) NOT NULL AUTO_INCREMENT,
+    `user`   varchar(255),
+    `vmname` varchar(255) default NULL unique,
+    `count`  int default NULL,
+    `mirror` int default NULL,
+    `ram`    int default NULL,
+    `mips`   int default NULL,
+    `bw`     int default NULL,
+    `cpu`    int default NULL,
+    `enrollmentTime` varchar(255) default NULL,
+    PRIMARY KEY  (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+insert into `resource` (vmname, user, count, mirror, ram, mips, bw, cpu, enrollmentTime) values ('vm1', 'susan', '10', '10000', '512', '1000', '1000', '2', '2020/8/1'),('vm2', 'susan', '2', '12000', '1024', '1100', '1000', '3', '2019/10/1'),('vm3', 'susan', '3', '15000', '1000', '1200', '1500', '2', '2020/6/1');
+# resSample 表
+DROP TABLE IF EXISTS `resSample`;#判断resource表是否存在，若存在则执行删除表操作
+CREATE TABLE `resSample` (
+    `id` int(10) NOT NULL AUTO_INCREMENT,
+    `user`   varchar(255) NOT NULL unique,
+    `vmname` varchar(255) default NULL,
+    `count`  int default NULL,
+    `mirror` int default NULL,
+    `ram`    int default NULL,
+    `mips`   int default NULL,
+    `bw`     int default NULL,
+    `cpu`    int default NULL,
+    PRIMARY KEY  (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+insert into `resSample` (user, vmname, count, mirror, ram, mips, bw, cpu) values ('susan', 'sample', '10', '10000', '512', '1000', '1000', '2');
+
 # XXX表
 # paper 表
 DROP TABLE IF EXISTS `paper`;#判断student表是否存在，若存在则执行删除表操作
-
 CREATE TABLE `paper` (
-`id` int(10) NOT NULL AUTO_INCREMENT,
+    `id` int(10) NOT NULL AUTO_INCREMENT,
     `title` varchar(255) default NULL,
     `author1` varchar(255) default NULL,
     `author2` varchar(255) default NULL,
