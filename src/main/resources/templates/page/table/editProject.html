@@ -64,11 +64,21 @@
 <script src="../../../static/lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
 <script>
 
-   layui.use(['form', 'table', 'upload', 'layedit'], function(){
+   layui.use(['form', 'table', 'upload', 'layedit','laydate'], function(){
         var form = layui.form,
             layer = layui.layer,
             $ = layui.$;
         var $ = layui.jquery;
+        var laydate = layui.laydate;
+
+       laydate.render({
+           elem: '#test1'
+           ,type: 'month'
+       });
+       laydate.render({
+           elem: '#test2'
+           ,type: 'month'
+       });
 
         var projectId = getUrlParamValue("id"); // 获取从 url 传递的 id 参数
 
