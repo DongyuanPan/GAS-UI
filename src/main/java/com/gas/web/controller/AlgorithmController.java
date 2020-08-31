@@ -234,20 +234,16 @@ public class AlgorithmController {
             return jsonObject;
         }
 
-
         String fileName = file.getOriginalFilename();
         File fileDir = new File(dirStr);
-        String path = fileDir.getAbsolutePath();
-        if(!fileDir.exists()){
-            fileDir.mkdir();
-        }
-        File algorithmfile = new File(dirStr + fileName);
+        String abuPath = fileDir.getAbsolutePath();
+        File algorithmfile = new File(abuPath + "\\"  + fileName);
         if(algorithmfile.exists() && algorithmfile.isFile()) {//已存在同名文件则将其删除
             System.out.println("file has existed");
             algorithmfile.delete();
         }
         try {
-            file.transferTo(new File(path, fileName));//写入文件
+            file.transferTo(new File(abuPath, fileName));//写入文件
             setLastFileName(fileName);
 
             JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
@@ -255,7 +251,7 @@ public class AlgorithmController {
                     "-encoding", "UTF-8",
                     "-classpath", Constant.classPath,
                     "-d", Constant.classPath,
-                    path + "/" + fileName);
+                    abuPath + "/" + fileName);
             System.out.println(result==0?"编译成功":"编译失败");
 //            URL[] urls = new URL[]{new URL("file:/"+"f:/")};
             ClassLoader loader = ClassLoader.getSystemClassLoader();
@@ -273,6 +269,9 @@ public class AlgorithmController {
             jsonObject.put("code", 200);
             jsonObject.put("data", algoNameList);
         } catch (Exception e) {
+            if(algorithmfile.exists() && algorithmfile.isFile()) {//编译出错则将其删除
+                algorithmfile.delete();
+            }
             jsonObject.put("code", -1);
             e.printStackTrace();
         }
