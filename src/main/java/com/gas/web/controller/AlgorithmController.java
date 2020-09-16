@@ -8,12 +8,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import org.workflowsim.WorkflowScheduler;
+import com.gas.web.constant.Constant;
+
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
+import javax.tools.JavaCompiler;
+import javax.tools.ToolProvider;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -30,12 +36,24 @@ public class AlgorithmController {
 
     private Integer searchid=null;
 
+    private String dirStr = "src/main/java/org/workflowsim/scheduling";
+
     public String getLastFileName() {
         return lastFileName;
     }
 
     public void setLastFileName(String lastFileName) {
         this.lastFileName = lastFileName;
+    }
+
+
+    public void deleteFile(int id){
+        File oldfile = new File(algorithmService.algorithmFindById(id).getPath());
+        String oldpath = oldfile.getAbsolutePath();
+        File absoldfile = new File(oldpath);
+        if(absoldfile.exists()&&absoldfile.isFile()){
+            absoldfile.delete();
+        }
     }
 
     @Autowired
@@ -75,42 +93,8 @@ public class AlgorithmController {
         }
         return Response.success("查询成功", algorithm);
     }
-
     /**
-     * 新增一个算法
-     * @return
-     */
-    @PostMapping("/add")
-    public Response algorithmAdd( @RequestParam("name") String name,
-                                @RequestParam("summary") String summary) {
-        Algorithm algorithm = new Algorithm();
-        //等待文件上传
-        while (true) {
-            System.out.println("no algorithm file");
-            File daxFile = new File("src/main/resources/AlgorithmFile/" + getLastFileName());
-            if (daxFile.exists()&&daxFile.isFile())
-            {
-                algorithm.setPath(getLastFileName());
-                break;
-            }
-        }
-        algorithm.setName(name);
-        algorithm.setSummary(summary);
-        algorithm.setPath(getLastFileName());
-        setLastFileName(null);
-        //保存和更新都用该方法
-        try {
-            algorithmService.algorithmAdd(algorithm);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return Response.failure("添加失败", algorithm);
-        }
-        return Response.success("添加成功", algorithm);
-    }
-
-
-    /**
-     * 通过 id 更新一项算法
+     * 下载一项算法
      * @return
      */
     @RequestMapping(value="/download/{id}", produces = { "application/json" },method = RequestMethod.POST)
@@ -118,7 +102,7 @@ public class AlgorithmController {
     public void download(HttpServletResponse response) throws IOException {
         Algorithm algorithm = null;
         algorithm = algorithmService.algorithmFindById(searchid);
-        File file = new File("src/main/resources/AlgorithmFile/"+ algorithm.getPath());
+        File file = new File(algorithm.getPath());
         //获取要下载的文件名
         String fileName = file.getAbsolutePath();
         response.setCharacterEncoding("utf-8");
@@ -141,33 +125,59 @@ public class AlgorithmController {
         in.close();
         out.close();
     }
+    /**
+     * 新增一个算法
+     * @return
+     */
+    @PostMapping("/add")
+    public Response algorithmAdd( @RequestParam("name") String name,
+                                @RequestParam("summary") String summary) {
+        if (!isupload)
+        {
+            System.out.println("no algorithm file");
+            return Response.failure("未上传算法文件");
+        }else{
+            isupload = false;
+            Algorithm algorithm = new Algorithm();
+            algorithm.setName(name);
+            algorithm.setSummary(summary);
+            algorithm.setPath( dirStr +"\\"+ getLastFileName());
+            setLastFileName(null);
+            //保存和更新都用该方法
+            try {
+                algorithmService.algorithmAdd(algorithm);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return Response.failure("添加失败", algorithm);
+            }
+            return Response.success("添加成功", algorithm);
+        }
 
+    }
+    /**
+     * 通过 id 更新一项算法
+     * @return
+     */
     @PostMapping("/update/{id}")
     public Response algorithmUpdate(@PathVariable("id") Integer id,
                                     @RequestParam("name") String name,
                                     @RequestParam("summary") String summary) throws IOException {
         Algorithm algorithm = new Algorithm();
-        if(isupload) {
-            while (true) {
-                File daxFile = new File("src/main/resources/AlgorithmFile/" + getLastFileName());
-                if (daxFile.exists() && daxFile.isFile()) {
-                    algorithm.setPath(getLastFileName());
-                    break;
-                }
-            }
-        }else{
-            algorithm.setPath(algorithmService.algorithmFindById(id).getPath());
-        }
-        isupload=false;
         algorithm.setId(id);
         algorithm.setName(name);
         algorithm.setSummary(summary);
-        //编辑记录时，上传新的文件，即删除旧的专利文件，防止文件过多
-        File oldfile = new File("src/main/resources/AlgorithmFile/"+algorithmService.algorithmFindById(id).getPath());
-        String oldpath = oldfile.getAbsolutePath();
-        File absoldfile = new File(oldpath);
-        if(absoldfile.exists()&&absoldfile.isFile())
-            absoldfile.delete();
+        if(!isupload) {
+            algorithm.setPath(algorithmService.algorithmFindById(id).getPath());
+        }else{
+            isupload = false;
+
+            //编辑记录时，上传新的文件，即删除旧的专利文件，防止文件过多
+            deleteFile(id);
+
+            algorithm.setPath(dirStr + "\\" + getLastFileName());
+            setLastFileName(null);
+        }
+
         //保存和更新都用该方法
         try {
             algorithmService.algorithmUpdate(algorithm);
@@ -185,6 +195,7 @@ public class AlgorithmController {
      */
     @DeleteMapping("/delete/{id}")
     public Response algorithmDelete(@PathVariable("id") Integer id) {
+        deleteFile(id);
         try {
             algorithmService.algorithmDelete(id);
         } catch (Exception e) {
@@ -193,10 +204,15 @@ public class AlgorithmController {
         }
         return Response.success("删除成功", id);
     }
-
-
+    /**
+     * 删除一些算法
+     * @return
+     */
     @DeleteMapping("/delete")
     public Response algorithmDeleteBatch(@RequestBody List<Algorithm> algorithmList) {
+        for (Algorithm algorithm : algorithmList) {
+            deleteFile(algorithm.getId());
+        }
         try {
             algorithmService.algorithmDeleteBatch(algorithmList);
         } catch (Exception e) {
@@ -205,38 +221,62 @@ public class AlgorithmController {
         }
         return Response.success("删除成功", algorithmList);
     }
-
+    /**
+     * 上传一个算法文件
+     * @return
+     */
     @RequestMapping(value ="/uploadFile", method = RequestMethod.POST)
     @ResponseBody
     public JSONObject uploadFile(@RequestParam("file") MultipartFile file) {
-        isupload=true;
         JSONObject jsonObject = new JSONObject();
-        String dirStr = "src/main/resources/AlgorithmFile";
         if (file.isEmpty()) {
-            isupload = true;
             jsonObject.put("code", -1);
             return jsonObject;
         }
+
         String fileName = file.getOriginalFilename();
         File fileDir = new File(dirStr);
-        String path = fileDir.getAbsolutePath();
-        if(!fileDir.exists()){
-            fileDir.mkdir();
-        }
-        File algorithmfile = new File("src/main/resources/AlgorithmFile/"+fileName);
-        if(algorithmfile.exists() && algorithmfile.isFile()) {
+        String abuPath = fileDir.getAbsolutePath();
+        File algorithmfile = new File(abuPath + "\\"  + fileName);
+        if(algorithmfile.exists() && algorithmfile.isFile()) {//已存在同名文件则将其删除
             System.out.println("file has existed");
             algorithmfile.delete();
         }
         try {
-            file.transferTo(new File(path, fileName));
+            file.transferTo(new File(abuPath, fileName));//写入文件
             setLastFileName(fileName);
+
+            JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
+            int result = compiler.run(null, null, null,
+                    "-encoding", "UTF-8",
+                    "-classpath", Constant.classPath,
+                    "-d", Constant.classPath,
+                    abuPath + "/" + fileName);
+            System.out.println(result==0?"编译成功":"编译失败");
+//            URL[] urls = new URL[]{new URL("file:/"+"f:/")};
+            ClassLoader loader = ClassLoader.getSystemClassLoader();
+            Class<?> c = loader.loadClass(Constant.algorithmPackageName + "." + fileName.replace(".java", ""));
+
+            // 更新算法选择列表
+            List<Class<?>> classList =  WorkflowScheduler.getClasses(Constant.algorithmPackageName);
+            List<String> algoNameList = new ArrayList<>();
+            for (Class<?> aClass : classList) {
+                algoNameList.add(aClass.getSimpleName());
+            }
+
+            isupload=true;
+
             jsonObject.put("code", 200);
+            jsonObject.put("data", algoNameList);
         } catch (Exception e) {
-            jsonObject.put("code", 0);
+            if(algorithmfile.exists() && algorithmfile.isFile()) {//编译出错则将其删除
+                algorithmfile.delete();
+            }
+            jsonObject.put("code", -1);
             e.printStackTrace();
         }
-        return jsonObject;
 
+        return jsonObject;
     }
+
 }
