@@ -16,121 +16,282 @@
 </head>
 <body>
 <div class="layui-form layuimini-form">
-    <div class="layui-form-item">
-        <label class="layui-form-label required">虚拟机名称</label>
-        <div class="layui-input-block">
-            <input type="text" name="vmname" lay-verify="required" lay-reqtext="名称不能为空" placeholder="请输入名称" value="" class="layui-input">
-        </div>
-    </div>
+           <div class="layui-row layui-col-space30">
+                    <form class="layui-form" action="">
+                        <div class="layui-form-item">
+                            <a class="layui-btn layui-btn-xs addtable">添加Host</a>
+                        </div>
+                        <div  id="tablelist">
 
-    <div class="layui-form-item">
-        <label class="layui-form-label required">台数</label>
-        <div class="layui-input-block">
-            <input type="text" name="count" lay-verify="required" lay-reqtext="台数不能为空" placeholder="请输入台数" value="" class="layui-input" >
-        </div>
-    </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <div class="layui-input-block">
+                                <button type="submit" class="layui-btn" lay-submit="" lay-filter="commit" id="commit">提交</button>
+                            </div>
+                        </div>
+                    </form>
+           </div>
 
-    <div class="layui-form-item">
-        <label class="layui-form-label">镜像</label>
-        <div class="layui-input-block">
-            <input type="text" name="mirror" lay-verify="required" class="layui-input">
-        </div>
-    </div>
-
-    <div class="layui-form-item">
-        <label class="layui-form-label required">内存</label>
-        <div class="layui-input-block">
-            <input  type="text" name="ram" lay-verify="required" class="layui-input">
-        </div>
-    </div>
-
-    <div class="layui-form-item">
-        <label class="layui-form-label required">指令处理速度</label>
-        <div class="layui-input-block ">
-            <input type="text" name="mips" lay-verify="required" class="layui-input">
-        </div>
-    </div>
-
-    <div class="layui-form-item">
-        <label class="layui-form-label">带宽</label>
-        <div class="layui-input-block ">
-            <input type="text" name="bw" lay-verify="required" class="layui-input">
-        </div>
-    </div>
-
-    <div class="layui-form-item">
-        <label class="layui-form-label">核数</label>
-        <div class="layui-input-block ">
-            <input type="text" name="cpu" lay-verify="required" class="layui-input">
-        </div>
-    </div>
-
-    <div class="layui-form-item">
-        <label class="layui-form-label">创建时间</label>
-        <div class="layui-input-block ">
-            <input type="text" name="enrollmentTime" disabled="disabled" class="layui-input">
-        </div>
-    </div>
-
-    <div class="layui-form-item">
-        <div class="layui-input-block">
-            <button class="layui-btn layui-btn-normal" lay-submit lay-filter="saveBtn" id="saveBtn">保存</button>
-        </div>
-    </div>
 </div>
 <script src="../../../static/lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
-<script>
-   layui.use(['form', 'table', 'upload', 'layedit', 'laydate'], function(){
+<script type="text/javascript">
+    var tablenum=-1;
+    var start=0;
+    var remain=-1;
+    var clickid;
+    var sample;
+    function getRowOrder(id) {
+      var elementById = document.getElementById("table"+id);
+      return elementById.rows.length;
+    }
+    function check(obj)
+    {
+        var number = obj.value;
+        var number2 = parseInt(number);
+        if(!isNaN(number))
+            return;
+        else
+            obj.value = number.substring(0,number.length-1);
+    }
+    function test(id){
+        clickid=id;
+    }
+    //从数据库获取资源信息，并填充表格
+    function crtable(res,$) {
+        var i=0;
+        var tabelist=document.getElementById('tablelist');
+
+        while (JSON.stringify(res.data[i])) {
+            tablenum=i;
+            remain=i;
+            var tableItem = document.createElement('table');
+            tableItem.className="layui-table";
+            tableItem.setAttribute("lay-filter","table");
+            tableItem.id="table"+i;
+            tableItem.setAttribute("name","table"+i);
+            var htmlTableSectionElement = tableItem.createTHead();
+            htmlTableSectionElement.innerHTML='<tr>'+
+                '<td>ID</td>'+
+                '<td>名称</td>'+
+                '<td>台数</td>'+
+                '<td>size</td>'+
+                '<td>内存(MB)</td>'+
+                '<td>处理速度(mips)</td>'+
+                '<td>带宽</td>'+
+                '<td>处理器个数</td>'+
+                '<td>'+
+                '<a class="layui-btn layui-btn-xs add" id="'+i+'" onclick="test(this.id)">添加</a>'+
+                '</td>'+
+                '</tr>'
+            var htmlTableSectionElement1 = tableItem.createTBody();
+            var j=0;
+            while(JSON.stringify(res.data[i][j])) {
+                htmlTableSectionElement1.innerHTML =htmlTableSectionElement1.innerHTML+'<tr>'+
+                    '<td><input type="text" id="layui-input1" class="layui-input" name="type1" value="'+eval((j+1).toString())+'" disabled="disabled"></td>'+
+                    '<td><input type="text" id="layui-input12" class="layui-input inp-fon" name="vmname" value="'+JSON.stringify(res.data[i][j].vmname).toString().substr(1,(JSON.stringify(res.data[i][j].vmname).toString().length-1))+'"></td>'+
+                    '<td><input type="text" id="layui-input2" class="layui-input inp-fon" name="num1" required="required" value="'+JSON.stringify(res.data[i][j].count)+'" onkeyup="check(this)"></td>'+
+                    '<td><input type="text" id="layui-input3" class="layui-input inp-fon" name="size1" value="'+JSON.stringify(res.data[i][j].mirror)+'" onkeyup="check(this)"></td>'+
+                    '<td><input type="text" id="layui-input4" class="layui-input inp-fon" name="memo1" value="'+JSON.stringify(res.data[i][j].ram)+'" onkeyup="check(this)"></td>'+
+                    '<td><input type="text" id="layui-input5" class="layui-input inp-fon" name="mips1" value="'+JSON.stringify(res.data[i][j].mips)+'" onkeyup="check(this)"></td>'+
+                    '<td><input type="text" id="layui-input6" class="layui-input inp-fon" name="bw1" value="'+JSON.stringify(res.data[i][j].bw)+'" onkeyup="check(this)"></td>'+
+                    '<td><input type="text" id="layui-input7" class="layui-input inp-fon" name="cpu1" value="'+JSON.stringify(res.data[i][j].cpu)+'" onkeyup="check(this)"></td>'+
+                    '<td><a class="layui-btn layui-btn-primary layui-icon layui-btn-sm del" id="del'+i+'&'+j+'" onclick="test(this.id)">&#xe640;</a></td>'+
+                    '</tr>';
+                j=parseInt(j)+1;
+            }
+            var str='<a class="layui-btn layui-btn-danger layui-btn-xs deltable" id="deltable'+i+'" onclick="test(this.id)">删除Host'+i+'</a>';
+            tabelist.appendChild(tableItem);
+            $('#tablelist').append(str);
+            i=parseInt(i)+1;
+        }
+
+    }
+    layui.use(['form', 'table', 'upload', 'layedit', 'laydate'], function(){
         var form = layui.form,
             layer = layui.layer,
             $ = layui.$;
+
         var $ = layui.jquery;
-
         var resId = getUrlParamValue("id"); // 获取从 url 传递的 id 参数
-
         $.ajax({
             url:'/resource/' + resId,
             method:'get',
+            success:function(res) {
+                crtable(res,$);
+            },
+            error:function () {
+                //alert("错误");
+            }
+        });
+        //获取所有vm信息
+        $('#commit').on('click',function jstable(){
+            var jsonT='{';
+            var limit=remain;
+            for(var i=0;i<=parseInt(tablenum)&&(document.getElementById("table"+parseInt(i)))!=null;i=parseInt(i)+1){
+                limit=parseInt(limit)-1;
+                var tabLen=document.getElementById("table"+parseInt(i));
+                jsonT+='"table'+i+'":[{';
+                for (var j=1; j <parseInt(tabLen.rows.length);j=parseInt(j)+1){
+                    var vmname =tabLen.rows[j].cells[1].getElementsByTagName("input")[0].value;
+                    var vmnum =tabLen.rows[j].cells[2].getElementsByTagName("input")[0].value;
+                    var size= tabLen.rows[j].cells[3].getElementsByTagName("input")[0].value;
+                    var memo= tabLen.rows[j].cells[4].getElementsByTagName("input")[0].value;
+                    if(parseInt(memo)>2048){
+                        alert("内存最大为2048M");
+                        memo=2048;
+                        tabLen.rows[j].cells[4].getElementsByTagName("input")[0].value=2048
+                    }
+                    var mips= tabLen.rows[j].cells[5].getElementsByTagName("input")[0].value;
+                    if(parseInt(mips)>1600){
+                        alert("处理速度最大为1600");
+                        mips=1600;
+                        tabLen.rows[j].cells[5].getElementsByTagName("input")[0].value=1600
+                    }
+                    var bw=tabLen.rows[j].cells[6].getElementsByTagName("input")[0].value;
+                    var cpu= tabLen.rows[j].cells[7].getElementsByTagName("input")[0].value;
+                    if(parseInt(j)===parseInt(tabLen.rows.length)-1){
+                        if(limit==-1){
+                            jsonT+='"vmname":"'+vmname+'","num":"'+vmnum+'","size":"'+size+'","memo":"'+memo+'","mips":"'+mips+'","bw":"'+bw+'","cpu":"'+cpu+'"}]';
+                        }
+                        else{
+                            jsonT+='"vmname":"'+vmname+'","num":"'+vmnum+'","size":"'+size+'","memo":"'+memo+'","mips":"'+mips+'","bw":"'+bw+'","cpu":"'+cpu+'"}],';
+                        }
+                    }
+                    else{
+                        jsonT+='"vmname":"'+vmname+'","num":"'+vmnum+'","size":"'+size+'","memo":"'+memo+'","mips":"'+mips+'","bw":"'+bw+'","cpu":"'+cpu+'"},{';
+                    }
+                }
+            }
+            jsonT+='}';
+            $.ajax({
+                type: 'post',
+                dataType: 'html',
+                url: '/resource/hosts/'+resId,
+                data: {
+                    "hostsdata" : JSON.stringify(jsonT)
+                },
+                success: function (res) {
+                    parent.layer.msg(res.msg);
+                },
+                error: function (request) {
+                    parent.layer.msg("错误");
+                }
+            });
+        })
+
+        $(".inp-fon").focus(function(){
+            var oldValue = $(this).val();
+            if(oldValue == this.defaultValue){
+                $(this).val("").addClass('focus-fon');
+
+            }
+        }).blur(function(){
+            var oldValue = $(this).val();
+            if(oldValue == ""){
+                $(this).val(this.defaultValue).removeClass('focus-fon');;
+            }
+        });
+
+    //添加host代码
+    $('body').on('click', '.addtable', function (){
+        tablenum=parseInt(tablenum)+1;
+        remain=parseInt(remain)+1;
+        var str= '<table class="layui-table" id="table'+tablenum+'" lay-filter="table" name="table'+tablenum+'">'+
+            '<thead>'+
+            '<tr>'+
+            '<td>ID</td>'+
+            '<td>名称</td>'+
+            '<td>台数</td>'+
+            '<td>size</td>'+
+            '<td>内存(MB)</td>'+
+            '<td>处理速度(mips)</td>'+
+            '<td>带宽</td>'+
+            '<td>处理器个数</td>'+
+            '<td>'+
+            '<a class="layui-btn layui-btn-xs add" id="'+tablenum+'" onclick="test(this.id)">添加</a>'+
+            '</td>'+
+            '</tr>'+
+            '</thead>'+
+            '<tbody>'+
+            '<tr>'+
+            '<td><input type="text" id="layui-input1" class="layui-input" name="type1" value="1" disabled="disabled"></td>'+
+            '<td><input type="text" id="layui-input12" class="layui-input" name="vmname" value="'+sample.data.vmname+'"></td>'+
+            '<td><input type="text" id="layui-input2" class="layui-input inp-fon" name="num1" required="required" value="'+sample.data.count+'" onkeyup="check(this)"></td>'+
+            '<td><input type="text" id="layui-input3" class="layui-input inp-fon" name="size1" value="'+sample.data.mirror+'" onkeyup="check(this)"></td>'+
+            '<td><input type="text" id="layui-input4" class="layui-input inp-fon" name="memo1" value="'+sample.data.ram+'" onkeyup="check(this)"></td>'+
+            '<td><input type="text" id="layui-input5" class="layui-input inp-fon" name="mips1" value="'+sample.data.mips+'" onkeyup="check(this)"></td>'+
+            '<td><input type="text" id="layui-input6" class="layui-input inp-fon" name="bw1" value="'+sample.data.bw+'" onkeyup="check(this)"></td>'+
+            '<td><input type="text" id="layui-input7" class="layui-input inp-fon" name="cpu1" value="'+sample.data.cpu+'" onkeyup="check(this)"></td>'+
+            '<td>'+
+            '<a class="layui-btn layui-btn-primary layui-icon layui-btn-sm del" id="del'+tablenum+'&1" onclick="test(this.id)">&#xe640;</a>'+
+            '</td>'+
+            '</tr>'+
+            '</tbody>'+
+            '</table>'+
+            '<a class="layui-btn layui-btn-danger layui-btn-xs deltable" id="deltable'+tablenum+'" onclick="test(this.id)">删除Host'+tablenum+'</a>';
+        //添加到表格最后
+        $("#tablelist").append(str);
+        layer.msg("添加Host"+tablenum+"成功");
+        form.render();
+    });
+
+    //为host添加vm
+    $('body').on('click', '.add', function() {
+        var str ='<tr>'+
+            '<td><input type="text" id="layui-input1" class="layui-input" name="type1" value="'+getRowOrder(clickid)+'" disabled="disabled"></td>'+
+            '<td><input type="text" id="layui-input12" class="layui-input" name="vmname" value="'+sample.data.vmname+'"></td>'+
+            '<td><input type="text" id="layui-input2" class="layui-input inp-fon" name="num1" required="required" value="'+sample.data.count+'" onkeyup="check(this)"></td>'+
+            '<td><input type="text" id="layui-input3" class="layui-input inp-fon" name="size1" value="'+sample.data.mirror+'" onkeyup="check(this)"></td>'+
+            '<td><input type="text" id="layui-input4" class="layui-input inp-fon" name="memo1" value="'+sample.data.ram+'" onkeyup="check(this)"></td>'+
+            '<td><input type="text" id="layui-input5" class="layui-input inp-fon" name="mips1" value="'+sample.data.mips+'" onkeyup="check(this)"></td>'+
+            '<td><input type="text" id="layui-input6" class="layui-input inp-fon" name="bw1" value="'+sample.data.bw+'" onkeyup="check(this)"></td>'+
+            '<td><input type="text" id="layui-input7" class="layui-input inp-fon" name="cpu1" value="'+sample.data.cpu+'" onkeyup="check(this)"></td>'+
+            '<td><a class="layui-btn layui-btn-primary layui-icon layui-btn-sm del" id="del'+clickid+'&'+getRowOrder(clickid)+'" onclick="test(this.id)">&#xe640;</a></td>'+
+            '</tr>';
+        //添加到表格最后
+        $(str).appendTo($('#table'+clickid+' tbody:last'));
+        layer.msg("添加成功");
+        form.render();
+    });
+
+    //删除host的一个vm
+    $('body').on('click', '.del', function() {
+        var tableid = clickid.split("&")[0].substr(3);
+        var number = parseInt(tableid);
+        if ($('#table'+number+' tbody tr').length === 1) {
+            layer.msg('只有一条不允许删除。', {
+                time : 2000
+            });
+        } else {
+            //删除当前按钮所在的tr
+            $(this).closest('tr').remove();
+            layer.msg("删除成功");
+        }
+    });
+
+    //删除一个host
+    $('body').on('click', '.deltable', function() {
+        if (remain===0) {
+            layer.msg('只有一个Host不允许删除。', {
+                time : 2000
+            });
+        } else {
+            //删除当前选中的数据中心
+            remain=parseInt(remain)-1;
+            $("#table"+parseInt(clickid.substr(8))).remove();
+            $("#"+clickid).remove();
+            layer.msg("Host"+parseInt(clickid.substr(8))+"删除成功");
+        }
+    });
+        $.ajax({
+            url:'/resSample/susan',
+            method:'get',
             success:function(res){
-                document.getElementsByName('vmname')[0].setAttribute("value", res.data.vmname);
-                document.getElementsByName('count')[0].setAttribute("value", res.data.count);
-                document.getElementsByName('mirror')[0].setAttribute("value", res.data.mirror);
-                document.getElementsByName('ram')[0].setAttribute("value", res.data.ram);
-                document.getElementsByName('mips')[0].setAttribute("value", res.data.mips);
-                document.getElementsByName('bw')[0].setAttribute("value", res.data.bw);
-                document.getElementsByName('cpu')[0].setAttribute("value", res.data.cpu);
-                document.getElementsByName('enrollmentTime')[0].setAttribute("value", res.data.enrollmentTime);
+                sample=res;
             },
             error:function () {
                 alert("错误");
             }
-        });
-
-        //监听提交
-        form.on('submit(saveBtn)', function (data) {
-           var index = layer.alert(JSON.stringify(data.field), {
-                title: '最终的提交信息'
-            }, function () {
-                // 关闭弹出层
-                layer.close(index);
-                var iframeIndex = parent.layer.getFrameIndex(window.name);
-                parent.layer.close(iframeIndex);
-
-                $.ajax({
-                    url:'/resource/update/' + resId,
-                    method:'post',
-                    data:data.field,
-                    dataType:'JSON',
-                    success:function(res){
-                        parent.layer.msg(res.msg);
-                    },
-                    error:function () {
-                        parent.layer.msg("错误");
-                    }
-                });
-            });
-
-            return false;
         });
 
     });

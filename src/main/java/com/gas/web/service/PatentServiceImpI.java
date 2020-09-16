@@ -8,6 +8,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.criteria.*;
+import java.io.File;
 import java.util.*;
 
 @Service
@@ -57,9 +58,14 @@ public class PatentServiceImpI implements IPatentService {
 
     @Override
     public void patentDelete(Integer id) {
+        Patent patent = patentFindById(id);
+        deleteFile(patent.getPath());
         patentDao.deleteById(id);
     }
-
+    public void deleteFile(String fileName){
+        File daxFile = new File("src/main/resources/PatentFile/" + fileName);
+        daxFile.delete();
+    }
     @Override
     public void patentDeleteBatch(List<Patent> patList) {
         List<Integer> idList = new ArrayList<>();

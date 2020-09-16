@@ -7,7 +7,10 @@ import com.gas.web.bean.Schedule;
 import com.gas.web.bean.Task;
 import com.gas.web.constant.Constant;
 import com.gas.web.display.Display;
+import com.gas.web.entity.Vm;
+import com.gas.web.service.IVmService;
 import com.google.gson.Gson;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -26,7 +29,14 @@ import java.util.*;
 public class EchartsController {
     int datacenter=0,vmnumber=0,tableload=0;
     boolean nonefile=false;
-    public Map<String,String> map;
+    public Map<String, Vm> map;
+    private final IVmService iVmService;
+
+    @Autowired
+    public EchartsController(IVmService iVmService) {
+        this.iVmService = iVmService;
+    }
+
     @ResponseBody
     @RequestMapping("/init")
     public HashMap<String, Object> init() {
@@ -243,32 +253,26 @@ public class EchartsController {
         return jsonObject;
     }
 
-    /**
+    /**h
      * 表格数据上传
      * @return 返回响应结果
      */
     @RequestMapping(value = "/tableUpload", method = RequestMethod.POST)
     @ResponseBody
     public JSONObject tableUpload(HttpServletRequest request){
-        map=new HashMap<String, String>();
+        map=new HashMap<String, Vm>();
         JSONObject jsonObject = new JSONObject();
         String name=request.getParameter("tabledata");
-        System.out.println(name);
-        //name =name.substring(1, name.length()-1);
-        name=name.replaceAll("\\\\","");
-        JSONObject json=JSONObject.parseObject(name);
-        Iterator iter = json.keySet().iterator();
-        while (iter.hasNext()) {
-            datacenter++;
-            String key = (String) iter.next();
-            String value = json.getString(key);
-            map.put(key, value);
-            JSONArray jsonArray = JSONArray.parseArray(value);
-            for (int i = 0; i < jsonArray.size(); i++){
-                int num = Integer.parseInt(jsonArray.getJSONObject(i).get("count").toString());
-                vmnumber+=num;
+        try {
+            map=iVmService.getAllVm(Integer.parseInt(name));
+            for (Vm vm:map.values()) {
+                vmnumber+=vm.getCount();
             }
+        }catch (Exception e) {
+            jsonObject.put("code", 0);
+            e.printStackTrace();
         }
+
         jsonObject.put("code",200);
         tableload=1;
         return jsonObject;
@@ -316,6 +320,7 @@ public class EchartsController {
         setFinishUpload(false);
         tableload=0;
         lastFileName=null;
+        vmnumber=0;
         return jsonObject;
     }
 }

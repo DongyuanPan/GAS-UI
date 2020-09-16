@@ -20,4 +20,9 @@ public interface IResourceService {
 
     Map<String, Object> findByNameLike(String name);
 
+    Map<String, Object> vmFindAll(Integer id);
+
+    void deleteAll(Integer resId);
+
+    void updateRes(String resId, int size);
 }

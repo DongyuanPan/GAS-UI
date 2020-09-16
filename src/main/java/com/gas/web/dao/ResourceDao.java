@@ -15,7 +15,14 @@ public interface ResourceDao extends JpaRepository<Resource,Integer> {
     @Transactional
     @Query(value = "delete r from resource r where r.id in (:idList)", nativeQuery = true)
     void deleteBatch(List<Integer> idList);
-    @Query(value = "select r.id from resource r where r.vmname like %?1%", nativeQuery = true)
+    @Modifying
+    @Transactional
+    @Query(value="update resource r set r.hostnum=?1 where r.id=?2", nativeQuery=true)
+    void updateRes( Integer size,String resId);
+    @Query(value = "select r.id from resource r where r.name like %?1%", nativeQuery = true)
     List<Integer> findByNameLike(String name);
     List<Resource> findAll( Specification<Resource> specification);
+
+
+
 }

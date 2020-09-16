@@ -17,90 +17,36 @@
 <body>
 <div class="layui-form layuimini-form">
     <div class="layui-form-item">
-        <label class="layui-form-label required">虚拟机名称</label>
+        <label class="layui-form-label required">资源名称</label>
         <div class="layui-input-block">
-            <input type="text" name="vmname" lay-verify="required" lay-reqtext="名称不能为空" placeholder="请输入虚拟机名称" value="" class="layui-input">
+            <input type="text" name="name" lay-verify="required" lay-reqtext="名称不能为空" placeholder="请输入资源名称" value="" class="layui-input">
         </div>
     </div>
-
     <div class="layui-form-item">
-        <label class="layui-form-label required">台数</label>
+        <label class="layui-form-label required">创建人</label>
         <div class="layui-input-block">
-            <input type="text" name="count" class="layui-input" >
-        </div>
-    </div>
-
-    <div class="layui-form-item">
-        <label class="layui-form-label">镜像</label>
-        <div class="layui-input-block">
-            <input type="text" name="mirror" class="layui-input">
-        </div>
-    </div>
-
-    <div class="layui-form-item">
-        <label class="layui-form-label required">内存</label>
-        <div class="layui-input-block">
-            <input  type="text" name="ram" class="layui-input">
-        </div>
-    </div>
-
-    <div class="layui-form-item">
-        <label class="layui-form-label required">指令处理速度</label>
-        <div class="layui-input-block ">
-            <input type="text" name="mips" class="layui-input">
-        </div>
-    </div>
-
-    <div class="layui-form-item">
-        <label class="layui-form-label">带宽</label>
-        <div class="layui-input-block ">
-            <input type="text" name="bw" class="layui-input">
-        </div>
-    </div>
-
-    <div class="layui-form-item">
-        <label class="layui-form-label">核数</label>
-        <div class="layui-input-block ">
-            <input type="text" name="cpu" class="layui-input">
+            <input type="text" name="people" lay-verify="required" lay-reqtext="名称不能为空" placeholder="请输入姓名" value="" class="layui-input">
         </div>
     </div>
 
     <div class="layui-form-item">
         <div class="layui-input-block">
-            <button class="layui-btn layui-btn-normal" lay-submit lay-filter="saveBtn" id="saveBtn">创建虚拟机</button>
+            <button class="layui-btn layui-btn-normal" lay-submit lay-filter="saveBtn" id="saveBtn">创建资源</button>
         </div>
     </div>
 </div>
 <script src="../../../static/lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
 <script>
-var user;
-     layui.use(['form', 'table', 'upload', 'layedit', 'laydate'], function(){
+    var user;
+    layui.use(['form', 'table', 'upload', 'layedit', 'laydate'], function(){
         var form = layui.form,
             layer = layui.layer,
             $ = layui.$;
-        var $ = layui.jquery,
+        var $ = layui.jquery;
 
-         user = getUrlParamValue("user"); // 获取从 url 传递的 user参数
-
-         $.ajax({
-            url:'/resSample/' + user,
-            method:'get',
-            success:function(res){
-            document.getElementsByName('count')[0].value=res.data.count;
-            document.getElementsByName('mirror')[0].value=res.data.mirror;
-            document.getElementsByName('ram')[0].value=res.data.ram;
-            document.getElementsByName('mips')[0].value=res.data.mips;
-            document.getElementsByName('bw')[0].value=res.data.bw;
-            document.getElementsByName('cpu')[0].value=res.data.cpu;
-               },
-            error:function () {
-                alert("错误");
-            }
-        });
-
-         //监听提交
+        //监听提交
         form.on('submit(saveBtn)', function (data) {
-           var index = layer.alert(JSON.stringify(data.field), {
+            var index = layer.alert(JSON.stringify(data.field), {
                 title: '最终的提交信息'
             }, function () {
                 // 关闭弹出层
@@ -109,7 +55,7 @@ var user;
                 parent.layer.close(iframeIndex);
 
                 $.ajax({
-                    url:'/resource/add/'+user,
+                    url:'/resource/add/',
                     method:'post',
                     data:data.field,
                     dataType:'JSON',
@@ -126,16 +72,6 @@ var user;
         });
 
     });
-
-    function getUrlParamValue(variable) {
-        var query = window.location.search.substring(1);
-        var vars = query.split("&");
-        for (var i=0;i<vars.length;i++) {
-            var pair = vars[i].split("=");
-            if(pair[0] == variable){return pair[1];}
-        }
-        return(false);
-    }
 </script>
 </body>
 </html>

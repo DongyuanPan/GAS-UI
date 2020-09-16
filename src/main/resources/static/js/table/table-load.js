@@ -72,11 +72,11 @@ function loadpatent(table,name,keyword) {
         skin: 'line'
     });
 }
-
-function loadresource(table,name) {
-    var strurl='/resource';
+ //加载参数模板表
+function loadresSample(table,name) {
+    var strurl='/resSample';
     if(name!=""){
-        strurl='/resource/vmname';
+        strurl='/resSample/name';
     }
     table.render({
         elem: '#currentTableId',
@@ -93,14 +93,13 @@ function loadresource(table,name) {
         cols: [[
             {type: "checkbox", width: 50},
             {field: 'id', width: 80, title: 'ID', sort: true, align: "center"},
-            {field: 'vmname', width: 100, title: '名称', align: "center", templet: '#details'},
-            {field: 'count', width: 80, title: '台数', align: "center"},
-            {field: 'mirror', width: 100, title: '镜像', sort: true, align: "center"},
-            {field: 'ram', width: 90, title: '内存', sort: true, align: "center"},
-            {field: 'mips', width: 160, title: '指令处理速度', sort: true, align: "center"},
-            {field: 'bw', width: 100, title: '带宽', sort: true, align: "center"},
-            {field: 'cpu', width: 60, title: '核数', sort: true, align: "center"},
-            {field: 'enrollmentTime', width: 130, title: '创建时间', sort: true, align: "center"},
+            {field: 'vmname', width: 100, title: '虚拟机名称', align: "center"},
+            {field: 'count', width: 150, title: '台数', sort: true, align: "center"},
+            {field: 'mirror', width: 130, title: '镜像', sort: true, align: "center"},
+            {field: 'ram', width: 120, title: '内存', align: "center"},
+            {field: 'mips', width: 100, title: '处理速度(MIPS)', align: "center"},
+            {field: 'bw', width: 150, title: '带宽', sort: true, align: "center"},
+            {field: 'cpu', width: 130, title: 'CPU核数', sort: true, align: "center"},
             {title: '操作', minWidth: 200, toolbar: '#currentTableBar', align: "center"}
         ]],
         limits: [10, 15, 20, 25, 50, 100],
@@ -109,7 +108,38 @@ function loadresource(table,name) {
         skin: 'line'
     });
 }
-
+function loadresource(table,name) {
+    var strurl='/resource';
+    if(name!=""){
+        strurl='/resource/resname';
+    }
+    table.render({
+        elem: '#currentTableId',
+        url: strurl,
+        where:{
+            'name':name,
+        },
+        toolbar: '#toolbarDemo',
+        defaultToolbar: ['filter', 'exports', 'print', {
+            title: '提示',
+            layEvent: 'LAYTABLE_TIPS',
+            icon: 'layui-icon-tips'
+        }],
+        cols: [[
+            {type: "checkbox", width: 50},
+            {field: 'id', width: 80, title: 'ID', sort: true, align: "center"},
+            {field: 'person', width: 120, title: '创建人', align: "center"},
+            {field: 'name', width: 100, title: '资源名称', align: "center"},
+            {field: 'hostnum', width: 150, title: 'Host数量', sort: true, align: "center"},
+            {field: 'crtime', width: 130, title: '创建时间', sort: true, align: "center"},
+            {title: '操作', minWidth: 200, toolbar: '#currentTableBar', align: "center"}
+        ]],
+        limits: [10, 15, 20, 25, 50, 100],
+        limit: 15,
+        page: true,
+        skin: 'line'
+    });
+}
 
 function loadPap(table) {
     table.render({

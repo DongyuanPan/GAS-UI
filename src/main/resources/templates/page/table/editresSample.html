@@ -19,72 +19,72 @@
     <div class="layui-form-item">
         <label class="layui-form-label required">虚拟机名称</label>
         <div class="layui-input-block">
-            <input type="text" name="vmname" disabled="disabled" class="layui-input">
+            <input type="text" name="vmname"  value="" class="layui-input">
         </div>
     </div>
 
     <div class="layui-form-item">
         <label class="layui-form-label required">台数</label>
         <div class="layui-input-block">
-            <input type="text" name="count" disabled="disabled" class="layui-input" >
+            <input type="text" name="count"  value="" class="layui-input">
         </div>
     </div>
 
     <div class="layui-form-item">
         <label class="layui-form-label">镜像</label>
         <div class="layui-input-block">
-            <input type="text" name="mirror" disabled="disabled" class="layui-input">
+            <input type="text" name="mirror"  value="" class="layui-input">
         </div>
     </div>
 
     <div class="layui-form-item">
         <label class="layui-form-label required">内存</label>
         <div class="layui-input-block">
-            <input  type="text" name="ram" disabled="disabled" class="layui-input">
+            <input type="text" name="ram"  value="" class="layui-input">
         </div>
     </div>
 
     <div class="layui-form-item">
         <label class="layui-form-label required">指令处理速度</label>
         <div class="layui-input-block ">
-            <input type="text" name="mips" disabled="disabled" class="layui-input">
+            <input type="text" name="mips" value="" class="layui-input">
         </div>
     </div>
 
     <div class="layui-form-item">
         <label class="layui-form-label">带宽</label>
         <div class="layui-input-block ">
-            <input type="text" name="bw" disabled="disabled" class="layui-input">
+            <input type="text" name="bw"  value="" class="layui-input">
         </div>
     </div>
 
     <div class="layui-form-item">
         <label class="layui-form-label">核数</label>
         <div class="layui-input-block ">
-            <input type="text" name="cpu" disabled="disabled" class="layui-input">
+            <input type="text" name="cpu"  value="" class="layui-input">
         </div>
     </div>
 
     <div class="layui-form-item">
-        <label class="layui-form-label">创建时间</label>
-        <div class="layui-input-block ">
-            <input type="text" name="enrollmentTime" disabled="disabled" class="layui-input">
+        <div class="layui-input-block">
+            <button class="layui-btn layui-btn-normal" lay-submit lay-filter="saveBtn" id="saveBtn">保存模板</button>
         </div>
     </div>
-
 </div>
 <script src="../../../static/lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
 <script>
-   layui.use(['form', 'table', 'upload', 'layedit', 'laydate'], function(){
+
+    layui.use(['form', 'table', 'upload', 'layedit', 'laydate'], function(){
         var form = layui.form,
             layer = layui.layer,
             $ = layui.$;
+        var upload = layui.upload;
         var $ = layui.jquery;
 
-        var resId = getUrlParamValue("id"); // 获取从 url 传递的 id 参数
+        var patentId = getUrlParamValue("id"); // 获取从 url 传递的 id 参数
 
         $.ajax({
-            url:'/resource/' + resId,
+            url:'/resSample/' + patentId,
             method:'get',
             success:function(res){
                 document.getElementsByName('vmname')[0].setAttribute("value", res.data.vmname);
@@ -94,12 +94,39 @@
                 document.getElementsByName('mips')[0].setAttribute("value", res.data.mips);
                 document.getElementsByName('bw')[0].setAttribute("value", res.data.bw);
                 document.getElementsByName('cpu')[0].setAttribute("value", res.data.cpu);
-                document.getElementsByName('enrollmentTime')[0].setAttribute("value", res.data.enrollmentTime);
             },
             error:function () {
                 alert("错误");
             }
         });
+
+        //监听提交
+        form.on('submit(saveBtn)', function (data) {
+            var index = layer.alert(JSON.stringify(data.field), {
+                title: '最终的提交信息'
+            }, function () {
+                // 关闭弹出层
+                layer.close(index);
+                var iframeIndex = parent.layer.getFrameIndex(window.name);
+                parent.layer.close(iframeIndex);
+
+                $.ajax({
+                    url:'/resSample/update/' + patentId,
+                    method:'post',
+                    data:data.field,
+                    dataType:'JSON',
+                    success:function(res){
+                        parent.layer.msg(res.msg);
+                    },
+                    error:function () {
+                        parent.layer.msg("错误");
+                    }
+                });
+            });
+
+            return false;
+        });
+
     });
 
     function getUrlParamValue(variable) {

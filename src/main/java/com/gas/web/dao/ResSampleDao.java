@@ -13,4 +13,8 @@ public interface ResSampleDao extends JpaRepository<ResSample,Integer> {
     @Transactional
     @Query(value = "select r.id from resSample r where r.user like %?1%", nativeQuery = true)
     List<Integer> findByUser(String user);
+    @Modifying
+    @Transactional
+    @Query(value = "delete r from resource r where r.id in (:idList)", nativeQuery = true)
+    void deleteBatch(List<ResSample> idList);
 }

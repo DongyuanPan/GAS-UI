@@ -36,8 +36,6 @@
                 <button class="layui-btn layui-btn-normal layui-btn-sm data-add-btn" lay-event="add"> 添加 </button>
                 <button class="layui-btn layui-btn-sm layui-btn-danger data-delete-btn" lay-event="delete"> 删除 </button>
                 <button class="layui-btn layui-btn-normal layui-btn-sm data-show-btn" lay-event="showAll"> 显示全部 </button>
-                <button class="layui-btn layui-btn-normal layui-btn-sm data-sample-btn" lay-event="sample"> 参数模板 </button>
-                <button class="layui-btn layui-btn-normal layui-btn-sm data-topology-btn" lay-event="topology"> 结构图 </button>
             </div>
         </script>
 
@@ -49,29 +47,22 @@
 
         </script>
 
-        <script type="text/html" id="details">
-
-            <a href="../page/table/ViewVM.html?id={{d.id}}" >{{d.vmname}}</a>
-
-
-        </script>
-
     </div>
 </div>
 <script src="../../static/lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
 <script src="../../static/js/table/table-load.js" charset="utf-8"></script>
 <script>
-var name="";
+    var name="";
     layui.use(['form', 'table'], function () {
         var $ = layui.jquery,
             form = layui.form,
             table = layui.table;
-            loadresource(table,"");
+        loadresSample(table,"");
 
         // 监听搜索操作
-         form.on('submit(data-search-btn)', function (data) {
+        form.on('submit(data-search-btn)', function (data) {
             name=$('#searchname').val();
-            loadresource(table,name);
+            loadresSample(table,name);
             return false;
         });
 
@@ -81,32 +72,16 @@ var name="";
         table.on('toolbar(currentTableFilter)', function (obj) {
             if (obj.event === 'add') {  // 监听添加操作
                 var index = layer.open({
-                    title: '创建虚拟机',
+                    title: '创建资源',
                     type: 2,
                     shade: 0.2,
                     maxmin:true,
                     shadeClose: true,
                     area: ['100%', '100%'],
-                    content: '../page/table/addresource.html?user=susan',
-                     end: function () {
-                     loadresource(table,"");
-                     }
-                });
-                $(window).on("resize", function () {
-                    layer.full(index);
-                });
-            }else if (obj.event === 'topology') {  // 监听添加操作
-                var index = layer.open({
-                    title: '资源结构图',
-                    type: 2,
-                    shade: 0.2,
-                    maxmin:true,
-                    shadeClose: true,
-                    area: ['100%', '100%'],
-                    content: '../page/topology.html?user=susan',
-                     end: function () {
-                     loadresource(table,"");
-                     }
+                    content: '../page/table/addresSample.html',
+                    end: function () {
+                        loadresSample(table,"");
+                    }
                 });
                 $(window).on("resize", function () {
                     layer.full(index);
@@ -117,7 +92,7 @@ var name="";
                 layer.confirm('确定删除所有选中的行', function (index) {
                     layer.close(index); // 关闭确认框
                     //调用后端函数，操作数据库
-                    var delete_url = '/resource/delete';
+                    var delete_url = '/resSample/delete';
                     $.ajax({
                         url: delete_url,
                         method:'delete',
@@ -127,7 +102,7 @@ var name="";
                         success:function(res){
                             // 批量删除成功，则更新视图
                             if (res.code == 200) {
-                                loadresource(table,"");
+                                loadresSample(table,"");
                             }
                             layer.msg(res.msg);
                         },
@@ -137,24 +112,8 @@ var name="";
                     });
                 });
             } else if(obj.event==='showAll'){   //显示所有记录
-                   loadresource(table,"");
-                   name="";
-            }else if(obj.event=='sample'){
-                var index = layer.open({
-                    title: '虚拟机参数模板',
-                    type: 2,
-                    shade: 0.2,
-                    maxmin:true,
-                    shadeClose: true,
-                    area: ['100%', '100%'],
-                    content: '../page/table/resSample.html?user=susan',
-                     end: function () {
-                     loadresource(table,"");
-                     }
-                });
-                $(window).on("resize", function () {
-                    layer.full(index);
-                });
+                loadresource(table,"");
+                name="";
             }
         });
 
@@ -163,20 +122,20 @@ var name="";
             console.log(obj)
         });
 
-         // 每个 item 的事件监听
+        // 每个 item 的事件监听
         table.on('tool(currentTableFilter)', function (obj) {
             var data = obj.data;
             if (obj.event === 'edit') {
                 var index = layer.open({
-                    title: '编辑虚拟机',
+                    title: '编辑模板',
                     type: 2,
                     shade: 0.2,
                     maxmin:true,
                     shadeClose: true,
                     area: ['100%', '100%'],
-                    content: '../page/table/editresource.html?id=' + data.id,
+                    content: '../page/table/editresSample.html?id=' + data.id,
                     end: function () {
-                        loadresource(table,name);
+                        loadresSample(table,name);
                     }
                 });
                 $(window).on("resize", function () {
@@ -187,14 +146,14 @@ var name="";
                 layer.confirm('真的删除此类型虚拟机吗？', function (index) {
                     layer.close(index);
                     //调用后端函数 删除数据库中的该行
-                    var delete_url = '/resource/delete/' + obj.data.id;
+                    var delete_url = '/resSample/delete/' + obj.data.id;
                     $.ajax({
                         url: delete_url,
                         method:'delete',
                         success:function(res){
                             if (res.code == 200) {
                                 // 删除成功，更新视图
-                                loadresource(table,name);
+                                loadresSample(table,name);
                             }
                             layer.msg(res.msg);
                         },

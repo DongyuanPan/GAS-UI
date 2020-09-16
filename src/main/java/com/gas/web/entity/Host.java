@@ -12,27 +12,16 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "resource")//对应的表名
-
-public class Resource {
+@Table(name = "host")//对应的表名
+public class Host {
     @Id//表明这个成员变量是 主键
     @GeneratedValue(generator="generator")
     @GenericGenerator(name="generator",strategy="increment")
     @Column(name = "ID", nullable = false)
     private Integer id;
-    private String name;
-    private Integer hostnum;
+    private Integer hostorder;
+    private Integer resId;
+    private String hostName;
+    private Integer vmnum;
     private String crtime;
-    private String person;
-   /* private Integer id;
-    private String  user;
-    private String  vmname;
-    private Integer count;
-    private Integer mirror;
-    private Integer ram;
-    private Integer mips;
-    private Integer bw;
-    private Integer cpu;
-    private String  enrollmentTime;*/
 }
-

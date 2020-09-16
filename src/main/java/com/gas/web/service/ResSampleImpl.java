@@ -2,6 +2,7 @@ package com.gas.web.service;
 
 import com.gas.web.dao.ResSampleDao;
 import com.gas.web.entity.ResSample;
+import com.gas.web.entity.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,7 +29,6 @@ public class ResSampleImpl implements IResSampleService {
     public Map<String, Object> findByUser(String user) {
         Map<String, Object> res = new HashMap<>();
         ResSample resSample=null;
-        // List<ResSample> resSampleList=new ArrayList<>();
         List<Integer> resSampleId = resSampleDao.findByUser(user);
         resSample=sampleFindById(resSampleId.get(0));
         String resCode = "0";
@@ -45,6 +45,26 @@ public class ResSampleImpl implements IResSampleService {
     public ResSample sampleFindById(Integer id) {
         Optional<ResSample> optional = resSampleDao.findById(id);
         return optional.orElse(null);
+    }
+
+    @Override
+    public Map<String, Object> findAllSample() {
+        //构造返回的 JSON 注意有格式要求   参见  resources/static/api/table.json
+        Map<String, Object> res = new HashMap<>();
+        List<ResSample> sampleData = resSampleDao.findAll();
+        String resCode = "0";
+        if (sampleData == null)
+            resCode = "1";
+        res.put("code", resCode);
+        res.put("msg", "");
+        res.put("count", sampleData.size());
+        res.put("data", sampleData);
+        return res;
+    }
+
+    @Override
+    public void deleteBatch(List<ResSample> sampleList) {
+        resSampleDao.deleteBatch(sampleList);
     }
 }
 

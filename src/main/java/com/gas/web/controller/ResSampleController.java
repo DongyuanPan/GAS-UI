@@ -2,12 +2,14 @@ package com.gas.web.controller;
 
 import com.gas.web.dao.ResSampleDao;
 import com.gas.web.entity.ResSample;
+import com.gas.web.entity.Resource;
 import com.gas.web.service.IResSampleService;
 import com.gas.web.vo.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -22,22 +24,16 @@ public class ResSampleController {
         this.resSampleDao = resSampleDao;
     }
 
+    @RequestMapping("")
+    public Map<String, Object> findAllRes() {
+
+        return resSampleService.findAllSample();
+    }
     /**
      * 查出当前用户的虚拟机模板
      * @param
      * @return
      */
-   /* @GetMapping("/{user}")
-    public Map<String, Object> sampleFindByUser(@PathVariable("user") String user) {
-        ResSample resSample=null;
-        try {
-            resSample=resSampleService.sampleFindById(resSampleDao.findByUser(user).get(0));
-        } catch (Exception e) {
-            e.printStackTrace();
-            return Response.failure("查询失败", user);
-        }
-           return  Response.success("查询成功", resSample);
-    }*/
 
     @GetMapping("/{user}")
     public Response patentFindById(@PathVariable("user") String user) {
@@ -50,6 +46,37 @@ public class ResSampleController {
             return Response.failure("查询失败", user);
         }
         return Response.success("查询成功", resSample);
+    }
+    /**添加模板
+     *
+     *
+     *
+    */
+
+    @PostMapping("/add")
+    public Response addResource(ResSample resSample){
+
+        try {
+            resSampleDao.save(resSample);
+        }catch (Exception e) {
+            e.printStackTrace();
+            return Response.failure("添加失败", resSample);
+        }
+        return Response.success("添加成功", resSample);
+    }
+
+    /** 批量删除模板
+     *
+     */
+    @RequestMapping("/delete")
+    public Response resourceDeleteBatch(@RequestBody List<ResSample> sampleList) {
+        try {
+            resSampleService.deleteBatch(sampleList);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.failure("删除失败", sampleList);
+        }
+        return Response.success("删除成功", sampleList);
     }
 
     /**
@@ -83,6 +110,7 @@ public class ResSampleController {
         }
         return Response.success("编辑成功", resSample);
     }
+
 
 }
 

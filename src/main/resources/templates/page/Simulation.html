@@ -48,6 +48,14 @@
                                 <table class="layui-hide" id="currentTableId" lay-filter="currentTableFilter" style="margin-top: 50px; margin-left: 0px; margin-right: 0px"></table>
                             </div>
 
+                           <!-- <div class="layui-form-item">
+                                <label class="layui-form-label">选择优化目标</label>
+                                <div class="layui-input-block must">
+                                    <select name="algorithm" lay-verify="required" id="select_goal">
+                                        <option color= value=""></option>
+                                    </select>
+                                </div>
+                            </div>-->
                             <div>
                                 <div style="text-align: center;margin-top: 90px;">
                                     <i class="layui-icon layui-circle"
@@ -159,7 +167,8 @@
                 title: '选择资源'
             }, {
                 title: '仿真'
-            }]
+            }
+            ]
         });
 
         //算法列表
@@ -184,7 +193,8 @@
                 var checkStatus = table.checkStatus('currentTableId')
                     , data = checkStatus.data;
                 algorithm=document.getElementsByTagName("select")[0].value;
-                vmList='{"vm":'+JSON.stringify(data)+'}'
+                //vmList='{"vm":'+JSON.stringify(data.id)+'}'
+                vmList=JSON.stringify(data[0].id);
                 if(JSON.stringify(data)!="[]"){
                     uploadVm($);//提交选中资源
 
