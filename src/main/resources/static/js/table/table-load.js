@@ -140,6 +140,25 @@ function loadresource(table,name) {
         skin: 'line'
     });
 }
+function loadresourceInSimPage(table) {
+    var strurl='/resource';
+    table.render({
+        elem: '#currentTableIdOfResource',
+        url: strurl,
+        cols: [[
+            {type: "checkbox", width: "10%"},
+            {field: 'id', width: "10%", title: 'ID', sort: true, align: "center"},
+            {field: 'person', width: "10%", title: '创建人', align: "center"},
+            {field: 'name', width: "25%", title: '资源名称', align: "center"},
+            {field: 'hostnum', width: "10%", title: 'Host数量', sort: true, align: "center"},
+            {field: 'crtime', width: "35%", title: '创建时间', sort: true, align: "center"}
+        ]],
+        limits: [10, 15, 20, 25, 50, 100],
+        limit: 15,
+        page: true,
+        skin: 'line'
+    });
+}
 
 function loadPap(table) {
     table.render({
@@ -190,8 +209,23 @@ function loadWorkflow(table) {
         skin: 'line'
     });
 }
+function loadWorkflowInSimPage(table) {
+    table.render({
+        elem: '#currentTableIdOfWorkflow',
+        url: '/workflow',
+        cols: [[
+            {type: "checkbox", width: "10%"},
+            {field: 'id', width: "10%", title: 'ID', sort: true, align: "center"},
+            {field: 'title', width: "40%", title: '工作流名称', align: "center"},
+            {field: 'information', width: "40%", title: '描述信息', align: "center"}
+        ]],
+        limits: [10, 15, 20, 25, 50, 100],
+        limit: 15,
+        page: true,
+        skin: 'line'
+    });
+}
 
-// 请求加载项目数据，渲染 table，根据是否要搜索及搜索条件，映射到不同url
 // 请求加载项目数据，渲染 table，根据是否要搜索及搜索条件，映射到不同url
 function loadProject(table, title) {
     var strurl = '/project';
