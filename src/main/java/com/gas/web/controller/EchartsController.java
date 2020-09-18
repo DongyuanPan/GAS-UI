@@ -25,6 +25,10 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.util.*;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+
 @Controller
 public class EchartsController {
     int datacenter=0,vmnumber=0,tableload=0;
@@ -285,16 +289,45 @@ public class EchartsController {
     @ResponseBody
     public JSONObject addQuestionnaire(HttpServletRequest request) {
         JSONObject jsonObject = new JSONObject();
-        String path = "src/main/resources/static/tasksim/";
-        String algorithm = request.getParameter("algorithm");
-        System.out.println(algorithm);
-        boolean whetherSave = Boolean.parseBoolean(request.getParameter("switch"));
-        File daxFile;
-        if(nonefile) {
-            jsonObject.put("code", -1);
-            return jsonObject;
+        File fileDir = new File("src/main/resources/static/tasksim");
+        if(!fileDir.exists()){
+            fileDir.mkdir();
         }
-        while (true) {
+        File taskFile = new File(fileDir + "/task.txt");
+        String taskFileAbusolutePath = taskFile.getAbsolutePath();
+        if(taskFile.exists() && taskFile.isFile()) {
+            System.out.println("file has existed");
+            taskFile.delete();
+        }
+        try {
+            BufferedWriter bw = new BufferedWriter(new FileWriter(taskFileAbusolutePath));
+            String workflowId = request.getParameter("workflow");
+            String resourseId = request.getParameter("resource");
+            String algorithm = request.getParameter("algorithm");
+            //System.out.println(workflowId);
+            //System.out.println(resourseId);
+            //System.out.println(algorithm);
+
+            //将表单写入task.txt,一行一个参数
+            bw.write(workflowId);
+            bw.write(' ');  //空格隔开
+            bw.write(resourseId);
+            bw.write(' ');  //空格隔开
+            bw.write(algorithm);
+            //关闭流
+            bw.close();
+            System.out.println("写入成功");
+
+            jsonObject.put("code", 200);
+        } catch (Exception e) {
+            jsonObject.put("code", 0);
+            e.printStackTrace();
+        }
+        return jsonObject;
+
+
+        //-------------------------------------------------------------------------------------张雅茹写的
+        /*while (true) {
             System.out.println("sleep");
             daxFile = new File(path + getLastFileName());
             if (daxFile.exists()&&daxFile.isFile())
@@ -304,7 +337,7 @@ public class EchartsController {
             System.out.println("tablenone");
             if (tableload==1)
                 break;
-        }
+        }*/
 //        while (getLastFileName() == null) {
 //            System.out.println("sleep");
 //        }
@@ -312,7 +345,7 @@ public class EchartsController {
 //        while (!finishUpload) {
 //            System.out.println("sleep");
 //        }
-        SchedulingAlgorithm f = new SchedulingAlgorithm();
+        /*SchedulingAlgorithm f = new SchedulingAlgorithm();
         f.process(path+getLastFileName(), vmnumber, Integer.parseInt(algorithm), map, datacenter);
         jsonObject.put("code", 200);
         jsonObject.put("data", toDisplay(f.getCondorVMList(), f.getTaskList()));
@@ -321,6 +354,6 @@ public class EchartsController {
         tableload=0;
         lastFileName=null;
         vmnumber=0;
-        return jsonObject;
+        return jsonObject;*/
     }
 }
