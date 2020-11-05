@@ -193,6 +193,7 @@
                 var checkStatus = table.checkStatus('currentTableId')
                     , data = checkStatus.data;
                 algorithm=document.getElementsByTagName("select")[0].value;
+                alert( algorithm);
                 //vmList='{"vm":'+JSON.stringify(data.id)+'}'
                 vmList=JSON.stringify(data[0].id);
                 if(JSON.stringify(data)!="[]"){

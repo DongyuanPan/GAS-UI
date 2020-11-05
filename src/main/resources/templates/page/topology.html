@@ -14,7 +14,8 @@
 <!-- 为 ECharts 准备一个具备大小（宽高）的 DOM -->
 <div id="main" style="width: 1000px;height: 700px"></div>
 <script src="../static/layui/layui.js"></script>
-<script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/echarts-all-3.js"></script>
+<!--<script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/echarts-all-3.js"></script>-->
+<script type="text/javascript" src="../static/js/lay-module/echarts/echarts-all-3.js"></script>
 <script type="text/javascript">
     // 基于准备好的dom，初始化echarts实例
     var myChart = echarts.init(document.getElementById('main'));
@@ -170,7 +171,6 @@
                 {
                     type: "tree",
                     symbol:'path://M511.4 512.2m-445 0a445 445 0 1 0 890 0 445 445 0 1 0-890 0Z M563.9 291.6H348.6c-25.4 0-46 20.6-46 46v398.7h75.7c-8.4-13.7-13.2-29.6-13.2-46.6 0-43 30.4-78.9 72.7-90 17.5-54.8 69.3-94.9 129.3-94.9 13.5 0 26.5 2.1 38.8 5.8v-177c0-23.2-18.8-42-42-42z m-9.2 194.9h-201v-55h201v55z m0-80.4h-201v-55h201v55z M743 685.1c0-27.7-24.9-50.3-56-51.1v-0.1h-18.2c-1.1-50.6-42.4-91.4-93.3-91.4s-92.2 40.7-93.3 91.4h-10.4v0.1c-31.1 0.9-56 23.4-56 51.1 0 27.7 24.9 50.3 56 51.1v0.1H687v-0.1c31.1-0.9 56-23.4 56-51.1z',
-                   // fill:'#d81e06',
                     hoverAnimation: true, //hover样式
                     data:getdata(),
                     top: 0,
@@ -178,7 +178,6 @@
                     left: 50,
                     right: 0,
                     layout: "radial",
-                    roam:true,
                     symbolSize: 10,
                     nodePadding: 10,
                     symbolOffset:[0,'50%'],
