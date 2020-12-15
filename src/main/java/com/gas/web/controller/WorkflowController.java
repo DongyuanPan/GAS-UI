@@ -52,8 +52,6 @@ public class WorkflowController {
     }
 
 
-
-
     /**
      * 通过 id 更新一个工作流信息
      * @return
@@ -192,11 +190,6 @@ public class WorkflowController {
             }
             //System.out.println(daxFile.getAbsolutePath());
         }
-        // while(!finishUpload);
-        //if(!isUpload){
-        //    finishUpload=false;
-        //    return Response.failure("添加失败", workflow);
-        // }
         workflow.setTitle(title);
         workflow.setInformation(information);
         workflow.setFileName(getLastFileName());

@@ -20,42 +20,92 @@
                     <div class="layui-carousel" id="stepForm" lay-filter="stepForm" style="margin: 0 auto;">
                         <div carousel-item>
                             <div class="layui-form-item" style="text-align: center">
-
+                                <div class="layui-form-item">
+                                    <table class="layui-hide" id="currentTableIdOfWorkflow" lay-filter="currentTableFilter" style="margin-top: 50px; margin-left: 0px; margin-right: 0px"></table>
+                                </div>
                                 <div class="layui-form-item">
                                     <div class="layui-input-block">
-                                        <button type="button" style="text-align: center" class="layui-btn layui-btn-normal" id="chooseFile">选择文件</button>
-                                    </div>
-                                </div>
-
-                                <div class="layui-form-item">
-                                    <div class="layui-input-block must">
-                                        <select name="algorithm" lay-verify="required" id="select_algo">
-                                            <option color= value=""></option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div class="layui-form-item">
-                                    <div class="layui-input-block">
-                                        <button class="layui-btn layui-btn-primary" lay-submit lay-filter="formStep">
+                                        <button class="layui-btn layui-btn-primary" lay-submit lay-filter="formStep" id="NextInStep1">
                                             &emsp;&emsp;下一步&emsp;&emsp;
                                         </button>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="layui-form-item">
-                                <table class="layui-hide" id="currentTableId" lay-filter="currentTableFilter" style="margin-top: 50px; margin-left: 0px; margin-right: 0px"></table>
+                            <div class="layui-form-item" style="text-align: center">
+                                <div class="layui-form-item">
+                                    <table class="layui-hide" id="currentTableIdOfResource" lay-filter="currentTableFilter" style="margin-top: 50px; margin-left: 0px; margin-right: 0px"></table>
+                                </div>
+                                <div class="layui-form-item">
+                                    <div class="layui-input-block">
+                                        <button class="layui-btn layui-btn-primary" lay-submit lay-filter="formStep" id="PreInStep2">
+                                            &emsp;&emsp;上一步&emsp;&emsp;
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="layui-form-item">
+                                    <div class="layui-input-block">
+                                        <button class="layui-btn layui-btn-primary" lay-submit lay-filter="formStep" id="NextInStep2">
+                                            &emsp;&emsp;下一步&emsp;&emsp;
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
 
-                           <!-- <div class="layui-form-item">
-                                <label class="layui-form-label">选择优化目标</label>
-                                <div class="layui-input-block must">
-                                    <select name="algorithm" lay-verify="required" id="select_goal">
-                                        <option color= value=""></option>
-                                    </select>
+                            <div class="layui-form-item" style="text-align: center">
+                                <div class="layui-form-item">
+                                    <div class="layui-input-block must">
+                                        <table class="layui-hide" id="currentTableIdOfAlgorithm" lay-filter="currentTableFilter" style="margin-top: 50px; margin-left: 0px; margin-right: 0px"></table>
+                                    </div>
                                 </div>
-                            </div>-->
+                                <div class="layui-form-item">
+                                    <div class="layui-input-block">
+                                        <button class="layui-btn layui-btn-primary" lay-submit lay-filter="formStep" id="PreInStep3">
+                                            &emsp;&emsp;上一步&emsp;&emsp;
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="layui-form-item">
+                                    <div class="layui-input-block">
+                                        <button class="layui-btn layui-btn-primary" lay-submit lay-filter="formStep" id="NextInStep3">
+                                            &emsp;&emsp;下一步&emsp;&emsp;
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item" style="text-align: center">
+                                <div class="layui-form-item">
+                                    <div class="layui-input-block must">
+                                        <table class="layui-hide"  id="currentTableIdOfWorkflowConfirm" lay-filter="currentTableFilter" style="margin-top: 50px; margin-left: 0px; margin-right: 0px"></table>
+                                    </div>
+                                </div>
+                                <div class="layui-form-item">
+                                    <div class="layui-input-block must">
+                                        <table class="layui-hide" id="currentTableIdOfResourceConfirm" lay-filter="currentTableFilter" style="margin-top: 50px; margin-left: 0px; margin-right: 0px"></table>
+                                    </div>
+                                </div>
+                                <div class="layui-form-item">
+                                    <div class="layui-input-block must">
+                                        <table class="layui-hide" id="currentTableIdOfAlgorithmConfirm"  lay-filter="currentTableFilter" style="margin-top: 50px; margin-left: 0px; margin-right: 0px"></table>
+                                    </div>
+                                </div>
+                                <div class="layui-form-item">
+                                    <div class="layui-input-block">
+                                        <button class="layui-btn layui-btn-primary" lay-submit lay-filter="formStep" id="PreInStep4">
+                                            &emsp;&emsp;上一步&emsp;&emsp;
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="layui-form-item">
+                                    <div class="layui-input-block">
+                                        <button class="layui-btn layui-btn-primary" lay-submit lay-filter="formStep" id="Sure">
+                                            &emsp;&emsp;确认&emsp;&emsp;
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
                             <div>
                                 <div style="text-align: center;margin-top: 90px;">
                                     <i class="layui-icon layui-circle"
@@ -64,97 +114,30 @@
                                         仿真成功
                                     </div>
                                 </div>
-                                <div style="text-align: center;margin-top: 50px;">
-                                    <button class="layui-btn next" >重新仿真</button>
-                                    <button class="layui-btn layui-btn-primary">查看仿真结果</button>
-                                </div>
                             </div>
-
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>
-        <script type="text/html" id="toolbarDemo">
-            <div class="layui-btn-container">
-                <div class="layui-form-item">
-                    <button class="layui-btn layui-btn-normal layui-btn-sm data-sure-btn" lay-event="sure" lay-submit="" lay-filter="sure" id="sure"> 确认 </button>
-                    <button class="layui-btn layui-btn-normal layui-btn-sm data-pre-btn" lay-event="pre"> 上一步 </button>
-                </div>
-            </div>
-        </script>
-
-
     </div>
 </div>
 <script src="../../static/lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
 <script src="../../static/js/lay-config.js?v=1.0.4" charset="utf-8"></script>
 <script src="../../static/js/table/table-load.js" charset="utf-8"></script>
 <script>
-    var vmList;
-    var algorithm;
-    var $;
-    var _rawData;
-    function updateAlgoSelect(algoNameList, $) {
-        $('#select_algo').empty();//清空select，不然每点一次都循环添加一遍数据越来越多
-        for(var i=0;i < algoNameList.length;i++){
-            var algoName = algoNameList[i];
-            //为select添加option
-            $("#select_algo").append("<option value="+ i +">"+ algoName +"</option>");
-            renderForm();//表单重新渲染，要不然添加完显示不出来新的option
-        };
-
-    }
-    function renderForm(){
-        layui.use('form', function(){
-            var form = layui.form;
-            form.render();
-        });
-    }
-    function uploadVm($){
-        $.ajax({
-            type: 'post',
-            dataType: 'html',
-            url: '/tableUpload',
-            data: {
-                "tabledata" : vmList
-            },
-            success: function (data) {
-                layer.msg("资源创建成功");
-            },
-            error: function (request) {
-                layer.msg("资源创建失败");
-            }
-        });
-    }
-    layui.use([ 'form', 'step', 'table', 'upload'], function () {
+    layui.use([ 'form', 'step', 'table'], function () {
         var $ = layui.$,
-            form = layui.form,
             step = layui.step,
-            table = layui.table,
-            upload=layui.upload;
-        upload.render({
-            elem: '#chooseFile',
-            url: '/taskFileUpload',
-            auto: true,//选择文件后不自动上传
-            accept: 'file', //允许上传的文件类型
-            //bindAction: '#sure',
-            //操作成功的回调
-            done: function (res) {
-                if (res.code == 200) {
-
-                } else{
-                    if(res.code==-1)
-                        layer.msg("请选择任务文件");
-                }
-            }
-            ,error: function(){
-                //请求异常回调
-                layer.msg("任务文件上传失败");
-            }
-        });
-
+            table = layui.table;
+        var dataOfWorkflow,
+            dataOfResource,
+            dataOfAlgorithm;
+        var workflowId,
+            resourceId,
+            algorithmId;
+        var str;
+        //载入分步表单
         step.render({
             elem: '#stepForm',
             filter: 'stepForm',
@@ -162,85 +145,128 @@
             stepWidth: '750px',
             height: '500px',
             stepItems: [{
-                title: '选择工作流文件'
+                title: '选择工作流'
             }, {
                 title: '选择资源'
+            }, {
+                title: '选择算法'
+            }, {
+                title: '确认选择'
             }, {
                 title: '仿真'
             }
             ]
         });
-
-        //算法列表
-        $.ajax({
-            type: "GET",
-            url: "/init",
-            success: function (result) {
-                if (result.code == 200) {
-                    // 初始化算法选择列表
-                    updateAlgoSelect(result.algoNameList, $);
-                }
-            }
-        });
-        /**
-         * toolbar监听事件
-         */
-        table.on('checkbox(currentTableFilter)', function (obj) {
-        });
-        table.on('toolbar(currentTableFilter)', function (obj) {
-            if (obj.event === 'sure') {  // 监听添加操作
-                $('#sure').submit=true;
-                var checkStatus = table.checkStatus('currentTableId')
-                    , data = checkStatus.data;
-                algorithm=document.getElementsByTagName("select")[0].value;
-                alert( algorithm);
-                //vmList='{"vm":'+JSON.stringify(data.id)+'}'
-                vmList=JSON.stringify(data[0].id);
-                if(JSON.stringify(data)!="[]"){
-                    uploadVm($);//提交选中资源
-
-                    $.ajax({
-                        url: '/formUpload',
-                        method: 'post',
-                        data: {
-                            "algorithm": algorithm
-                        },
-                        dataType: 'JSON',
-                        success: function (res) {
-                            if (res.code == 200) {
-                                var result = JSON.stringify(res.data);
-                                window.localStorage.setItem("result", result);
-                                step.next('#stepForm');
-                            } else {
-
-                            }
-                        },
-                        error: function () {
-                            layer.msg("表单提交失败");
-                        }
-                    });
-                }else {
-                    layer.msg("请选择资源");
-                }
-
-            }else if(obj.event === 'pre'){
-                step.pre('#stepForm');
-            }
-        });
-
-
-        form.on('submit(formStep)', function (data) {
+        //载入表格
+        loadWorkflowInSimPage(table);
+        //换页
+        $('#NextInStep1').click(function () {
             step.next('#stepForm');
-            loadresource(table,"");
-            return false;
+            loadresourceInSimPage(table);
         });
+        $('#NextInStep2').click(function () {
+            step.next('#stepForm');
+            loadAlgorithmInSimPage(table);
+        });
+        $('#NextInStep3').click(function () {
+            step.next('#stepForm');
 
-        $('.pre').click(function () {
+            var checkStatusOfWorkflow = table.checkStatus('currentTableIdOfWorkflow');
+            dataOfWorkflow = checkStatusOfWorkflow.data;
+            workflowId=JSON.stringify(dataOfWorkflow[0].id);
+            table.render({
+                elem: '#currentTableIdOfWorkflowConfirm',
+                cols: [[
+                    {field: 'title', width: "50%", title: '工作流名称', align: "left"},
+                    {field: 'information', width: "50%", title: '描述信息', align: "left"}
+                ]],
+                data:[
+                    {   title: JSON.stringify(dataOfWorkflow[0].title),
+                        information: JSON.stringify(dataOfWorkflow[0].information)}
+                ],
+                page: false,
+                skin: 'line'
+            });
+            var checkStatusOfResource = table.checkStatus('currentTableIdOfResource');
+            dataOfResource = checkStatusOfResource.data;
+            resourceId=JSON.stringify(dataOfResource[0].id);
+            table.render({
+                elem: '#currentTableIdOfResourceConfirm',
+                cols: [[
+                    {field: 'name', width: "30%", title: '资源名称', align: "left"},
+                    {field: 'person', width: "20%", title: '创建人', align: "left"},
+                    {field: 'hostnum', width: "20%", title: 'Host数量', align: "left"},
+                    {field: 'crtime', width: "30%", title: '创建时间', align: "left"}
+                ]],
+                data:[
+                    {   name: JSON.stringify(dataOfResource[0].name),
+                        person: JSON.stringify(dataOfResource[0].person),
+                        hostnum: JSON.stringify(dataOfResource[0].hostnum),
+                        crtime: JSON.stringify(dataOfResource[0].crtime)}
+                ],
+                page: false,
+                skin: 'line'
+            });
+            var checkStatusOfAlgorithm = table.checkStatus('currentTableIdOfAlgorithm');
+            dataOfAlgorithm = checkStatusOfAlgorithm.data;
+            algorithmId=JSON.stringify(dataOfAlgorithm[0].id);
+            table.render({
+                elem: '#currentTableIdOfAlgorithmConfirm',
+                cols: [[
+                    {field: 'name', width: "50%", title: '算法名称', sort: true, align: "left"},
+                    {field: 'summary', width: "50%", title: '摘要', align: "left"}
+                ]],
+                data:[
+                    {   name: JSON.stringify(dataOfAlgorithm[0].name),
+                        summary: JSON.stringify(dataOfAlgorithm[0].summary)}
+                ],
+                page: false,
+                skin: 'line'
+            });
+        });
+        $('#PreInStep2').click(function () {
             step.pre('#stepForm');
+            loadWorkflowInSimPage(table);
         });
+        $('#PreInStep3').click(function () {
+            step.pre('#stepForm');
+            loadresourceInSimPage(table);
+        });
+        $('#PreInStep4').click(function () {
+            step.pre('#stepForm');
+            loadAlgorithmInSimPage(table);
+        });
+        //点击确认按钮，提交表单
+        $('#Sure').click(function () {
+            $('#sure').submit=true;
+            if(JSON.stringify(dataOfWorkflow)!="[]" && JSON.stringify(dataOfResource)!="[]" && JSON.stringify(dataOfAlgorithm)!="[]"){
+                $.ajax({
+                    url: '/formUpload',
+                    method: 'post',
+                    data: {
+                        "workflow": workflowId,
+                        "resource": resourceId,
+                        "algorithm": algorithmId
+                    },
+                    dataType: 'JSON',
+                    success: function (res) {
+                        if (res.code == 200) {
+                            var result = JSON.stringify(res.data);
+                            window.localStorage.setItem("result", result);
+                            step.next('#stepForm');
+                           // window.location.href="ResultShow2.html";
+                            self.location="ResultShow2.html";
+                        } else {
 
-        $('.next').click(function () {
-            step.next('#stepForm');
+                        }
+                    },
+                    error: function () {
+                        layer.msg("表单提交失败");
+                    }
+                });
+            }else {
+                layer.msg("请选择资源");
+            }
         });
     })
 </script>
