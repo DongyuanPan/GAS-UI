@@ -1,0 +1,20 @@
+1、fork代码
+2、拉取代码：从github到本地仓库
+    （1）用ssh进行用户人证，一种安全的传输协议，将用户公钥添加到github中
+         在某个文件夹运行git bash
+	 git init：初始化一个本地仓库
+	 ssh-keygen -t rsa -C "邮箱": 产生公钥
+	 将公钥添加到github中
+	 git clone git地址:即可下拉代码到本地仓库
+3、push代码
+   开发完后，将代码从本地仓库推到自己的github仓库
+   git add .:对本项目进行版本控制
+   git commit -m "注释，随意"
+   git push即可，若有冲突百度解决
+
+   从github仓库下拉更新的代码
+   git pull下拉并合并，有冲突无法合并，就先隐藏自己的代码
+
+   pull request将自己github仓库代码与潘老师的合并
+   new pull request
+

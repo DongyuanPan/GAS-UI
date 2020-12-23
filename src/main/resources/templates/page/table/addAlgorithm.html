@@ -59,8 +59,12 @@
             accept: 'file', //允许上传的文件类型
             bindAction: '#saveBtn',
             //操作成功的回调
-            done: function (res) {
-
+            done: function (result) {
+                if (result.code == 200) {
+                    alert("上传文件成功");
+                } else {
+                    alert("上传文件失败");
+                }
             }
             ,error: function(){
              //请求异常回调

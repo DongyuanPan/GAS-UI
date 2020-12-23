@@ -47,7 +47,6 @@ public class ResourceController {
     }
     @GetMapping("/{id}")
     public Map<String, Object> vmFindAllByRes(@PathVariable("id") Integer id) {
-
         return iResourceService.vmFindAll(id);
     }
 

@@ -234,7 +234,7 @@ public class HEFTPlanningAlgorithm extends BasePlanningAlgorithm {
     }
 
     /**
-     * Allocates all tasks to be scheduled in non-ascending order of schedule.
+     * ·
      */
     private void allocateTasks() {
         List<TaskRank> taskRank = new ArrayList<>();

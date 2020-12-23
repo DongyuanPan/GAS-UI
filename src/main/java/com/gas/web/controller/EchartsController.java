@@ -1,6 +1,5 @@
 package com.gas.web.controller;
 
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.gas.web.bean.Res;
 import com.gas.web.bean.Schedule;
@@ -8,7 +7,9 @@ import com.gas.web.bean.Task;
 import com.gas.web.constant.Constant;
 import com.gas.web.display.Display;
 import com.gas.web.entity.Vm;
+import com.gas.web.entity.Workflow;
 import com.gas.web.service.IVmService;
+import com.gas.web.service.IWorkflowService;
 import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -22,19 +23,21 @@ import org.workflowsim.Job;
 import org.workflowsim.WorkflowScheduler;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.File;
+import java.io.*;
 import java.util.*;
 
 @Controller
 public class EchartsController {
-    int datacenter=0,vmnumber=0,tableload=0;
+    int datacenter=1,vmnumber=0;
     boolean nonefile=false;
     public Map<String, Vm> map;
     private final IVmService iVmService;
+    private final IWorkflowService iWorkflowService;
 
     @Autowired
-    public EchartsController(IVmService iVmService) {
+    public EchartsController(IVmService iVmService, IWorkflowService iWorkflowService) {
         this.iVmService = iVmService;
+        this.iWorkflowService = iWorkflowService;
     }
 
     @ResponseBody
@@ -132,7 +135,17 @@ public class EchartsController {
         schedule.setTaskList(taskList);
         return new Display(schedule);
     }
-
+    public void getResource(String name){
+        map=new HashMap<String, Vm>();
+        try {
+            map=iVmService.getAllVm(Integer.parseInt(name));
+            for (Vm vm:map.values()) {
+                vmnumber+=vm.getCount();
+            }
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     private Display genJson() {
         Schedule schedule = new Schedule();
         List<Res> resList = new ArrayList<>();
@@ -154,10 +167,6 @@ public class EchartsController {
         String json = gson.toJson(display);
         System.out.println(json);
         return display;
-//        System.out.println(json);
-
-//        String jsonPath = "F:\\workspace\\IdeaProjects\\springboot_web\\src\\main\\resources\\static\\json";
-//        CreateFileUtil.createJsonFile(json, jsonPath, "data");
     }
 
     private boolean finishUpload = false;
@@ -252,49 +261,35 @@ public class EchartsController {
         }
         return jsonObject;
     }
-
-    /**h
-     * 表格数据上传
-     * @return 返回响应结果
-     */
-    @RequestMapping(value = "/tableUpload", method = RequestMethod.POST)
-    @ResponseBody
-    public JSONObject tableUpload(HttpServletRequest request){
-        map=new HashMap<String, Vm>();
-        JSONObject jsonObject = new JSONObject();
-        String name=request.getParameter("tabledata");
-        try {
-            map=iVmService.getAllVm(Integer.parseInt(name));
-            for (Vm vm:map.values()) {
-                vmnumber+=vm.getCount();
-            }
-        }catch (Exception e) {
-            jsonObject.put("code", 0);
-            e.printStackTrace();
-        }
-
-        jsonObject.put("code",200);
-        tableload=1;
-        return jsonObject;
-    }
     /**
      * 表单数据上传
      * @return 返回响应结果
      */
     @RequestMapping(value = "/formUpload", method = RequestMethod.POST)
     @ResponseBody
-    public JSONObject addQuestionnaire(HttpServletRequest request) {
+    public JSONObject addQuestionnaire(HttpServletRequest request) throws IOException {
         JSONObject jsonObject = new JSONObject();
-        String path = "src/main/resources/static/tasksim/";
-        String algorithm = request.getParameter("algorithm");
-        System.out.println(algorithm);
-        boolean whetherSave = Boolean.parseBoolean(request.getParameter("switch"));
-        File daxFile;
-        if(nonefile) {
-            jsonObject.put("code", -1);
-            return jsonObject;
+        File fileDir = new File("config/workflow/");
+        if(!fileDir.exists()){
+            fileDir.mkdir();
         }
-        while (true) {
+        String absolutePath = fileDir.getAbsolutePath();
+        String workflowId = request.getParameter("workflow");
+        String resourseId = request.getParameter("resource");
+        String algorithm = request.getParameter("algorithm");
+        Workflow workflow = iWorkflowService.workflowFindById(Integer.parseInt(workflowId));
+        lastFileName=workflow.getFileName();
+        getResource(resourseId);
+        SchedulingAlgorithm f = new SchedulingAlgorithm();
+        f.process(absolutePath+"/"+getLastFileName(), vmnumber, Integer.parseInt(algorithm), map, datacenter);
+        jsonObject.put("code", 200);
+        jsonObject.put("data", toDisplay(f.getCondorVMList(), f.getTaskList()));
+        System.out.println(jsonObject);
+        lastFileName=null;
+        vmnumber=0;
+        return jsonObject;
+        //-------------------------------------------------------------------------------------张雅茹写的
+        /*while (true) {
             System.out.println("sleep");
             daxFile = new File(path + getLastFileName());
             if (daxFile.exists()&&daxFile.isFile())
@@ -304,7 +299,7 @@ public class EchartsController {
             System.out.println("tablenone");
             if (tableload==1)
                 break;
-        }
+        }*/
 //        while (getLastFileName() == null) {
 //            System.out.println("sleep");
 //        }
@@ -312,7 +307,7 @@ public class EchartsController {
 //        while (!finishUpload) {
 //            System.out.println("sleep");
 //        }
-        SchedulingAlgorithm f = new SchedulingAlgorithm();
+        /*SchedulingAlgorithm f = new SchedulingAlgorithm();
         f.process(path+getLastFileName(), vmnumber, Integer.parseInt(algorithm), map, datacenter);
         jsonObject.put("code", 200);
         jsonObject.put("data", toDisplay(f.getCondorVMList(), f.getTaskList()));
@@ -321,6 +316,6 @@ public class EchartsController {
         tableload=0;
         lastFileName=null;
         vmnumber=0;
-        return jsonObject;
+        return jsonObject;*/
     }
 }
