@@ -1,19 +1,4 @@
-/**
- * Copyright 2012-2013 University Of Southern California
- *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not
- * use this file except in compliance with the License. You may obtain a copy of
- * the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations under
- * the License.
- */
-package org.workflowsim.examples;
+package com.gas.web.StaticAlgorithm;
 
 import java.io.File;
 import java.text.DecimalFormat;
@@ -47,16 +32,7 @@ import org.workflowsim.utils.Parameters;
 import org.workflowsim.utils.ReplicaCatalog;
 import org.workflowsim.utils.Parameters.ClassType;
 
-/**
- * This WorkflowSimExample creates a workflow planner, a workflow engine, and
- * one schedulers, one data centers and 20 vms. You should change daxPath at
- * least. You may change other parameters as well.
- *
- * @author Weiwei Chen
- * @since WorkflowSim Toolkit 1.0
- * @date Apr 9, 2013
- */
-public class WorkflowSimBasicExample1 {
+public class GAMain {
 
     protected static List<CondorVM> createVM(int userId, int vms) {
         //Creates a container to store VMs. This list is passed to the broker later
@@ -74,7 +50,7 @@ public class WorkflowSimBasicExample1 {
         CondorVM[] vm = new CondorVM[vms];
         for (int i = 0; i < vms; i++) {
             double ratio = 1.0;
-            vm[i] = new CondorVM(i, 1,userId, mips * ratio, pesNumber, ram, bw, size, vmm, new CloudletSchedulerSpaceShared());
+            vm[i] = new CondorVM(i, userId, mips * ratio, pesNumber, ram, bw, size, vmm, new CloudletSchedulerSpaceShared());
             list.add(vm[i]);
         }
         return list;
@@ -87,17 +63,17 @@ public class WorkflowSimBasicExample1 {
      */
     public static void main(String[] args) {
         try {
-            // First step: Initialize the WorkflowSim package. 
+            // First step: Initialize the WorkflowSim package.
             /**
              * However, the exact number of vms may not necessarily be vmNum If
              * the data center or the host doesn't have sufficient resources the
              * exact vmNum would be smaller than that. Take care.
              */
-            int vmNum = 20;//number of vms;
+            int vmNum = 5;//number of vms;
             /**
              * Should change this based on real physical path
              */
-            String daxPath = "config\\dax\\CyberShake_1000.xml";
+            String daxPath = "C:\\Users\\64123\\IdeaProjects\\GAS-UI\\config\\dax\\Montage_25.xml";
             File daxFile = new File(daxPath);
             if (!daxFile.exists()) {
                 Log.printLine("Warning: Please replace daxPath with the physical path in your working environment!");
@@ -165,12 +141,49 @@ public class WorkflowSimBasicExample1 {
              * Binds the data centers with the scheduler.
              */
             wfEngine.bindSchedulerDatacenter(datacenter0.getId(), 0);
-            CloudSim.startSimulation();
-            List<Job> outputList0 = wfEngine.getJobsReceivedList();
-            CloudSim.stopSimulation();
-            printJobList(outputList0);
+
+
+            // GA main
+            Integer groupSize = 20;
+            Double crossoverProbability = 0.8;
+            Double mutationProbability = 0.1;
+            GA ga = new GA(groupSize, vmlist0, crossoverProbability, mutationProbability);
+            Chromosome theBest;
+            // 初始化种群
+            ArrayList<Chromosome> group = ga.initGroup();
+
+            for (int i = 0; i < 100; ++i) {
+                // 交叉
+                group = ga.crossover(group);
+
+                // 变异
+                group = ga.mutation(group);
+
+                Double maxF = Double.MIN_VALUE;
+                // 计算适应度函数
+                for (Chromosome chromosome:group) {
+                    chromosome.calFitness();
+                    maxF = Math.max(maxF, chromosome.getF());
+                }
+
+                // 转换适应度函数，让轮盘赌能够按照完成时间早的被选择的概率大
+                for (Chromosome chromosome:group) {
+                    chromosome.setF(maxF - chromosome.getF());
+                }
+
+                // 选择
+                group = ga.selectNextGroup(group, groupSize);
+
+                Chromosome chromosome = ga.best(group);
+
+                printJobList(chromosome.result);
+                System.out.println("第" + i + "次迭代:   " + chromosome.getFinishTime());
+                // 睡眠？
+            }
+
+
         } catch (Exception e) {
-            Log.printLine("The simulation has been terminated due to an unexpected error" + e);
+            Log.printLine("The simulation has been terminated due to an unexpected error: " + e);
         }
     }
 
