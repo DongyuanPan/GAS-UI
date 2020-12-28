@@ -60,7 +60,7 @@ public class DynamicWorkloadExample1 extends WorkflowSimBasicExample1 {
 
         for (int i = 0; i < vms; i++) {
             double ratio = 1.0;
-            vm[i] = new CondorVM(i, userId, mips * ratio, pesNumber, ram, bw, size, vmm, new CloudletSchedulerDynamicWorkload(mips * ratio, pesNumber));
+            vm[i] = new CondorVM(i, 1,userId, mips * ratio, pesNumber, ram, bw, size, vmm, new CloudletSchedulerDynamicWorkload(mips * ratio, pesNumber));
             list.add(vm[i]);
         }
 

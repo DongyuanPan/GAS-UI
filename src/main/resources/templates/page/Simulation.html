@@ -210,6 +210,13 @@
             var checkStatusOfAlgorithm = table.checkStatus('currentTableIdOfAlgorithm');
             dataOfAlgorithm = checkStatusOfAlgorithm.data;
             algorithmId=JSON.stringify(dataOfAlgorithm[0].id);
+            var  algorithmSum=JSON.stringify(dataOfAlgorithm[0].summary);
+            var algorithmName2,algorithmSum2;
+            if(dataOfAlgorithm.length==2){
+                algorithmName2=dataOfAlgorithm[1].name;
+                algorithmSum2=dataOfAlgorithm[1].summary;
+            }
+            alert(JSON.stringify(dataOfAlgorithm));
             table.render({
                 elem: '#currentTableIdOfAlgorithmConfirm',
                 cols: [[
@@ -218,7 +225,10 @@
                 ]],
                 data:[
                     {   name: JSON.stringify(dataOfAlgorithm[0].name),
-                        summary: JSON.stringify(dataOfAlgorithm[0].summary)}
+                        summary: JSON.stringify(dataOfAlgorithm[0].summary)},
+                    {   name: JSON.stringify(algorithmName2),
+                        summary: JSON.stringify(algorithmSum2)}
+
                 ],
                 page: false,
                 skin: 'line'
@@ -246,15 +256,16 @@
                     data: {
                         "workflow": workflowId,
                         "resource": resourceId,
-                        "algorithm": algorithmId
+                        //"algorithm": algorithmId
+                        "algorithm" :JSON.stringify(dataOfAlgorithm)
                     },
                     dataType: 'JSON',
                     success: function (res) {
                         if (res.code == 200) {
-                            var result = JSON.stringify(res.data);
+                            var result = JSON.stringify(res);
                             window.localStorage.setItem("result", result);
                             step.next('#stepForm');
-                           // window.location.href="ResultShow2.html";
+                            // window.location.href="ResultShow2.html";
                             self.location="ResultShow2.html";
                         } else {
 

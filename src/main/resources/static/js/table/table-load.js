@@ -72,7 +72,7 @@ function loadpatent(table,name,keyword) {
         skin: 'line'
     });
 }
- //加载参数模板表
+//加载参数模板表
 function loadresSample(table,name) {
     var strurl='/resSample';
     if(name!=""){
@@ -130,7 +130,7 @@ function loadresource(table,name) {
             {field: 'id', width: "10%", title: 'ID', sort: true, align: "center"},
             {field: 'person', width: "10%", title: '创建人', align: "center"},
             {field: 'name', width: "15%", title: '资源名称', align: "center"},
-            {field: 'hostnum', width: "5%", title: 'Host数量', sort: true, align: "center"},
+            {field: 'hostnum', width: "15%", title: 'Host数量', sort: true, align: "center"},
             {field: 'crtime', width: "20%", title: '创建时间', sort: true, align: "center"},
             {title: '操作', width: "20%", toolbar: '#currentTableBar', align: "center"}
         ]],
@@ -175,8 +175,8 @@ function loadPap(table) {
             {field: 'title', width: 80, title: '论文', align: "center"},
             {field: 'author1', width: 80, title: '第一作者', align: "center"},
             {field: 'author2', width: 80, title: '第二作者', align: "center"},
-            {field: 'authorOther', minWidth: 80 , title: '其他作者', align: "center"},
-            {field: 'origin', minWidth: 120 , title: '来源', align: "center"},
+            {field: 'authorOther', minWidth: 50 , title: '其他作者', align: "center"},
+            {field: 'origin', minWidth: 100 , title: '来源', align: "center"},
             {title: '操作', minWidth: 100, toolbar: '#currentTableBar', align: "center"}
         ]],
         limits: [10, 15, 20, 25, 50, 100],
@@ -199,8 +199,8 @@ function loadWorkflow(table) {
             {type: "checkbox", width: "10%"},
             {field: 'id', width: "10%", title: 'ID', sort: true, align: "center"},
             {field: 'title', width: "30%", title: '工作流名称', align: "left"},
-            {field: 'information', width: "40%", title: '描述信息', align: "left"},
-            {title: '操作', width: "10%", toolbar: '#currentTableBar', align: "center"}
+            {field: 'information', width: "20%", title: '描述信息', align: "center"},
+            {title: '操作', width: "30%", toolbar: '#currentTableBar', align: "center"}
         ]],
         limits: [10, 15, 20, 25, 50, 100],
         limit: 15,
@@ -215,8 +215,8 @@ function loadWorkflowInSimPage(table) {
         cols: [[
             {type: "radio", width: "10%"},
             {field: 'id', width: "10%", title: 'ID', sort: true, align: "center"},
-            {field: 'title', width: "40%", title: '工作流名称', align: "left"},
-            {field: 'information', width: "40%", title: '描述信息', align: "left"}
+            {field: 'title', width: "20%", title: '工作流名称', align: "left"},
+            {field: 'information', width: "20%", title: '描述信息', align: "left"}
         ]],
         limits: [10, 15, 20, 25, 50, 100],
         limit: 15,
@@ -279,9 +279,9 @@ function loadAlgorithm(table, name) {
         cols: [[
             {type: "checkbox", width: "10%"},
             {field: 'id', width: "10%", title: 'ID', sort: true, align: "center"},
-            {field: 'name', width: "30%", title: '算法名称', sort: true, align: "left"},
-            {field: 'summary', width: "40%", title: '摘要', align: "left"},
-            {title: '操作', minWidth: "10%", toolbar: '#currentTableBar', align: "center"}
+            {field: 'name', width: "30%", title: '算法名称',  align: "left"},
+            {field: 'summary', width: "30%", title: '摘要', align: "left"},
+            {title: '操作', minWidth: "20%", toolbar: '#currentTableBar', align: "center"}
         ]],
         limits: [10, 15, 20, 25, 50, 100],
         limit: 15,
@@ -294,7 +294,7 @@ function loadAlgorithmInSimPage(table) {
         elem: '#currentTableIdOfAlgorithm',
         url: '/algorithm',
         cols: [[
-            {type: "radio", width: "10%"},
+            {type: "checkbox", width: "10%"},
             {field: 'id', width: "10%", title: 'ID', sort: true, align: "center"},
             {field: 'name', width: "40%", title: '算法名称', sort: true, align: "left"},
             {field: 'summary', width: "40%", title: '摘要', align: "left"}

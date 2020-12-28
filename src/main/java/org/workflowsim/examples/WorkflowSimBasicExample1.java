@@ -74,7 +74,7 @@ public class WorkflowSimBasicExample1 {
         CondorVM[] vm = new CondorVM[vms];
         for (int i = 0; i < vms; i++) {
             double ratio = 1.0;
-            vm[i] = new CondorVM(i, userId, mips * ratio, pesNumber, ram, bw, size, vmm, new CloudletSchedulerSpaceShared());
+            vm[i] = new CondorVM(i, 1,userId, mips * ratio, pesNumber, ram, bw, size, vmm, new CloudletSchedulerSpaceShared());
             list.add(vm[i]);
         }
         return list;
