@@ -1163,6 +1163,10 @@ public class Cloudlet {
 		return finishTime;
 	}
 
+	public void setFinishTime(double finishTime) {
+		this.finishTime = finishTime;
+	}
+
 	// //////////////////////// PROTECTED METHODS //////////////////////////////
 
 	/**
