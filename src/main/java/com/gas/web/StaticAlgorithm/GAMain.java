@@ -1,17 +1,15 @@
 package com.gas.web.StaticAlgorithm;
 
-import java.io.*;
+import java.io.File;
 import java.text.DecimalFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.LinkedList;
+import java.util.List;
 
 import com.alibaba.fastjson.JSONObject;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
-
-import com.gas.web.bean.Res;
-import com.gas.web.bean.Schedule;
 import com.gas.web.controller.EchartsController;
-import com.gas.web.display.Display;
+import com.gas.web.util.FileUtil;
 import org.cloudbus.cloudsim.Cloudlet;
 import org.cloudbus.cloudsim.CloudletSchedulerSpaceShared;
 import org.cloudbus.cloudsim.DatacenterCharacteristics;
@@ -26,13 +24,8 @@ import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.provisioners.BwProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.RamProvisionerSimple;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.workflowsim.CondorVM;
-import org.workflowsim.Task;
-import org.workflowsim.WorkflowDatacenter;
-import org.workflowsim.Job;
-import org.workflowsim.WorkflowEngine;
-import org.workflowsim.WorkflowPlanner;
+import org.workflowsim.*;
+import org.workflowsim.clustering.BasicClustering;
 import org.workflowsim.utils.ClusteringParameters;
 import org.workflowsim.utils.OverheadParameters;
 import org.workflowsim.utils.Parameters;
@@ -40,10 +33,6 @@ import org.workflowsim.utils.ReplicaCatalog;
 import org.workflowsim.utils.Parameters.ClassType;
 
 public class GAMain {
-    public List<CondorVM> CondorVMList;
-    public List<Job> taskList;
-
-    public EchartsController echartsController;
 
     protected static List<CondorVM> createVM(int userId, int vms) {
         //Creates a container to store VMs. This list is passed to the broker later
@@ -61,7 +50,7 @@ public class GAMain {
         CondorVM[] vm = new CondorVM[vms];
         for (int i = 0; i < vms; i++) {
             double ratio = 1.0;
-            vm[i] = new CondorVM(i, 0,userId, mips * ratio, pesNumber, ram, bw, size, vmm, new CloudletSchedulerSpaceShared());
+            vm[i] = new CondorVM(i, userId, mips * ratio, pesNumber, ram, bw, size, vmm, new CloudletSchedulerSpaceShared());
             list.add(vm[i]);
         }
         return list;
@@ -84,7 +73,7 @@ public class GAMain {
             /**
              * Should change this based on real physical path
              */
-            String daxPath = "D:\\Project3\\GAS-UI\\config\\dax\\Montage_25.xml";
+            String daxPath = "C:\\Users\\64123\\IdeaProjects\\GAS-UI\\config\\dax\\Montage_25.xml";
             File daxFile = new File(daxPath);
             if (!daxFile.exists()) {
                 Log.printLine("Warning: Please replace daxPath with the physical path in your working environment!");
@@ -153,11 +142,11 @@ public class GAMain {
              */
             wfEngine.bindSchedulerDatacenter(datacenter0.getId(), 0);
 
-
+            JSONObject jsonObject = new JSONObject();
             // GA main
             Integer groupSize = 20;
             Double crossoverProbability = 0.8;
-            Double mutationProbability = 0.1;
+            Double mutationProbability = 0.3;
             GA ga = new GA(groupSize, vmlist0, crossoverProbability, mutationProbability);
             Chromosome theBest;
             // 初始化种群
@@ -189,7 +178,12 @@ public class GAMain {
 
                 printJobList(chromosome.result);
                 System.out.println("第" + i + "次迭代:   " + chromosome.getFinishTime());
-                // 睡眠？
+//                // 睡眠？
+                jsonObject.put("code", 200);
+                jsonObject.put("data", EchartsController.toDisplay(vmlist0, chromosome.result));
+                String path = "src\\main\\resources\\StaticAlgorithmResult";
+                String fileName = "GA"; // 应为表示算法的变量 Parameter.SchedulingAlgorithm
+                FileUtil.createJsonFile(jsonObject.toJSONString(), path, fileName);
             }
 
 
