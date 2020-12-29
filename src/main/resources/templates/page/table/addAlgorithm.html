@@ -23,6 +23,15 @@
         </div>
     </div>
     <div class="layui-form-item">
+        <label class="layui-form-label required">算法类型</label>
+        <div class="layui-input-block">
+            <select name="type" id="type" lay-verify="required" lay-reqtext="类型不能为空" placeholder="请选择算法类型" value="" >
+                <option value="静态算法">静态算法</option>
+                <option value="动态算法">动态算法</option>
+            </select>
+        </div>
+    </div>
+    <div class="layui-form-item">
         <label class="layui-form-label required">摘要</label>
         <div class="layui-input-block ">
             <textarea name="summary" id="summary" rows="3" cols="119" lay-verify="required" lay-reqtext="摘要不能为空" placeholder="请输入算法摘要" value=""></textarea>

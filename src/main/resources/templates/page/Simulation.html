@@ -211,23 +211,29 @@
             dataOfAlgorithm = checkStatusOfAlgorithm.data;
             algorithmId=JSON.stringify(dataOfAlgorithm[0].id);
             var  algorithmSum=JSON.stringify(dataOfAlgorithm[0].summary);
-            var algorithmName2,algorithmSum2;
+            var algorithmName2,algorithmSum2,algorithmtype2;
             if(dataOfAlgorithm.length==2){
                 algorithmName2=dataOfAlgorithm[1].name;
                 algorithmSum2=dataOfAlgorithm[1].summary;
+                algorithmtype2=dataOfAlgorithm[1].type;
             }
             alert(JSON.stringify(dataOfAlgorithm));
             table.render({
                 elem: '#currentTableIdOfAlgorithmConfirm',
                 cols: [[
-                    {field: 'name', width: "50%", title: '算法名称', sort: true, align: "left"},
-                    {field: 'summary', width: "50%", title: '摘要', align: "left"}
+                    {field: 'name', width: "40%", title: '算法名称', sort: true, align: "left"},
+                    {field: 'summary', width: "40%", title: '摘要', align: "left"},
+                    {field: 'type', width: "20%", title: '算法类型', align: "center"}
                 ]],
                 data:[
                     {   name: JSON.stringify(dataOfAlgorithm[0].name),
-                        summary: JSON.stringify(dataOfAlgorithm[0].summary)},
+                        summary: JSON.stringify(dataOfAlgorithm[0].summary),
+                        type: JSON.stringify(dataOfAlgorithm[0].type)
+                    },
                     {   name: JSON.stringify(algorithmName2),
-                        summary: JSON.stringify(algorithmSum2)}
+                        summary: JSON.stringify(algorithmSum2),
+                        type: JSON.stringify(algorithmtype2)
+                    }
 
                 ],
                 page: false,
@@ -249,7 +255,7 @@
         //点击确认按钮，提交表单
         $('#Sure').click(function () {
             $('#sure').submit=true;
-            if(JSON.stringify(dataOfWorkflow)!="[]" && JSON.stringify(dataOfResource)!="[]" && JSON.stringify(dataOfAlgorithm)!="[]"){
+             if(JSON.stringify(dataOfWorkflow)!="[]" && JSON.stringify(dataOfResource)!="[]" && JSON.stringify(dataOfAlgorithm)!="[]"){
                 $.ajax({
                     url: '/formUpload',
                     method: 'post',

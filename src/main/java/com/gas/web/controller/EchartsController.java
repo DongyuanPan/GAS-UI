@@ -1,13 +1,14 @@
 package com.gas.web.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.gas.web.StaticAlgorithm.GAMain;
 import com.gas.web.bean.Res;
 import com.gas.web.bean.Schedule;
 import com.gas.web.bean.Task;
 import com.gas.web.constant.Constant;
 import com.gas.web.display.Display;
-import com.gas.web.entity.Algorithm;
 import com.gas.web.entity.Vm;
 import com.gas.web.entity.Workflow;
 import com.gas.web.service.IAlgorithmService;
@@ -28,6 +29,8 @@ import org.workflowsim.WorkflowScheduler;
 import javax.servlet.http.HttpServletRequest;
 import java.io.*;
 import java.util.*;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 @Controller
 public class EchartsController {
@@ -37,13 +40,11 @@ public class EchartsController {
     private final IVmService iVmService;
     private final IWorkflowService iWorkflowService;
     private double finishtime=0;
-    private IAlgorithmService iAlgorithmService;
 
     @Autowired
-    public EchartsController(IVmService iVmService, IWorkflowService iWorkflowService, IAlgorithmService iAlgorithmService) {
+    public EchartsController(IVmService iVmService, IWorkflowService iWorkflowService) {
         this.iVmService = iVmService;
         this.iWorkflowService = iWorkflowService;
-        this.iAlgorithmService = iAlgorithmService;
     }
 
     @ResponseBody
@@ -91,7 +92,7 @@ public class EchartsController {
         return res;
     }
 
-    private Display toDisplay(List<CondorVM> vmList, List<Job> jobList) {
+    public Display toDisplay(List<CondorVM> vmList, List<Job> jobList) {
         finishtime=0;
         Schedule schedule = new Schedule();
         List<Res> resList = new ArrayList<>();
@@ -284,30 +285,28 @@ public class EchartsController {
         String resourseId = request.getParameter("resource");
         String algorithm = request.getParameter("algorithm");
         JSONArray algorithmArray=JSONArray.parseArray(algorithm);
-        algorithm=algorithmArray.getJSONObject(0).get("id").toString();
-        Algorithm algorithm1 = iAlgorithmService.algorithmFindById(Integer.parseInt(algorithm));
-        String algorithm2=null;
-        Algorithm algorithmName2=null;
+        algorithm=algorithmArray.getJSONObject(0).get("name").toString();
+        String algorithm2 = null;
         Workflow workflow = iWorkflowService.workflowFindById(Integer.parseInt(workflowId));
-        lastFileName=workflow.getFileName();
+        lastFileName = workflow.getFileName();
         getResource(resourseId);
         SchedulingAlgorithm f = new SchedulingAlgorithm();
-        f.process(absolutePath+"/"+getLastFileName(), vmnumber, Integer.parseInt(algorithm), map, datacenter);
+        f.process(absolutePath + "/" + getLastFileName(), vmnumber, algorithm, map, datacenter);
         jsonObject.put("code", 200);
-        jsonObject.put("algorithm1",algorithm1.getName());
+        jsonObject.put("algorithm1", algorithm);
         jsonObject.put("data", toDisplay(f.getCondorVMList(), f.getTaskList()));
-        jsonObject.put("finishtime1",finishtime);
-        if(algorithmArray.size()==2) {
-            algorithm2 = algorithmArray.getJSONObject(1).get("id").toString();
-            algorithmName2=iAlgorithmService.algorithmFindById(Integer.parseInt(algorithm2));
-            f.process(absolutePath+"/"+getLastFileName(), vmnumber, Integer.parseInt(algorithm2), map, datacenter);
-            jsonObject.put("algorithm2",algorithmName2.getName());
+        jsonObject.put("finishtime1", finishtime);
+        if (algorithmArray.size() == 2) {
+            algorithm2 = algorithmArray.getJSONObject(1).get("name").toString();
+            //algorithmName2 = iAlgorithmService.algorithmFindById(Integer.parseInt(algorithm2));
+            f.process(absolutePath + "/" + getLastFileName(), vmnumber, algorithm2, map, datacenter);
+            jsonObject.put("algorithm2", algorithm2);
             jsonObject.put("data2", toDisplay(f.getCondorVMList(), f.getTaskList()));
-            jsonObject.put("finishtime2",finishtime);
+            jsonObject.put("finishtime2", finishtime);
         }
         System.out.println(jsonObject);
-        lastFileName=null;
-        vmnumber=0;
+        lastFileName = null;
+        vmnumber = 0;
         return jsonObject;
     }
     /**
@@ -316,17 +315,17 @@ public class EchartsController {
     @RequestMapping(value="/getDynamic",method = RequestMethod.GET)
     @ResponseBody
     public JSONObject getData() throws IOException, InterruptedException {
-        JSONObject jsonObject=new JSONObject();
+        JSONObject jsonObject;
         StringBuffer s=new StringBuffer();
-        FileInputStream in=new FileInputStream(new File("C:\\Users\\zyr18\\Downloads\\2020-12-28T12_07_32.365Z.json"));
-       BufferedReader reader=new BufferedReader(new InputStreamReader(in));
+        FileInputStream in=new FileInputStream(new File("D:\\Project3\\GAS-UI\\src\\main\\resources\\GaGeneration\\EveryGeneration.json"));
+       BufferedReader reader=new BufferedReader(new InputStreamReader(in,"utf-8"));
         String s1 = reader.readLine();
        while (s1!=null)
         {
             s.append(s1);
             s1=reader.readLine();
         }
-       jsonObject.put("resultData",s.toString());
+       jsonObject= JSON.parseObject(s.toString());
        in.close();
         return jsonObject;
     }

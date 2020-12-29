@@ -1,11 +1,17 @@
 package com.gas.web.StaticAlgorithm;
 
-import java.io.File;
+import java.io.*;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
+
+import com.alibaba.fastjson.JSONObject;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
+
+import com.gas.web.bean.Res;
+import com.gas.web.bean.Schedule;
+import com.gas.web.controller.EchartsController;
+import com.gas.web.display.Display;
 import org.cloudbus.cloudsim.Cloudlet;
 import org.cloudbus.cloudsim.CloudletSchedulerSpaceShared;
 import org.cloudbus.cloudsim.DatacenterCharacteristics;
@@ -20,6 +26,7 @@ import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.provisioners.BwProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.RamProvisionerSimple;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.workflowsim.CondorVM;
 import org.workflowsim.Task;
 import org.workflowsim.WorkflowDatacenter;
@@ -33,6 +40,10 @@ import org.workflowsim.utils.ReplicaCatalog;
 import org.workflowsim.utils.Parameters.ClassType;
 
 public class GAMain {
+    public List<CondorVM> CondorVMList;
+    public List<Job> taskList;
+
+    public EchartsController echartsController;
 
     protected static List<CondorVM> createVM(int userId, int vms) {
         //Creates a container to store VMs. This list is passed to the broker later
@@ -50,7 +61,7 @@ public class GAMain {
         CondorVM[] vm = new CondorVM[vms];
         for (int i = 0; i < vms; i++) {
             double ratio = 1.0;
-            vm[i] = new CondorVM(i, userId, mips * ratio, pesNumber, ram, bw, size, vmm, new CloudletSchedulerSpaceShared());
+            vm[i] = new CondorVM(i, 0,userId, mips * ratio, pesNumber, ram, bw, size, vmm, new CloudletSchedulerSpaceShared());
             list.add(vm[i]);
         }
         return list;
@@ -73,7 +84,7 @@ public class GAMain {
             /**
              * Should change this based on real physical path
              */
-            String daxPath = "C:\\Users\\64123\\IdeaProjects\\GAS-UI\\config\\dax\\Montage_25.xml";
+            String daxPath = "D:\\Project3\\GAS-UI\\config\\dax\\Montage_25.xml";
             File daxFile = new File(daxPath);
             if (!daxFile.exists()) {
                 Log.printLine("Warning: Please replace daxPath with the physical path in your working environment!");
@@ -152,7 +163,7 @@ public class GAMain {
             // 初始化种群
             ArrayList<Chromosome> group = ga.initGroup();
 
-            for (int i = 0; i < 100; ++i) {
+            for (int i = 0; i < 1000; ++i) {
                 // 交叉
                 group = ga.crossover(group);
 

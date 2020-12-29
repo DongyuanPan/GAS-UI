@@ -278,8 +278,9 @@ function loadAlgorithm(table, name) {
         }],
         cols: [[
             {type: "checkbox", width: "10%"},
-            {field: 'id', width: "10%", title: 'ID', sort: true, align: "center"},
-            {field: 'name', width: "30%", title: '算法名称',  align: "left"},
+            {field: 'id', width: "5%", title: 'ID', sort: true, align: "center"},
+            {field: 'name', width: "20%", title: '算法名称',  align: "left"},
+            {field: 'type', width: "15%", title: '算法类型', align: "center"},
             {field: 'summary', width: "30%", title: '摘要', align: "left"},
             {title: '操作', minWidth: "20%", toolbar: '#currentTableBar', align: "center"}
         ]],
@@ -294,9 +295,10 @@ function loadAlgorithmInSimPage(table) {
         elem: '#currentTableIdOfAlgorithm',
         url: '/algorithm',
         cols: [[
-            {type: "checkbox", width: "10%"},
+            {type: "checkbox", width: "5%"},
             {field: 'id', width: "10%", title: 'ID', sort: true, align: "center"},
-            {field: 'name', width: "40%", title: '算法名称', sort: true, align: "left"},
+            {field: 'name', width: "30%", title: '算法名称', sort: true, align: "left"},
+            {field: 'type', width: "15%", title: '算法类型', align: "center"},
             {field: 'summary', width: "40%", title: '摘要', align: "left"}
         ]],
         limits: [10, 15, 20, 25, 50, 100],

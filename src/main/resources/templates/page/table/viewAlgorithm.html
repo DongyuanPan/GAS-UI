@@ -23,6 +23,15 @@
     </div>
 
 </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label required">算法类型</label>
+        <div class="layui-input-block">
+            <input type="radio" name="type" value="静态算法" title="静态算法" checked="">
+            <input type="radio" name="type" value="动态算法" title="动态算法">
+        </div>
+    </div>
+
     <div class="layui-form-item">
         <label class="layui-form-label">摘要</label>
         <div class="layui-input-block ">
@@ -54,6 +63,12 @@ layui.use(['form', 'table'], function () {
             success:function(res){
             document.getElementsByName('name')[0].setAttribute("value", res.data.name);
             document.getElementsByName('summary')[0].value = res.data.summary;
+            var types = document.getElementsByName("type");
+            for (var i = 0; i < types.length; i++) {
+                if(res.data.type == types[i].value){
+                    $(types[i]).next().click();
+                }
+            }
             filename = res.data.path;
                },
             error:function () {

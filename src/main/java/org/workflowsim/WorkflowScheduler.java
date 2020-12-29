@@ -56,8 +56,6 @@ public class WorkflowScheduler extends DatacenterBroker {
      */
     private int workflowEngineId;
 
-    private List<Class<?>> AlgorithmList;
-
     /**
      * 从包package中获取所有的Class
      *
@@ -199,7 +197,6 @@ public class WorkflowScheduler extends DatacenterBroker {
      */
     public WorkflowScheduler(String name) throws Exception {
         super(name);
-        AlgorithmList = getClasses("org.workflowsim.scheduling");
 //        for (int i = 0; i < AlgorithmList.size(); ++i) {
 //            Class<?> cl = AlgorithmList.get(i);
 //
@@ -234,7 +231,7 @@ public class WorkflowScheduler extends DatacenterBroker {
      * @param ev a simEvent obj
      */
     @Override
-    public void processEvent(SimEvent ev) {
+    public void processEvent(SimEvent ev) throws ClassNotFoundException {
         switch (ev.getTag()) {
             // Resource characteristics request
             case CloudSimTags.RESOURCE_CHARACTERISTICS_REQUEST:
@@ -318,17 +315,14 @@ public class WorkflowScheduler extends DatacenterBroker {
      //* @param name the SchedulingAlgorithm name
      * @return the algorithm that extends BaseSchedulingAlgorithm
      */
-    private BaseSchedulingAlgorithm getScheduler(int AlgorithmIndex) {
+    private BaseSchedulingAlgorithm getScheduler(String AlgorithmName) throws ClassNotFoundException {
         BaseSchedulingAlgorithm algorithm = null;
-        Class cls = AlgorithmList.get(AlgorithmIndex);
+        Class cls=Class.forName("org.workflowsim.scheduling"+"."+AlgorithmName);
         try {
             algorithm = (BaseSchedulingAlgorithm) cls.newInstance();
         }catch (IllegalAccessException | InstantiationException e){
             System.out.println("algorithm = (BaseSchedulingAlgorithm) cls.newInstance();");
         }
-//        algorithm.setCloudletList(null);
-//        algorithm.setVmList(null);
-//        algorithm.getScheduledList().clear();
         return algorithm;
     }
 
@@ -396,10 +390,8 @@ public class WorkflowScheduler extends DatacenterBroker {
      *
      * @param ev a simEvent object
      */
-    protected void processCloudletUpdate(SimEvent ev) {
-
-        //BaseSchedulingAlgorithm scheduler = getScheduler(Parameters.getSchedulingAlgorithm());
-        BaseSchedulingAlgorithm scheduler = getScheduler(Parameters.AlgorithmIndex);
+    protected void processCloudletUpdate(SimEvent ev) throws ClassNotFoundException {
+        BaseSchedulingAlgorithm scheduler = getScheduler(Parameters.AlgorithmName);
         scheduler.setCloudletList(getCloudletList());
         scheduler.setVmList(getVmsCreatedList());
 
@@ -423,7 +415,6 @@ public class WorkflowScheduler extends DatacenterBroker {
         getCloudletSubmittedList().addAll(scheduledList);
         cloudletsSubmitted += scheduledList.size();
     }
-
     /**
      * Process a cloudlet (job) return event.
      *

@@ -83,7 +83,7 @@ public class Chromosome {
             }
 
             Double vmReadyTime = vmToTime.get(vmSeq);
-            Double taskStartTime = vmReadyTime;
+            Double taskStartTime = Math.max(vmReadyTime,readyTime);
             Double cpuTime = task.getCloudletLength() / vmList.get(vmSeq).getMips();
             Double taskFinishTime = taskStartTime + cpuTime;
 

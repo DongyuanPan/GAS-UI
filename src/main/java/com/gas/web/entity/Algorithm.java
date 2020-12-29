@@ -21,6 +21,7 @@ public class Algorithm {
     private Integer id;
 
     //下面是非主键字段
+    private String type;
     private String name;
     private String summary;
     private String path;

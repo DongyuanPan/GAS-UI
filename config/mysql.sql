@@ -184,8 +184,9 @@ INSERT INTO `project` (title, pic, startDate, endDate, type)  VALUES ('sample5',
 DROP TABLE IF EXISTS `algorithm`;#判断algorithm表是否存在，若存在则执行删除表操作
 CREATE TABLE `algorithm` (
     `id` int(10) NOT NULL AUTO_INCREMENT,
-    `name` varchar(255) default NULL,
+    `name` varchar(255) NOT NULL UNIQUE,
     `summary` varchar(300) default NULL,
+    `type` varchar(30) NOT NULL default 'static',
     `path` varchar(200) default NULL,
     PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

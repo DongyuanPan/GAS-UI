@@ -27,7 +27,7 @@
     function f() {
         setTimeout(f,5000);
         $.get('/getDynamic',function (res) {
-            var result=JSON.stringify(res.resultData);
+            var result=JSON.stringify(res.data);
             alert(result);
             $('#dynamic').html(result);
 

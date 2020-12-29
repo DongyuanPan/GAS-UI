@@ -109,7 +109,7 @@ public class SchedulingAlgorithm {
         return vmlist;
     }
 
-    public void process(String path, int vmNumber, int algorithm, Map<String,Vm> map, int centerNum) {
+    public void process(String path, int vmNumber, String algorithm, Map<String,Vm> map, int centerNum) {
         try {
             // First step: Initialize the WorkflowSim package.
             /**
@@ -133,7 +133,8 @@ public class SchedulingAlgorithm {
 
             // 根据下拉列表的索引选择 相应的 SchedulingAlgorithm
             Parameters.SchedulingAlgorithm sch_method = Parameters.SchedulingAlgorithm.FCFS;
-            Parameters.AlgorithmIndex = algorithm;
+            //Parameters.AlgorithmIndex = algorithm;
+            Parameters.AlgorithmName=algorithm+"SchedulingAlgorithm";
 
             // TO-DO: 改为根据下拉列表的索引选择 相应的 PlanningAlgorithm
             Parameters.PlanningAlgorithm pln_method = Parameters.PlanningAlgorithm.INVALID;

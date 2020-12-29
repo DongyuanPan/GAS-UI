@@ -130,7 +130,7 @@ public class AlgorithmController {
      * @return
      */
     @PostMapping("/add")
-    public Response algorithmAdd( @RequestParam("name") String name,
+    public Response algorithmAdd( @RequestParam("name") String name,@RequestParam("type") String  type,
                                 @RequestParam("summary") String summary) {
         if (!isupload)
         {
@@ -140,6 +140,7 @@ public class AlgorithmController {
             isupload = false;
             Algorithm algorithm = new Algorithm();
             algorithm.setName(name);
+            algorithm.setType(type);
             algorithm.setSummary(summary);
             algorithm.setPath( dirStr +"\\"+ getLastFileName());
             setLastFileName(null);
@@ -159,11 +160,12 @@ public class AlgorithmController {
      * @return
      */
     @PostMapping("/update/{id}")
-    public Response algorithmUpdate(@PathVariable("id") Integer id,
+    public Response algorithmUpdate(@PathVariable("id") Integer id,@PathVariable("type") String type,
                                     @RequestParam("name") String name,
                                     @RequestParam("summary") String summary) throws IOException {
         Algorithm algorithm = new Algorithm();
         algorithm.setId(id);
+        algorithm.setType(type);
         algorithm.setName(name);
         algorithm.setSummary(summary);
         if(!isupload) {
