@@ -66,6 +66,8 @@ public class Task extends Cloudlet {
      */
     private String type;
 
+    private String taskName;
+
     /**
      * The finish time of a task (Because cloudlet does not allow WorkflowSim to
      * update finish_time)
@@ -320,5 +322,13 @@ public class Task extends Cloudlet {
         }
         cost += costPerBw * fileSize;
         return cost;
+    }
+
+    public String getTaskName() {
+        return taskName;
+    }
+
+    public void setTaskName(String taskName) {
+        this.taskName = taskName;
     }
 }

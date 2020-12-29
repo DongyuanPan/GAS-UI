@@ -85,7 +85,7 @@ public class EchartsController {
         return res;
     }
 
-    private Display toDisplay(List<CondorVM> vmList, List<Job> jobList) {
+    public static Display toDisplay(List<CondorVM> vmList, List<Job> jobList) {
         Schedule schedule = new Schedule();
         List<Res> resList = new ArrayList<>();
         List<Task> taskList = new ArrayList<>();
