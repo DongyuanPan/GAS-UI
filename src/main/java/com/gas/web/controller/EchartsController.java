@@ -92,7 +92,7 @@ public class EchartsController {
         return res;
     }
 
-    public Display toDisplay(List<CondorVM> vmList, List<Job> jobList) {
+    public static Display toDisplay(List<CondorVM> vmList, List<Job> jobList) {
         finishtime=0;
         Schedule schedule = new Schedule();
         List<Res> resList = new ArrayList<>();
