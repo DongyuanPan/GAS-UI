@@ -1,12 +1,14 @@
 package com.gas.web.StaticAlgorithm;
 
 import org.workflowsim.CondorVM;
+import org.workflowsim.Job;
 import org.workflowsim.Task;
 import org.workflowsim.WorkflowParser;
+import org.workflowsim.clustering.BasicClustering;
+
 import java.util.*;
 
 public class GA {
-    public List<Task> taskList;
     public List<CondorVM> vmList; // 由外部传入
     public WorkflowParser parser;
     public ArrayList<Integer> topologyIDtoTask;
@@ -23,31 +25,24 @@ public class GA {
         this.genMaxValue = vmList.size();
         this.crossoverProbability = crossoverProbability;
         this.mutationProbability = mutationProbability;
-        this.parser = new WorkflowParser(0); // daxPath 是通过全局变量传递的不需要传
-        parser.parse();
-        this.taskList = parser.getTaskList();
-        this.genLen = taskList.size();
-        Collections.sort(this.taskList, new Comparator<Task>() {
-            @Override
-            public int compare(Task task, Task t1) {
-                return task.getDepth() - t1.getDepth();
-            }
-        });
     }
 
     //初始化种群
-    public ArrayList<Chromosome> initGroup() {
+    public ArrayList<Chromosome>  initGroup() {
         //Log.printLine("init group");
         ArrayList<Chromosome> group = new ArrayList<>();
         // 按照 任务的顺序（只按照一个拓扑来求解，应当再对拓扑也进行搜索更好）初始化虚拟机
         for (int i = 0; i < groupSize; ++i) {
+            List<Job> jobList = getNewJobList();
+            this.genLen = jobList.size();
+
             ArrayList<Integer> chm = new ArrayList<>();
             Random random =new Random();
             for (int j = 0; j < genLen; ++j) {
                 int value = random.nextInt(genMaxValue);
                 chm.add(value);
             }
-            Chromosome chromosome = new Chromosome(chm, taskList, vmList);
+            Chromosome chromosome = new Chromosome(chm, jobList, vmList);
             group.add(chromosome);
         }
         return group;
@@ -84,8 +79,8 @@ public class GA {
                     }
                 }
 
-                sonGroup.add(new Chromosome(son1, taskList, vmList));
-                sonGroup.add(new Chromosome(son2, taskList, vmList));
+                sonGroup.add(new Chromosome(son1, getNewJobList(), vmList));
+                sonGroup.add(new Chromosome(son2, getNewJobList(), vmList));
             }
         }
         return sonGroup;
@@ -113,7 +108,7 @@ public class GA {
                 int temp = newGene.get(i);
                 newGene.set(i, newGene.get(j));
                 newGene.set(j, temp);
-                sonGroup.add(new Chromosome(newGene, taskList, vmList));
+                sonGroup.add(new Chromosome(newGene, getNewJobList(), vmList));
             }
 
         }
@@ -142,9 +137,9 @@ public class GA {
         }
         // 选择最好的保留
         Chromosome best = best(fatherGroup);
-        sonGroup.add(new Chromosome(best.getGene(), taskList, vmList, best.getF(), best.result, best.getFinishTime()));
+        sonGroup.add(new Chromosome(best.getGene(), best.jobList, vmList, best.getF(), best.result, best.getFinishTime()));
         //轮盘赌选择
-        for(int i = 0; i < sonGroupSize-1; i++) {
+        for(int i = 0; i < sonGroupSize; i++) {
             Random random = new Random();
             double probability = random.nextDouble();
             int choose;
@@ -152,7 +147,7 @@ public class GA {
                 if(probability < fitness[choose])
                     break;
             }
-            sonGroup.add(new Chromosome(fatherGroup.get(choose).getGene(), taskList, vmList,
+            sonGroup.add(new Chromosome(fatherGroup.get(choose).getGene(), fatherGroup.get(choose).jobList, vmList,
                     fatherGroup.get(choose).getF(), fatherGroup.get(choose).result, fatherGroup.get(choose).getFinishTime()));
         }
         return sonGroup;
@@ -165,6 +160,34 @@ public class GA {
                 bestOne = c;
         }
         return bestOne;
+    }
+
+    // 返回一个独立的jobList 给个体（染色体）
+    // 更好的方法是 使用深拷贝
+    public List<Job> getNewJobList() {
+        // 每次都解析，让每个个题的任务列表互相不影响，但是vmList 是共用一个引用副本的
+        // 解析xml的工作流任务
+        WorkflowParser parser = new WorkflowParser(0); // daxPath 是通过全局变量传递的不需要传
+        parser.parse();
+        List<Task> taskList = parser.getTaskList();
+
+        // 保持和workflowsim的以job为单位处理（job是task 的批量提交），直接使用一个job一个task的聚合方式
+        BasicClustering clustering = new BasicClustering();
+        clustering.setTaskList(taskList);
+        clustering.run(); // 之后 通过 clustering.getJobList() 可以得到转化为Job的Task 依赖关系等都会保留 以Job为单位处理
+        List<Job> jobList = clustering.getJobList();
+
+        Collections.sort(jobList, new Comparator<Task>() {
+            @Override
+            public int compare(Task task, Task t1) {
+                return task.getDepth() - t1.getDepth();
+            }
+        });
+//        for (Job job:jobList) {
+//            System.out.print(job.getTaskList().get(0).getTaskName() + " ");
+//        }
+//        System.out.println();
+        return jobList;
     }
 
 }

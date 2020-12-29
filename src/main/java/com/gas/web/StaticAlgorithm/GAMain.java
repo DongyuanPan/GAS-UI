@@ -6,6 +6,10 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
+
+import com.alibaba.fastjson.JSONObject;
+import com.gas.web.controller.EchartsController;
+import com.gas.web.util.FileUtil;
 import org.cloudbus.cloudsim.Cloudlet;
 import org.cloudbus.cloudsim.CloudletSchedulerSpaceShared;
 import org.cloudbus.cloudsim.DatacenterCharacteristics;
@@ -20,12 +24,8 @@ import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.provisioners.BwProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.RamProvisionerSimple;
-import org.workflowsim.CondorVM;
-import org.workflowsim.Task;
-import org.workflowsim.WorkflowDatacenter;
-import org.workflowsim.Job;
-import org.workflowsim.WorkflowEngine;
-import org.workflowsim.WorkflowPlanner;
+import org.workflowsim.*;
+import org.workflowsim.clustering.BasicClustering;
 import org.workflowsim.utils.ClusteringParameters;
 import org.workflowsim.utils.OverheadParameters;
 import org.workflowsim.utils.Parameters;
@@ -142,17 +142,17 @@ public class GAMain {
              */
             wfEngine.bindSchedulerDatacenter(datacenter0.getId(), 0);
 
-
+            JSONObject jsonObject = new JSONObject();
             // GA main
             Integer groupSize = 20;
             Double crossoverProbability = 0.8;
-            Double mutationProbability = 0.1;
+            Double mutationProbability = 0.3;
             GA ga = new GA(groupSize, vmlist0, crossoverProbability, mutationProbability);
             Chromosome theBest;
             // 初始化种群
             ArrayList<Chromosome> group = ga.initGroup();
 
-            for (int i = 0; i < 100; ++i) {
+            for (int i = 0; i < 1000; ++i) {
                 // 交叉
                 group = ga.crossover(group);
 
@@ -178,7 +178,12 @@ public class GAMain {
 
                 printJobList(chromosome.result);
                 System.out.println("第" + i + "次迭代:   " + chromosome.getFinishTime());
-                // 睡眠？
+//                // 睡眠？
+                jsonObject.put("code", 200);
+                jsonObject.put("data", EchartsController.toDisplay(vmlist0, chromosome.result));
+                String path = "src\\main\\resources\\StaticAlgorithmResult";
+                String fileName = "GA"; // 应为表示算法的变量 Parameter.SchedulingAlgorithm
+                FileUtil.createJsonFile(jsonObject.toJSONString(), path, fileName);
             }
 
 

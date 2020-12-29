@@ -5,7 +5,7 @@ import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 
-public class CreateFileUtil {
+public class FileUtil {
     /**
      * 生成.json格式文件
      */
