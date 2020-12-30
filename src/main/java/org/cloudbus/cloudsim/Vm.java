@@ -30,9 +30,21 @@ public class Vm {
      * The id.
      */
     private int id;
+
+    private int hostId;
+
+    public int getHostId() {
+        return hostId;
+    }
+
+    public void setHostId(int hostId) {
+        this.hostId = hostId;
+    }
+
     /**
      * The user id.
      */
+
     private int userId;
     /**
      * The uid.
@@ -147,6 +159,39 @@ public class Vm {
         setCurrentAllocatedSize(0);
     }
 
+    //有hostId的
+
+    public Vm(
+            int id,
+            int hostId,
+            int userId,
+            double mips,
+            int numberOfPes,
+            int ram,
+            long bw,
+            long size,
+            String vmm,
+            CloudletScheduler cloudletScheduler) {
+        setId(id);
+        setHostId(hostId);
+        setUserId(userId);
+        setUid(getUid(userId, id));
+        setMips(mips);
+        setNumberOfPes(numberOfPes);
+        setRam(ram);
+        setBw(bw);
+        setSize(size);
+        setVmm(vmm);
+        setCloudletScheduler(cloudletScheduler);
+
+        setInMigration(false);
+        setBeingInstantiated(true);
+
+        setCurrentAllocatedBw(0);
+        setCurrentAllocatedMips(null);
+        setCurrentAllocatedRam(0);
+        setCurrentAllocatedSize(0);
+    }
     /**
      * Generate unique string identificator of the VM.
      *

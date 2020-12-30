@@ -14,7 +14,6 @@
  * the License.
  */
 package com.gas.web.controller;
-import com.alibaba.fastjson.JSONArray;
 import com.gas.web.entity.Vm;
 import org.cloudbus.cloudsim.*;
 import org.cloudbus.cloudsim.core.CloudSim;
@@ -22,7 +21,6 @@ import org.cloudbus.cloudsim.provisioners.BwProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.RamProvisionerSimple;
 import org.workflowsim.*;
-import org.workflowsim.examples.scheduling.DataAwareSchedulingAlgorithmExample;
 import org.workflowsim.utils.ClusteringParameters;
 import org.workflowsim.utils.OverheadParameters;
 import org.workflowsim.utils.Parameters;
@@ -44,6 +42,7 @@ public class SchedulingAlgorithm {
     public List<CondorVM> CondorVMList;
     public List<Job> taskList;
     static int totalvm=0;
+    private static List<Integer> vmHostList;
     public List<CondorVM> getCondorVMList() {
         return CondorVMList;
     }
@@ -66,7 +65,7 @@ public class SchedulingAlgorithm {
      * Creates main() to run this example This example has only one datacenter
      * and one storage
      */
-    public static List<CondorVM> SchedulecreateVM(int userId, int vms,long s,int r,int m,long band,int cpu) {
+    public static List<CondorVM> SchedulecreateVM(int userId, int hostId,int vms,long s,int r,int m,long band,int cpu) {
         //Creates a container to store VMs. This list is passed to the broker later
         int lastnum=totalvm;
         int i=0;
@@ -83,8 +82,9 @@ public class SchedulingAlgorithm {
         CondorVM[] vm = new CondorVM[vms];
         Random bwRandom = new Random(System.currentTimeMillis());
         for ( ; lastnum <totalvm; lastnum++) {
-            double ratio = bwRandom.nextDouble();
-            vm[i] = new CondorVM(lastnum, userId, mips * ratio, pesNumber, ram, (long) (bw * ratio), size, vmm, new CloudletSchedulerSpaceShared());
+            //double ratio = bwRandom.nextDouble();
+            double ratio=0.2;
+            vm[i] = new CondorVM(lastnum, hostId,userId, mips * ratio, pesNumber, ram, (long) (bw * ratio), size, vmm, new CloudletSchedulerSpaceShared());
             list.add(vm[i]);
             i++;
         }
@@ -94,19 +94,22 @@ public class SchedulingAlgorithm {
     public List<CondorVM> getDatacenterVM(Map<String,Vm> map,WorkflowEngine wfEngine ){
         List<CondorVM> vmlist=new ArrayList<>();
         for (Vm virtual:map.values()) {
+            int hostId=virtual.getHostId();
+            if(vmHostList.contains(hostId)==false)
+                vmHostList.add(hostId);
             int count=virtual.getCount();
             long mirror=virtual.getMirror();
             int ram=virtual.getRam();
             int mips=virtual.getMips();
             long bandwidth=virtual.getBw();
             int cpu=virtual.getCpu();
-           List<CondorVM> vmlistemp = SchedulecreateVM(wfEngine.getSchedulerId(0), count, mirror, ram, mips, bandwidth, cpu);
+           List<CondorVM> vmlistemp = SchedulecreateVM(wfEngine.getSchedulerId(0), hostId,count, mirror, ram, mips, bandwidth, cpu);
             vmlist.addAll(vmlist.size(),vmlistemp);
         }
         return vmlist;
     }
 
-    public void process(String path, int vmNumber, int algorithm, Map<String,Vm> map, int centerNum) {
+    public void process(String path, int vmNumber, String algorithm, Map<String,Vm> map, int centerNum) {
         try {
             // First step: Initialize the WorkflowSim package.
             /**
@@ -115,6 +118,7 @@ public class SchedulingAlgorithm {
              * exact vmNum would be smaller than that. Take care.
              */
             int vmNum = vmNumber;//number of vms;
+            vmHostList=new ArrayList<>();
 
             /**
              * Should change this based on real physical path
@@ -129,7 +133,8 @@ public class SchedulingAlgorithm {
 
             // 根据下拉列表的索引选择 相应的 SchedulingAlgorithm
             Parameters.SchedulingAlgorithm sch_method = Parameters.SchedulingAlgorithm.FCFS;
-            Parameters.AlgorithmIndex = algorithm;
+            //Parameters.AlgorithmIndex = algorithm;
+            Parameters.AlgorithmName=algorithm+"SchedulingAlgorithm";
 
             // TO-DO: 改为根据下拉列表的索引选择 相应的 PlanningAlgorithm
             Parameters.PlanningAlgorithm pln_method = Parameters.PlanningAlgorithm.INVALID;
@@ -162,10 +167,6 @@ public class SchedulingAlgorithm {
             // Initialize the CloudSim library
             CloudSim.init(num_user, calendar, trace_flag);
 
-            /**
-             * Create a datacenter.
-             */
-            WorkflowDatacenter datacenter0 = createDatacenter("Datacenter_0");
 
             /**
              * Create a WorkflowPlanner with one schedulers.
@@ -182,6 +183,11 @@ public class SchedulingAlgorithm {
              * the scheduler that controls this vm.
              */
             List<CondorVM> vmlist0 = getDatacenterVM(map,wfEngine);
+
+            /**
+             * Create a datacenter.
+             */
+            WorkflowDatacenter datacenter0 = createDatacenter("Datacenter_0");
 
             /**
              * Submits this list of vms to this WorkflowEngine.
@@ -209,12 +215,13 @@ public class SchedulingAlgorithm {
         // Here are the steps needed to create a PowerDatacenter:
         // 1. We need to create a list to store one or more
         //    Machines
+        int hostNum=vmHostList.size();
         List<Host> hostList = new ArrayList<>();
 
         // 2. A Machine contains one or more PEs or CPUs/Cores. Therefore, should
         //    create a list to store these PEs before creating
         //    a Machine.
-        for (int i = 1; i <= 20; i++) {
+        for (int i = 0; i < hostNum; i++) {
             List<Pe> peList1 = new ArrayList<>();
             int mips = 2000;
             // 3. Create PEs and add these into the list.
@@ -222,8 +229,8 @@ public class SchedulingAlgorithm {
             peList1.add(new Pe(0, new PeProvisionerSimple(mips))); // need to store Pe id and MIPS Rating
             peList1.add(new Pe(1, new PeProvisionerSimple(mips)));
 
-            int hostId = 0;
-            int ram = 2048; //host memory (MB)
+            int hostId = vmHostList.get(i);
+            int ram = 4096; //host memory (MB)
             long storage = 1000000; //host storage
             int bw = 10000;
             hostList.add(

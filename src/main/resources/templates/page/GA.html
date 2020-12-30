@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>首页三</title>
+    <title>遗传算法调度展示图</title>
     <meta name="renderer" content="webkit">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -119,9 +119,11 @@
 <script>
     var HEIGHT_RATIO = 0.6;
     var finishtime1;
-    var endtime1 = new Array(50);
-    var endtime2 = new Array(50);
+    var finishtime2;
+    var endtime1 = new Array();
+    var endtime2 = new Array();
     var generation = new Array();
+    var iteratorTime=0;
     /**
      * 甘特图显示
      */
@@ -253,7 +255,7 @@
             },
             animation: false,
             title: {
-                text: resData.algorithm1,
+                text: "GA",
                 left: 'center'
             },
             dataZoom: [{
@@ -368,7 +370,7 @@
             },
             animation: false,
             title: {
-                text: resData.algorithm2,
+                text: "GA初始解",
                 left: 'center'
             },
             dataZoom: [{
@@ -832,7 +834,7 @@
             type: 'category',
             boundaryGap: false,
             name: '迭代数',
-            data: ['10', '20', '30', '40', '50', '60', '70']
+            data: generation
         },
         yAxis: {
             type: 'value',
@@ -864,11 +866,11 @@
             type: 'category',
             boundaryGap: false,
             name: '迭代数',
-            data: ['10', '20', '30', '40', '50', '60', '70']
+            data: generation
         },
         yAxis: {
             type: 'value',
-            name: '完成时间',
+            name: '时间',
         },
         grid: {
             left: '3%',
@@ -886,39 +888,58 @@
         }]
     };
 
-
-    var resData = JSON.parse(window.localStorage.getItem("result"));
-    _rawData = resData.data;
-    finishtime1 = resData.finishtime1;
-    $("#time").html(resData.algorithm1 + ':' + finishtime1);
-    endtime1.fill(resData.finishtime1, 0, 49);
-    for (var i = 0; i < 50; i++) {
-        generation.push(i);
+    window.onload=function () {
+        f();
     }
-    echartsRecords.setOption(option = makeOption());
-    initDrag();
-    echartsPies.setOption(optionzhe);
-    if (resData.hasOwnProperty("data2")) {
-        $('#time2').html(resData.algorithm2 + ':' + resData.finishtime2);
-        endtime2.fill(resData.finishtime2, 0, 49);
-        _rawData2 = resData.data2;
-        echartsDataset.setOption(option = makeOption2());
-        initDrag2();
-        echartsPies2.setOption(optionzhe2);
-    } else {
-        $('#time2').remove();
-        $('#cpusage2').remove();
-        $('#memusage2').remove();
-        var obj = document.getElementById('compareAlgorithm');
-        obj.parentNode.removeChild(obj);
+    var result=null;
+    function f() {
+        setTimeout(f, 5000);
+
+        $.ajax({
+            url: '/getDynamic',
+            method: 'get',
+            success: function (res) {
+                if (res.code == 200) {
+                    result = res;
+                }
+            },
+            error: function () {
+                layer.msg("错误");
+            }
+        })
+        if (result!=null) {
+            if (result.iteratorTimes === 0) {
+                _rawData2 = result.data;
+                finishtime2=result.finishtime;
+                $('#time2').html('初始解:' + finishtime2);
+                generation.push(result.iteratorTimes);
+                endtime2.push(finishtime2);
+                endtime1.push(finishtime2);
+                echartsDataset.setOption(option = makeOption2());
+                initDrag2();
+                echartsPies2.setOption(optionzhe2);
+                iteratorTime = iteratorTime + 1;
+            } else {
+                finishtime1 = result.finishtime;
+                $("#time").html('第' + result.iteratorTimes + '代:' + finishtime1);
+                endtime1.push(finishtime1);
+                generation.push(result.iteratorTimes);
+                endtime2.push(finishtime2);
+                _rawData = result.data;
+                echartsRecords.setOption(option = makeOption());
+                initDrag();
+                echartsPies.setOption(optionzhe);
+                echartsPies2.setOption(optionzhe2);
+            }
+            result=null;
+        }
     }
 
     // echarts 窗口缩放自适应
     window.onresize = function () {
         echartsRecords.resize();
     }
-
-
 </script>
+
 </body>
 </html>

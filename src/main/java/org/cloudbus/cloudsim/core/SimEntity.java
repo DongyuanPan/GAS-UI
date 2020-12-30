@@ -436,7 +436,7 @@ public abstract class SimEntity implements Cloneable {
      *
      * @param ev the event to be processed by the entity
      */
-    public abstract void processEvent(SimEvent ev) throws IllegalAccessException, InstantiationException, IOException;
+    public abstract void processEvent(SimEvent ev) throws IllegalAccessException, InstantiationException, IOException, ClassNotFoundException;
 
     // The entity states
 
@@ -446,7 +446,7 @@ public abstract class SimEntity implements Cloneable {
      */
     public abstract void shutdownEntity();
 
-    public void run() throws InstantiationException, IllegalAccessException, IOException {
+    public void run() throws InstantiationException, IllegalAccessException, IOException, ClassNotFoundException {
         SimEvent ev = evbuf != null ? evbuf : getNextEvent();
 
         while (ev != null) {

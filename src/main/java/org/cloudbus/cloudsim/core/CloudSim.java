@@ -247,7 +247,7 @@ public class CloudSim {
             traceFlag = false;
 
             return clock;
-        } catch (IllegalArgumentException | InstantiationException | IllegalAccessException | IOException e) {
+        } catch (IllegalArgumentException | InstantiationException | IllegalAccessException | IOException | ClassNotFoundException e) {
             e.printStackTrace();
             throw new NullPointerException("CloudSim.startCloudSimulation() :"
                     + " Error - you haven't initialized CloudSim.");
@@ -521,7 +521,7 @@ public class CloudSim {
      *
      * @return true, if successful otherwise
      */
-    public static boolean runClockTick() throws IllegalAccessException, InstantiationException, IOException {
+    public static boolean runClockTick() throws IllegalAccessException, InstantiationException, IOException, ClassNotFoundException {
         SimEntity ent;
         boolean queue_empty;
 
@@ -889,7 +889,7 @@ public class CloudSim {
      *
      * @return the double last clock value
      */
-    public static double run() throws InstantiationException, IllegalAccessException, IOException {
+    public static double run() throws InstantiationException, IllegalAccessException, IOException, ClassNotFoundException {
         if (!running) {
             runStart();
         }
@@ -933,7 +933,7 @@ public class CloudSim {
      * Internal method that allows the entities to terminate. This method should <b>not</b> be used
      * in user simulations.
      */
-    public static void finishSimulation() throws IllegalAccessException, InstantiationException, IOException {
+    public static void finishSimulation() throws IllegalAccessException, InstantiationException, IOException, ClassNotFoundException {
         // Allow all entities to exit their body method
         if (!abruptTerminate) {
             for (SimEntity ent : entities) {

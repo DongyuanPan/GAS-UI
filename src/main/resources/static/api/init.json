@@ -104,6 +104,12 @@
           "href": "page/ResultShow2.html",
           "icon": "fa fa-superpowers",
           "target": "_self"
+        },
+        {
+          "title": "GA展示",
+          "href": "page/GA.html",
+          "icon":"fa fa-superpowers",
+          "target": ""
         }
       ]
     }
