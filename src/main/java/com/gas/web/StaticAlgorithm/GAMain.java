@@ -25,7 +25,6 @@ import org.cloudbus.cloudsim.provisioners.BwProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.RamProvisionerSimple;
 import org.workflowsim.*;
-import org.workflowsim.clustering.BasicClustering;
 import org.workflowsim.utils.ClusteringParameters;
 import org.workflowsim.utils.OverheadParameters;
 import org.workflowsim.utils.Parameters;
@@ -61,7 +60,7 @@ public class GAMain {
      * Creates main() to run this example This example has only one datacenter
      * and one storage
      */
-    public static void main(String[] args) {
+    public  void process() {
         try {
             // First step: Initialize the WorkflowSim package.
             /**
@@ -73,7 +72,7 @@ public class GAMain {
             /**
              * Should change this based on real physical path
              */
-            String daxPath = "C:\\Users\\64123\\IdeaProjects\\GAS-UI\\config\\dax\\Montage_25.xml";
+            String daxPath = "config\\dax\\Montage_25.xml";
             File daxFile = new File(daxPath);
             if (!daxFile.exists()) {
                 Log.printLine("Warning: Please replace daxPath with the physical path in your working environment!");
@@ -153,11 +152,14 @@ public class GAMain {
             ArrayList<Chromosome> group = ga.initGroup();
 
             for (int i = 0; i < 1000; ++i) {
-                // 交叉
-                group = ga.crossover(group);
 
-                // 变异
-                group = ga.mutation(group);
+                if (i != 0) {
+                    // 交叉
+                    group = ga.crossover(group);
+
+                    // 变异
+                    group = ga.mutation(group);
+                }
 
                 Double maxF = Double.MIN_VALUE;
                 // 计算适应度函数
@@ -171,8 +173,10 @@ public class GAMain {
                     chromosome.setF(maxF - chromosome.getF());
                 }
 
-                // 选择
-                group = ga.selectNextGroup(group, groupSize);
+                if (i != 0) {
+                    // 选择
+                    group = ga.selectNextGroup(group, groupSize);
+                }
 
                 Chromosome chromosome = ga.best(group);
 
@@ -181,9 +185,16 @@ public class GAMain {
 //                // 睡眠？
                 jsonObject.put("code", 200);
                 jsonObject.put("data", EchartsController.toDisplay(vmlist0, chromosome.result));
+                jsonObject.put("iteratorTimes", i);
+                jsonObject.put("finishtime",chromosome.getFinishTime());
                 String path = "src\\main\\resources\\StaticAlgorithmResult";
-                String fileName = "GA"; // 应为表示算法的变量 Parameter.SchedulingAlgorithm
+                String fileName = "GA";
+                if (i == 0) {
+                    fileName = "GA-init"; // 应为表示算法的变量 Parameter.SchedulingAlgorithm
+                }
+
                 FileUtil.createJsonFile(jsonObject.toJSONString(), path, fileName);
+                Thread.sleep(5000);
             }
 
 

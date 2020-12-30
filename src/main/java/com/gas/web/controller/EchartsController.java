@@ -11,7 +11,6 @@ import com.gas.web.constant.Constant;
 import com.gas.web.display.Display;
 import com.gas.web.entity.Vm;
 import com.gas.web.entity.Workflow;
-import com.gas.web.service.IAlgorithmService;
 import com.gas.web.service.IVmService;
 import com.gas.web.service.IWorkflowService;
 import com.google.gson.Gson;
@@ -29,17 +28,22 @@ import org.workflowsim.WorkflowScheduler;
 import javax.servlet.http.HttpServletRequest;
 import java.io.*;
 import java.util.*;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 @Controller
 public class EchartsController {
     int datacenter=1,vmnumber=0;
+
     boolean nonefile=false;
+
     public Map<String, Vm> map;
+
     private final IVmService iVmService;
+
     private final IWorkflowService iWorkflowService;
-    private double finishtime=0;
+
+    private static double finishtime=0;
+
+    private static int iterator=0;
 
     @Autowired
     public EchartsController(IVmService iVmService, IWorkflowService iWorkflowService) {
@@ -290,23 +294,28 @@ public class EchartsController {
         Workflow workflow = iWorkflowService.workflowFindById(Integer.parseInt(workflowId));
         lastFileName = workflow.getFileName();
         getResource(resourseId);
-        SchedulingAlgorithm f = new SchedulingAlgorithm();
-        f.process(absolutePath + "/" + getLastFileName(), vmnumber, algorithm, map, datacenter);
-        jsonObject.put("code", 200);
-        jsonObject.put("algorithm1", algorithm);
-        jsonObject.put("data", toDisplay(f.getCondorVMList(), f.getTaskList()));
-        jsonObject.put("finishtime1", finishtime);
-        if (algorithmArray.size() == 2) {
-            algorithm2 = algorithmArray.getJSONObject(1).get("name").toString();
-            //algorithmName2 = iAlgorithmService.algorithmFindById(Integer.parseInt(algorithm2));
-            f.process(absolutePath + "/" + getLastFileName(), vmnumber, algorithm2, map, datacenter);
-            jsonObject.put("algorithm2", algorithm2);
-            jsonObject.put("data2", toDisplay(f.getCondorVMList(), f.getTaskList()));
-            jsonObject.put("finishtime2", finishtime);
+        if(algorithm.equals("GA")){
+            GAMain gaMain=new GAMain();
+            gaMain.process();
         }
-        System.out.println(jsonObject);
-        lastFileName = null;
-        vmnumber = 0;
+        else {
+            SchedulingAlgorithm f = new SchedulingAlgorithm();
+            f.process(absolutePath + "/" + getLastFileName(), vmnumber, algorithm, map, datacenter);
+            jsonObject.put("code", 200);
+            jsonObject.put("algorithm1", algorithm);
+            jsonObject.put("data", toDisplay(f.getCondorVMList(), f.getTaskList()));
+            jsonObject.put("finishtime1", finishtime);
+            if (algorithmArray.size() == 2) {
+                algorithm2 = algorithmArray.getJSONObject(1).get("name").toString();
+                f.process(absolutePath + "/" + getLastFileName(), vmnumber, algorithm2, map, datacenter);
+                jsonObject.put("algorithm2", algorithm2);
+                jsonObject.put("data2", toDisplay(f.getCondorVMList(), f.getTaskList()));
+                jsonObject.put("finishtime2", finishtime);
+            }
+            System.out.println(jsonObject);
+            lastFileName = null;
+            vmnumber = 0;
+        }
         return jsonObject;
     }
     /**
@@ -315,18 +324,35 @@ public class EchartsController {
     @RequestMapping(value="/getDynamic",method = RequestMethod.GET)
     @ResponseBody
     public JSONObject getData() throws IOException, InterruptedException {
-        JSONObject jsonObject;
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("code", 404);
         StringBuffer s=new StringBuffer();
-        FileInputStream in=new FileInputStream(new File("D:\\Project3\\GAS-UI\\src\\main\\resources\\GaGeneration\\EveryGeneration.json"));
-       BufferedReader reader=new BufferedReader(new InputStreamReader(in,"utf-8"));
+        FileInputStream in;
+        if( iterator==0 ) {
+            File file = new File("src\\main\\resources\\StaticAlgorithmResult\\GA-init.json");
+            if(file.exists()) {
+                in = new FileInputStream(file);
+                iterator++;
+            } else {
+                return jsonObject;
+            }
+        }else {
+            File file = new File("src\\main\\resources\\StaticAlgorithmResult\\GA.json");
+            if (file.exists()) {
+                in = new FileInputStream(file);
+            } else {
+                return jsonObject;
+            }
+        }
+        BufferedReader reader=new BufferedReader(new InputStreamReader(in,"utf-8"));
         String s1 = reader.readLine();
-       while (s1!=null)
+        while (s1!=null)
         {
             s.append(s1);
             s1=reader.readLine();
         }
-       jsonObject= JSON.parseObject(s.toString());
+       jsonObject = JSON.parseObject(s.toString());
        in.close();
-        return jsonObject;
+       return jsonObject;
     }
 }

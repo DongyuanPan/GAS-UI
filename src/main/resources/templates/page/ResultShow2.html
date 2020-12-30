@@ -885,11 +885,13 @@
             data: endtime2
         }]
     };
+
+
     var resData = JSON.parse(window.localStorage.getItem("result"));
     _rawData = resData.data;
     finishtime1 = resData.finishtime1;
-    $("#time").html(resData.algorithm1+':'+finishtime1);
-    endtime1.fill(resData.finishtime1,0,49);
+    $("#time").html(resData.algorithm1 + ':' + finishtime1);
+    endtime1.fill(resData.finishtime1, 0, 49);
     for (var i = 0; i < 50; i++) {
         generation.push(i);
     }
@@ -897,19 +899,20 @@
     initDrag();
     echartsPies.setOption(optionzhe);
     if (resData.hasOwnProperty("data2")) {
-        $('#time2').html(resData.algorithm2+':'+resData.finishtime2);
-        endtime2.fill(resData.finishtime2,0,49);
+        $('#time2').html(resData.algorithm2 + ':' + resData.finishtime2);
+        endtime2.fill(resData.finishtime2, 0, 49);
         _rawData2 = resData.data2;
         echartsDataset.setOption(option = makeOption2());
         initDrag2();
         echartsPies2.setOption(optionzhe2);
-    }else {
+    } else {
         $('#time2').remove();
         $('#cpusage2').remove();
         $('#memusage2').remove();
-        var obj=document.getElementById('compareAlgorithm');
+        var obj = document.getElementById('compareAlgorithm');
         obj.parentNode.removeChild(obj);
     }
+
     // echarts 窗口缩放自适应
     window.onresize = function () {
         echartsRecords.resize();

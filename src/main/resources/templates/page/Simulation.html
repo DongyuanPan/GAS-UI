@@ -217,7 +217,6 @@
                 algorithmSum2=dataOfAlgorithm[1].summary;
                 algorithmtype2=dataOfAlgorithm[1].type;
             }
-            alert(JSON.stringify(dataOfAlgorithm));
             table.render({
                 elem: '#currentTableIdOfAlgorithmConfirm',
                 cols: [[
@@ -255,14 +254,28 @@
         //点击确认按钮，提交表单
         $('#Sure').click(function () {
             $('#sure').submit=true;
-             if(JSON.stringify(dataOfWorkflow)!="[]" && JSON.stringify(dataOfResource)!="[]" && JSON.stringify(dataOfAlgorithm)!="[]"){
+            if(dataOfAlgorithm[0].name=="GA"){
+                $.ajax({
+                    url: '/formUpload',
+                    method: 'post',
+                    data:{
+                        "workflow" : workflowId,
+                        "resource" : resourceId,
+                        "algorithm" : JSON.stringify(dataOfAlgorithm)
+                    },
+                    dataType : 'JSON',
+                })
+                window.localStorage.setItem("result", "GA");
+                step.next('#stepForm');
+                self.location="GA.html";
+            }
+             else if(JSON.stringify(dataOfWorkflow)!="[]" && JSON.stringify(dataOfResource)!="[]" && JSON.stringify(dataOfAlgorithm)!="[]"){
                 $.ajax({
                     url: '/formUpload',
                     method: 'post',
                     data: {
                         "workflow": workflowId,
                         "resource": resourceId,
-                        //"algorithm": algorithmId
                         "algorithm" :JSON.stringify(dataOfAlgorithm)
                     },
                     dataType: 'JSON',
@@ -271,7 +284,6 @@
                             var result = JSON.stringify(res);
                             window.localStorage.setItem("result", result);
                             step.next('#stepForm');
-                            // window.location.href="ResultShow2.html";
                             self.location="ResultShow2.html";
                         } else {
 
