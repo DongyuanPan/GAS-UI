@@ -45,6 +45,10 @@ public class EchartsController {
 
     private static int iterator=0;
 
+    public static boolean continueGAflag = true;
+
+    public static boolean endGAflag = false;
+
     @Autowired
     public EchartsController(IVmService iVmService, IWorkflowService iWorkflowService) {
         this.iVmService = iVmService;
@@ -278,7 +282,7 @@ public class EchartsController {
      */
     @RequestMapping(value = "/formUpload", method = RequestMethod.POST)
     @ResponseBody
-    public JSONObject addQuestionnaire(HttpServletRequest request) throws IOException {
+    public JSONObject addQuestionnaire(HttpServletRequest request) throws IOException, ClassNotFoundException, IllegalAccessException, InstantiationException {
         JSONObject jsonObject = new JSONObject();
         File fileDir = new File("config/workflow/");
         if(!fileDir.exists()){
@@ -288,15 +292,25 @@ public class EchartsController {
         String workflowId = request.getParameter("workflow");
         String resourseId = request.getParameter("resource");
         String algorithm = request.getParameter("algorithm");
+        String algoType = request.getParameter("type");
         JSONArray algorithmArray=JSONArray.parseArray(algorithm);
         algorithm=algorithmArray.getJSONObject(0).get("name").toString();
         String algorithm2 = null;
         Workflow workflow = iWorkflowService.workflowFindById(Integer.parseInt(workflowId));
         lastFileName = workflow.getFileName();
         getResource(resourseId);
-        if(algorithm.equals("GA")){
-            GAMain gaMain=new GAMain();
-            gaMain.process();
+        if(algoType.equals("Planning")){
+            String fileLastName = request.getParameter("fileLastName");
+            GAMain ga = (GAMain) Class.forName("com.gas.web.StaticAlgorithm." + algorithm + "Main").newInstance();
+            ga.process(absolutePath+"/"+getLastFileName(), map, fileLastName);
+            if(endGAflag) {
+                System.out.println("endEcharts");
+                iterator = 0;
+                ga=null;
+                endGAflag = false;
+                continueGAflag = true;
+                return jsonObject;
+            }
         }
         else {
             SchedulingAlgorithm f = new SchedulingAlgorithm();
@@ -321,15 +335,32 @@ public class EchartsController {
     /**
      * test ajax
      */
-    @RequestMapping(value="/getDynamic",method = RequestMethod.GET)
+    @RequestMapping(value="/getDynamic",method = RequestMethod.POST)
     @ResponseBody
-    public JSONObject getData() throws IOException, InterruptedException {
+    public JSONObject getData(HttpServletRequest request) throws IOException, InterruptedException {
         JSONObject jsonObject = new JSONObject();
+        String algorithm = request.getParameter("dynamicAlgorithm");
+        String fileLastName = request.getParameter("fileLastName");
+        String stopGA = request.getParameter("stopGA");
+        String endGA = request.getParameter("endGA");
+        if(Integer.parseInt(endGA) == 1){
+            endGAflag = true;
+            return jsonObject;
+        }else {
+            endGAflag = false;
+        }
+        if(Integer.parseInt(stopGA) == 1){
+            continueGAflag = false;
+            return jsonObject;
+        }else {
+            continueGAflag = true;
+        }
+
         jsonObject.put("code", 404);
-        StringBuffer s=new StringBuffer();
+        StringBuffer s = new StringBuffer();
         FileInputStream in;
         if( iterator==0 ) {
-            File file = new File("src\\main\\resources\\StaticAlgorithmResult\\GA-init.json");
+            File file = new File("src\\main\\resources\\StaticAlgorithmResult\\"+algorithm+"-init-"+fileLastName+".json");
             if(file.exists()) {
                 in = new FileInputStream(file);
                 iterator++;
@@ -337,19 +368,19 @@ public class EchartsController {
                 return jsonObject;
             }
         }else {
-            File file = new File("src\\main\\resources\\StaticAlgorithmResult\\GA.json");
+            File file = new File("src\\main\\resources\\StaticAlgorithmResult\\" + algorithm + "-"+ fileLastName + ".json");
             if (file.exists()) {
                 in = new FileInputStream(file);
             } else {
                 return jsonObject;
             }
         }
-        BufferedReader reader=new BufferedReader(new InputStreamReader(in,"utf-8"));
+        BufferedReader reader = new BufferedReader(new InputStreamReader(in,"utf-8"));
         String s1 = reader.readLine();
         while (s1!=null)
         {
             s.append(s1);
-            s1=reader.readLine();
+            s1 = reader.readLine();
         }
        jsonObject = JSON.parseObject(s.toString());
        in.close();

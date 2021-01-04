@@ -105,10 +105,10 @@
 
     <div class="layui-row layui-col-space15" id="compareAlgorithm">
         <div class="layui-col-xs12 layui-col-md8">
-            <div id="echarts-dataset" style="background-color:#ffffff;min-height:300px;padding: 10px"></div>
+            <div id="echarts-dataset" style="background-color:#ffffff;min-height:400px;padding: 10px"></div>
         </div>
         <div class="layui-col-xs12 layui-col-md4">
-            <div id="echarts-map" style="background-color:#ffffff;min-height:300px;padding: 10px"></div>
+            <div id="echarts-map" style="background-color:#ffffff;min-height:400px;padding: 10px"></div>
         </div>
     </div>
 
@@ -217,8 +217,10 @@
 
 
     function downLoadJson() {
-        var eleTextarea = _rawData;
-        var eleTextarea2=_rawData2;
+        //var eleTextarea = _rawData;
+        //var eleTextarea2=_rawData2;
+        var eleTextarea = downRawData;
+        var eleTextarea2 = downRawData2;
 
         // 下载文件方法
         var funDownload = function (content, filename) {
@@ -889,7 +891,9 @@
 
     var resData = JSON.parse(window.localStorage.getItem("result"));
     _rawData = resData.data;
+    var downRawData = { 'data' : _rawData};
     finishtime1 = resData.finishtime1;
+    downRawData.finishtime = finishtime1;
     $("#time").html(resData.algorithm1 + ':' + finishtime1);
     endtime1.fill(resData.finishtime1, 0, 49);
     for (var i = 0; i < 50; i++) {
@@ -902,6 +906,8 @@
         $('#time2').html(resData.algorithm2 + ':' + resData.finishtime2);
         endtime2.fill(resData.finishtime2, 0, 49);
         _rawData2 = resData.data2;
+        var downRawData2 = {'data' : _rawData2};
+        downRawData2.finishtime = resData.finishtime2;
         echartsDataset.setOption(option = makeOption2());
         initDrag2();
         echartsPies2.setOption(optionzhe2);
