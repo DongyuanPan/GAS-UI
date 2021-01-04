@@ -282,7 +282,20 @@ public class EchartsController {
         getResource(resourseId);
         SchedulingAlgorithm f = new SchedulingAlgorithm();
         f.process(absolutePath+"/"+getLastFileName(), vmnumber, Integer.parseInt(algorithm), map, datacenter);
+        List<Job> ppp = f.getTaskList();
+        List<CondorVM> ooo=f.getCondorVMList();
+        double lengh_of_all_jobs=0,mips_of_all_vms=0,finish_time_of_all_jobs=0;
+        double total_cpu_time=0;
+        for(int i =0 ;i<ppp.size();i++){
+            lengh_of_all_jobs=lengh_of_all_jobs+ppp.get(i).getCloudletLength();
+            if(finish_time_of_all_jobs<ppp.get(i).getFinishTime())finish_time_of_all_jobs=ppp.get(i).getFinishTime();
+        }
+        for(int i =0 ;i<ooo.size();i++) {
+            mips_of_all_vms += ooo.get(i).getMips() * ooo.get(i).getNumberOfPes() * finish_time_of_all_jobs;
+        };
+        double mean_cpu_use=lengh_of_all_jobs/mips_of_all_vms;
         jsonObject.put("code", 200);
+        jsonObject.put("mean_cpu_use",mean_cpu_use);
         jsonObject.put("data", toDisplay(f.getCondorVMList(), f.getTaskList()));
         System.out.println(jsonObject);
         lastFileName=null;
