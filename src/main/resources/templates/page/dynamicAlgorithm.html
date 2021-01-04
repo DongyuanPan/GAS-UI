@@ -35,7 +35,7 @@
 </head>
 <body>
 <div class="layuimini-main" id="Gante">
-    <div class="layui-row layui-col-space15">
+    <div class="layui-row layui-col-space12">
         <div class="layui-col-xs12 layui-col-md4">
             <div class="layui-card top-panel">
                 <div class="layui-card-header">任务完成时间</div>
@@ -81,6 +81,7 @@
                 </div>
             </div>
         </div>
+
     </div>
 
     <div class="layui-row layui-col-space15">
@@ -94,6 +95,10 @@
                 </dl>
             </li>
             <li class="layui-nav-item"><a href="javascript: downLoadJson()" style="color: #486aaa"> 下载结果</a></li>
+
+            <li class="layui-nav-item"><a href="javascript: stopGA()" style="color: #FF0000"> 暂停GA</a></li>
+            <li class="layui-nav-item"><a href="javascript: continueGA()" style="color: #20B2AA"> 继续GA</a></li>
+            <li class="layui-nav-item"><a href="javascript: endGA()" style="color: #7B68EE"> 结束GA</a></li>
         </ul>
         <div class="layui-col-xs12 layui-col-md8">
             <div id="echarts-records" style="background-color:#ffffff;min-height:400px;padding: 10px"></div>
@@ -105,10 +110,10 @@
 
     <div class="layui-row layui-col-space15" id="compareAlgorithm">
         <div class="layui-col-xs12 layui-col-md8">
-            <div id="echarts-dataset" style="background-color:#ffffff;min-height:300px;padding: 10px"></div>
+            <div id="echarts-dataset" style="background-color:#ffffff;min-height:400px;padding: 10px"></div>
         </div>
         <div class="layui-col-xs12 layui-col-md4">
-            <div id="echarts-map" style="background-color:#ffffff;min-height:300px;padding: 10px"></div>
+            <div id="echarts-map" style="background-color:#ffffff;min-height:400px;padding: 10px"></div>
         </div>
     </div>
 
@@ -123,7 +128,10 @@
     var endtime1 = new Array();
     var endtime2 = new Array();
     var generation = new Array();
-    var iteratorTime=0;
+    var iteratorTime = 0;
+    var stopGAflag = 0;
+    var endGAflag = 0;
+    var sendFlag = 1;
     /**
      * 甘特图显示
      */
@@ -247,6 +255,22 @@
         }
 
 
+    }
+    
+    function stopGA() {
+       stopGAflag = 1;
+    }
+    
+    function continueGA() {
+        if(endGAflag == 0) {
+            stopGAflag = 0;
+            sendFlag = 1;
+        }
+    }
+    
+    function endGA() {
+        endGAflag = 1;
+        stopGAflag = 1;
     }
 
     function makeOption() {
@@ -892,46 +916,70 @@
         f();
     }
     var result=null;
+    var lastIteration = -1;
+    var fileLast=window.localStorage.getItem("fileLastName");
+    var dynamicAlgorithm=window.localStorage.getItem("algorithm");
     function f() {
-        setTimeout(f, 5000);
+        setTimeout(f, 1000);
+        if (sendFlag == 1) {
+            $.ajax({
+                url: '/getDynamic',
+                method: 'post',
+                data: {
+                    "fileLastName": fileLast,
+                    "dynamicAlgorithm": dynamicAlgorithm,
+                    "stopGA": stopGAflag,
+                    "endGA": endGAflag
+                },
+                dataType: 'JSON',
+                success: function (res) {
+                    if (res.code == 200) {
+                        result = res;
+                    }
+                },
+                error: function () {
 
-        $.ajax({
-            url: '/getDynamic',
-            method: 'get',
-            success: function (res) {
-                if (res.code == 200) {
-                    result = res;
                 }
-            },
-            error: function () {
-                layer.msg("错误");
+            })
+            if (endGAflag == 1 || stopGAflag == 1) {
+                sendFlag = 0;
             }
-        })
-        if (result!=null) {
-            if (result.iteratorTimes === 0) {
-                _rawData2 = result.data;
-                finishtime2=result.finishtime;
-                $('#time2').html('初始解:' + finishtime2);
-                generation.push(result.iteratorTimes);
-                endtime2.push(finishtime2);
-                endtime1.push(finishtime2);
-                echartsDataset.setOption(option = makeOption2());
-                initDrag2();
-                echartsPies2.setOption(optionzhe2);
-                iteratorTime = iteratorTime + 1;
-            } else {
-                finishtime1 = result.finishtime;
-                $("#time").html('第' + result.iteratorTimes + '代:' + finishtime1);
-                endtime1.push(finishtime1);
-                generation.push(result.iteratorTimes);
-                endtime2.push(finishtime2);
-                _rawData = result.data;
-                echartsRecords.setOption(option = makeOption());
-                initDrag();
-                echartsPies.setOption(optionzhe);
-                echartsPies2.setOption(optionzhe2);
+        }
+        if (result != null && lastIteration != result.iteratorTimes) {
+            lastIteration = result.iteratorTimes;
+            if (result != null && stopGAflag == 0) {
+                if (result.iteratorTimes === 0) {
+                    _rawData2 = result.data;
+                    _rawData = result.data;
+                    finishtime2 = result.finishtime;
+                    finishtime1 = finishtime2
+                    $("#time").html('第' + result.iteratorTimes + '代:' + finishtime1);
+                    $('#time2').html('初始解:' + finishtime2);
+                    generation.push(result.iteratorTimes);
+                    endtime2.push(finishtime2);
+                    endtime1.push(finishtime2);
+                    echartsRecords.setOption(option = makeOption());
+                    initDrag();
+                    echartsPies.setOption(optionzhe);
+                    echartsPies2.setOption(optionzhe2);
+                    echartsDataset.setOption(option = makeOption2());
+                    initDrag2();
+                    echartsPies2.setOption(optionzhe2);
+                    iteratorTime = iteratorTime + 1;
+                } else {
+                    finishtime1 = result.finishtime;
+                    $("#time").html('第' + result.iteratorTimes + '代:' + finishtime1);
+                    endtime1.push(finishtime1);
+                    generation.push(result.iteratorTimes);
+                    endtime2.push(finishtime2);
+                    _rawData = result.data;
+                    echartsRecords.setOption(option = makeOption());
+                    initDrag();
+                    echartsPies.setOption(optionzhe);
+                    echartsPies2.setOption(optionzhe2);
+                }
+                result = null;
             }
-            result=null;
         }
     }
 

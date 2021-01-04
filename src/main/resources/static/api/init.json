@@ -106,8 +106,8 @@
           "target": "_self"
         },
         {
-          "title": "GA展示",
-          "href": "page/GA.html",
+          "title": "动态算法结果展示",
+          "href": "page/dynamicAlgorithm.html",
           "icon":"fa fa-superpowers",
           "target": ""
         }

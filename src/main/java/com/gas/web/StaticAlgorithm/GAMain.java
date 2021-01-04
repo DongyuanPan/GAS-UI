@@ -2,24 +2,12 @@ package com.gas.web.StaticAlgorithm;
 
 import java.io.File;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 import com.alibaba.fastjson.JSONObject;
 import com.gas.web.controller.EchartsController;
 import com.gas.web.util.FileUtil;
-import org.cloudbus.cloudsim.Cloudlet;
-import org.cloudbus.cloudsim.CloudletSchedulerSpaceShared;
-import org.cloudbus.cloudsim.DatacenterCharacteristics;
-import org.cloudbus.cloudsim.HarddriveStorage;
-import org.cloudbus.cloudsim.Host;
-import org.cloudbus.cloudsim.Log;
-import org.cloudbus.cloudsim.Pe;
-import org.cloudbus.cloudsim.Storage;
-import org.cloudbus.cloudsim.VmAllocationPolicySimple;
-import org.cloudbus.cloudsim.VmSchedulerTimeShared;
+import org.cloudbus.cloudsim.*;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.provisioners.BwProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
@@ -33,10 +21,9 @@ import org.workflowsim.utils.Parameters.ClassType;
 
 public class GAMain {
 
-    protected static List<CondorVM> createVM(int userId, int vms) {
+   /* protected static List<CondorVM> createVM(int userId, int vms) {
         //Creates a container to store VMs. This list is passed to the broker later
         LinkedList<CondorVM> list = new LinkedList<>();
-
         //VM Parameters
         long size = 10000; //image size (MB)
         int ram = 512; //vm memory (MB)
@@ -53,14 +40,59 @@ public class GAMain {
             list.add(vm[i]);
         }
         return list;
+    }*/
+
+    static int totalvm=0;
+    public static List<CondorVM> createVM(int userId, int vms,long s,int r,int m,long band,int cpu) {
+        //Creates a container to store VMs. This list is passed to the broker later
+        int lastnum=totalvm;
+        int i=0;
+        totalvm=totalvm+vms;
+        LinkedList<CondorVM> list = new LinkedList<>();
+        //VM Parameters
+        long size = s; //image size (MB)10000
+        int ram =r; //vm memory (MB)512
+        int mips = m;
+        long bw = band;
+        int pesNumber = cpu; //number of cpus
+        String vmm = "Xen"; //VMM name
+        //create VMs
+        CondorVM[] vm = new CondorVM[vms];
+        Random bwRandom = new Random(System.currentTimeMillis());
+        for ( ; lastnum <totalvm; lastnum++) {
+            //double ratio = bwRandom.nextDouble();
+            double ratio=0.2;
+            vm[i] = new CondorVM(lastnum,0, userId, mips * ratio, pesNumber, ram, (long) (bw * ratio), size, vmm, new CloudletSchedulerSpaceShared());
+            list.add(vm[i]);
+            i++;
+        }
+        return list;
     }
+
+
+    //创建虚拟机
+    public List<CondorVM> getDatacenterVM(Map<String, com.gas.web.entity.Vm> map, int userId ){
+        List<CondorVM> vmlist=new ArrayList<>();
+        for (com.gas.web.entity.Vm virtual:map.values()) {
+            int count=virtual.getCount();
+            long mirror=virtual.getMirror();
+            int ram=virtual.getRam();
+            int mips=virtual.getMips();
+            long bandwidth=virtual.getBw();
+            int cpu=virtual.getCpu();
+            List<CondorVM> vmlistemp = createVM(userId, count, mirror, ram, mips, bandwidth, cpu);
+            vmlist.addAll(vmlist.size(),vmlistemp);
+        }
+        return vmlist;
+    }
+
 
     ////////////////////////// STATIC METHODS ///////////////////////
     /**
      * Creates main() to run this example This example has only one datacenter
      * and one storage
      */
-    public  void process() {
+    public  void process(String workflowPath, Map<String, com.gas.web.entity.Vm> map, String fileLastName) {
         try {
             // First step: Initialize the WorkflowSim package.
             /**
@@ -72,7 +104,9 @@ public class GAMain {
             /**
              * Should change this based on real physical path
              */
-            String daxPath = "config\\dax\\Montage_25.xml";
+            //String daxPath = "config\\dax\\Montage_25.xml";
+            String daxPath = workflowPath;
+
             File daxFile = new File(daxPath);
             if (!daxFile.exists()) {
                 Log.printLine("Warning: Please replace daxPath with the physical path in your working environment!");
@@ -129,7 +163,8 @@ public class GAMain {
              * Create a list of VMs.The userId of a vm is basically the id of
              * the scheduler that controls this vm.
              */
-            List<CondorVM> vmlist0 = createVM(wfEngine.getSchedulerId(0), Parameters.getVmNum());
+            //List<CondorVM> vmlist0 = createVM(wfEngine.getSchedulerId(0), Parameters.getVmNum());
+            List<CondorVM> vmlist0 = getDatacenterVM(map, wfEngine.getSchedulerId(0));
 
             /**
              * Submits this list of vms to this WorkflowEngine.
@@ -188,13 +223,20 @@ public class GAMain {
                 jsonObject.put("iteratorTimes", i);
                 jsonObject.put("finishtime",chromosome.getFinishTime());
                 String path = "src\\main\\resources\\StaticAlgorithmResult";
-                String fileName = "GA";
+                String fileName = "GA-"+fileLastName;
                 if (i == 0) {
-                    fileName = "GA-init"; // 应为表示算法的变量 Parameter.SchedulingAlgorithm
+                    fileName = "GA-init-"+fileLastName; // 应为表示算法的变量 Parameter.SchedulingAlgorithm
                 }
 
                 FileUtil.createJsonFile(jsonObject.toJSONString(), path, fileName);
-                Thread.sleep(5000);
+
+                if(EchartsController.endGAflag) {
+                    System.out.println("endGAMain");
+                    return;
+                }
+                while (EchartsController.continueGAflag == false);
+
+                Thread.sleep(2000);
             }
 
 
