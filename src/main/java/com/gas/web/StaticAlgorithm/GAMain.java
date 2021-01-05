@@ -7,6 +7,7 @@ import java.util.*;
 import com.alibaba.fastjson.JSONObject;
 import com.gas.web.controller.EchartsController;
 import com.gas.web.util.FileUtil;
+import com.gas.web.util.PauseUtil;
 import org.cloudbus.cloudsim.*;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.provisioners.BwProvisionerSimple;
@@ -234,9 +235,10 @@ public class GAMain {
                     System.out.println("endGAMain");
                     return;
                 }
-                while (EchartsController.continueGAflag == false);
+                //while (EchartsController.continueGAflag == false);
 
                 Thread.sleep(2000);
+                PauseUtil.pauseThread();
             }
 
 

@@ -1,5 +1,8 @@
 package com.gas.web.StaticAlgorithm;
 
+import com.alibaba.fastjson.JSONObject;
+import com.gas.web.controller.EchartsController;
+import com.gas.web.util.FileUtil;
 import org.workflowsim.CondorVM;
 import org.workflowsim.Job;
 import org.workflowsim.Task;
@@ -189,5 +192,4 @@ public class GA {
 //        System.out.println();
         return jobList;
     }
-
 }

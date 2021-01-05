@@ -96,9 +96,9 @@
             </li>
             <li class="layui-nav-item"><a href="javascript: downLoadJson()" style="color: #486aaa"> 下载结果</a></li>
 
-            <li class="layui-nav-item"><a href="javascript: stopGA()" style="color: #FF0000"> 暂停GA</a></li>
-            <li class="layui-nav-item"><a href="javascript: continueGA()" style="color: #20B2AA"> 继续GA</a></li>
-            <li class="layui-nav-item"><a href="javascript: endGA()" style="color: #7B68EE"> 结束GA</a></li>
+            <li class="layui-nav-item"><a href="javascript: stopGA()" style="color: #FF0000" id="pauseElement"> 暂停GA</a></li>
+            <li class="layui-nav-item"><a href="javascript: continueGA()" style="color: #20B2AA" id="continueElement"> 继续GA</a></li>
+            <li class="layui-nav-item"><a href="javascript: endGA()" style="color: #7B68EE" id="endElement"> 结束GA</a></li>
         </ul>
         <div class="layui-col-xs12 layui-col-md8">
             <div id="echarts-records" style="background-color:#ffffff;min-height:400px;padding: 10px"></div>
@@ -271,6 +271,10 @@
     function endGA() {
         endGAflag = 1;
         stopGAflag = 1;
+        var pauseEle = document.getElementById('pauseElement');
+        pauseEle.style.color = '#7d7676';
+        var continueEle = document.getElementById('continueElement');
+        continueEle.style.color = '#7d7676';
     }
 
     function makeOption() {
