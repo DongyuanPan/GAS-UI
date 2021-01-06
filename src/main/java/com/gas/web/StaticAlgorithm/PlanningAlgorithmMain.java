@@ -4,10 +4,6 @@ import java.io.File;
 import java.text.DecimalFormat;
 import java.util.*;
 
-import com.alibaba.fastjson.JSONObject;
-import com.gas.web.controller.EchartsController;
-import com.gas.web.util.FileUtil;
-import com.gas.web.util.PauseUtil;
 import org.cloudbus.cloudsim.*;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.provisioners.BwProvisionerSimple;
@@ -20,28 +16,7 @@ import org.workflowsim.utils.Parameters;
 import org.workflowsim.utils.ReplicaCatalog;
 import org.workflowsim.utils.Parameters.ClassType;
 
-public class GAMain {
-
-   /* protected static List<CondorVM> createVM(int userId, int vms) {
-        //Creates a container to store VMs. This list is passed to the broker later
-        LinkedList<CondorVM> list = new LinkedList<>();
-        //VM Parameters
-        long size = 10000; //image size (MB)
-        int ram = 512; //vm memory (MB)
-        int mips = 1000;
-        long bw = 1000;
-        int pesNumber = 1; //number of cpus
-        String vmm = "Xen"; //VMM name
-
-        //create VMs
-        CondorVM[] vm = new CondorVM[vms];
-        for (int i = 0; i < vms; i++) {
-            double ratio = 1.0;
-            vm[i] = new CondorVM(i, 0,userId, mips * ratio, pesNumber, ram, bw, size, vmm, new CloudletSchedulerSpaceShared());
-            list.add(vm[i]);
-        }
-        return list;
-    }*/
+public class PlanningAlgorithmMain {
 
     static int totalvm=0;
     public static List<CondorVM> createVM(int userId, int vms,long s,int r,int m,long band,int cpu) {
@@ -93,7 +68,7 @@ public class GAMain {
      * Creates main() to run this example This example has only one datacenter
      * and one storage
      */
-    public  void process(String workflowPath, Map<String, com.gas.web.entity.Vm> map, String fileLastName) {
+    public void process(String workflowPath, Map<String, com.gas.web.entity.Vm> map, String algorithm, String fileLastName) {
         try {
             // First step: Initialize the WorkflowSim package.
             /**
@@ -105,7 +80,6 @@ public class GAMain {
             /**
              * Should change this based on real physical path
              */
-            //String daxPath = "config\\dax\\Montage_25.xml";
             String daxPath = workflowPath;
 
             File daxFile = new File(daxPath);
@@ -164,7 +138,6 @@ public class GAMain {
              * Create a list of VMs.The userId of a vm is basically the id of
              * the scheduler that controls this vm.
              */
-            //List<CondorVM> vmlist0 = createVM(wfEngine.getSchedulerId(0), Parameters.getVmNum());
             List<CondorVM> vmlist0 = getDatacenterVM(map, wfEngine.getSchedulerId(0));
 
             /**
@@ -177,74 +150,18 @@ public class GAMain {
              */
             wfEngine.bindSchedulerDatacenter(datacenter0.getId(), 0);
 
-            JSONObject jsonObject = new JSONObject();
-            // GA main
-            Integer groupSize = 20;
-            Double crossoverProbability = 0.8;
-            Double mutationProbability = 0.3;
-            GA ga = new GA(groupSize, vmlist0, crossoverProbability, mutationProbability);
-            Chromosome theBest;
-            // 初始化种群
-            ArrayList<Chromosome> group = ga.initGroup();
-
-            for (int i = 0; i < 1000; ++i) {
-
-                if (i != 0) {
-                    // 交叉
-                    group = ga.crossover(group);
-
-                    // 变异
-                    group = ga.mutation(group);
-                }
-
-                Double maxF = Double.MIN_VALUE;
-                // 计算适应度函数
-                for (Chromosome chromosome:group) {
-                    chromosome.calFitness();
-                    maxF = Math.max(maxF, chromosome.getF());
-                }
-
-                // 转换适应度函数，让轮盘赌能够按照完成时间早的被选择的概率大
-                for (Chromosome chromosome:group) {
-                    chromosome.setF(maxF - chromosome.getF());
-                }
-
-                if (i != 0) {
-                    // 选择
-                    group = ga.selectNextGroup(group, groupSize);
-                }
-
-                Chromosome chromosome = ga.best(group);
-
-                printJobList(chromosome.result);
-                System.out.println("第" + i + "次迭代:   " + chromosome.getFinishTime());
-//                // 睡眠？
-                jsonObject.put("code", 200);
-                jsonObject.put("data", EchartsController.toDisplay(vmlist0, chromosome.result));
-                jsonObject.put("iteratorTimes", i);
-                jsonObject.put("finishtime",chromosome.getFinishTime());
-                String path = "src\\main\\resources\\StaticAlgorithmResult";
-                String fileName = "GA-"+fileLastName;
-                if (i == 0) {
-                    fileName = "GA-init-"+fileLastName; // 应为表示算法的变量 Parameter.SchedulingAlgorithm
-                }
-
-                FileUtil.createJsonFile(jsonObject.toJSONString(), path, fileName);
-
-                if(EchartsController.endGAflag) {
-                    System.out.println("endGAMain");
-                    return;
-                }
-                //while (EchartsController.continueGAflag == false);
-
-                Thread.sleep(2000);
-                PauseUtil.pauseThread();
+            PlanningAlgorithmBase planingAlgorithm = null;
+            Class cls = Class.forName("com.gas.web.StaticAlgorithm." + algorithm);
+            try {
+                planingAlgorithm = (PlanningAlgorithmBase)cls.newInstance();
+            }catch (IllegalAccessException | InstantiationException e){
+                System.out.println("create planing algorithm error " + e);
             }
 
-
-        } catch (Exception e) {
+            planingAlgorithm.run(workflowPath, vmlist0, algorithm, fileLastName);
+          } catch (Exception e) {
             Log.printLine("The simulation has been terminated due to an unexpected error: " + e);
-        }
+          }
     }
 
     protected static WorkflowDatacenter createDatacenter(String name) {
