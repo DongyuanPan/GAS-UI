@@ -3,6 +3,7 @@ package com.gas.web.StaticAlgorithm;
 import com.alibaba.fastjson.JSONObject;
 import com.gas.web.controller.EchartsController;
 import com.gas.web.util.FileUtil;
+import com.gas.web.util.PauseUtil;
 import org.workflowsim.CondorVM;
 import org.workflowsim.Job;
 import org.workflowsim.Task;
@@ -11,7 +12,7 @@ import org.workflowsim.clustering.BasicClustering;
 
 import java.util.*;
 
-public class GA {
+public class GA extends PlanningAlgorithmBase {
     public List<CondorVM> vmList; // 由外部传入
     public WorkflowParser parser;
     public ArrayList<Integer> topologyIDtoTask;
@@ -21,6 +22,15 @@ public class GA {
     public Integer genMaxValue;
     public Double crossoverProbability;
     public Double mutationProbability;
+
+    // 必须有无参构造函数，反射才能创建次类
+    public GA() {
+        this.groupSize = 20;
+        this.vmList = new ArrayList<>();
+        this.genMaxValue = vmList.size();
+        this.crossoverProbability = 0.8;
+        this.mutationProbability = 0.1;
+    }
 
     public GA(Integer groupSize, List<CondorVM> vmList, Double crossoverProbability, Double mutationProbability) {
         this.groupSize = groupSize;
@@ -191,5 +201,73 @@ public class GA {
 //        }
 //        System.out.println();
         return jobList;
+    }
+
+    /**
+     * The main function
+     */
+    @Override
+    public void run(String workflowPath, List<CondorVM> vmList, String algorithm, String fileLastName) throws Exception {
+        JSONObject jsonObject = new JSONObject();
+        // GA main
+        Integer groupSize = 20;
+        Double crossoverProbability = 0.8;
+        Double mutationProbability = 0.3;
+        GA ga = new GA(groupSize, vmList, crossoverProbability, mutationProbability);
+        Chromosome theBest;
+        // 初始化种群
+        ArrayList<Chromosome> group = ga.initGroup();
+
+        for (int i = 0; i < 1000; ++i) {
+
+            if (i != 0) {
+                // 交叉
+                group = ga.crossover(group);
+
+                // 变异
+                group = ga.mutation(group);
+            }
+
+            Double maxF = Double.MIN_VALUE;
+            // 计算适应度函数
+            for (Chromosome chromosome:group) {
+                chromosome.calFitness();
+                maxF = Math.max(maxF, chromosome.getF());
+            }
+
+            // 转换适应度函数，让轮盘赌能够按照完成时间早的被选择的概率大
+            for (Chromosome chromosome:group) {
+                chromosome.setF(maxF - chromosome.getF());
+            }
+
+            if (i != 0) {
+                // 选择
+                group = ga.selectNextGroup(group, groupSize);
+            }
+
+            Chromosome chromosome = ga.best(group);
+
+            System.out.println("第" + i + "次迭代:   " + chromosome.getFinishTime());
+            jsonObject.put("code", 200);
+            jsonObject.put("data", EchartsController.toDisplay(vmList, chromosome.result));
+            jsonObject.put("iteratorTimes", i);
+            jsonObject.put("finishtime",chromosome.getFinishTime());
+            String path = "src\\main\\resources\\StaticAlgorithmResult";
+            String fileName = "GA-"+fileLastName;
+            if (i == 0) {
+                fileName = "GA-init-"+fileLastName; // 应为表示算法的变量 Parameter.SchedulingAlgorithm
+            }
+
+            FileUtil.createJsonFile(jsonObject.toJSONString(), path, fileName);
+
+            if(EchartsController.endGAflag) {
+                System.out.println("endGAMain");
+                return;
+            }
+            //while (EchartsController.continueGAflag == false);
+
+            Thread.sleep(2000);
+            PauseUtil.pauseThread();
+        }
     }
 }

@@ -3,7 +3,7 @@ package com.gas.web.controller;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.gas.web.StaticAlgorithm.GAMain;
+import com.gas.web.StaticAlgorithm.PlanningAlgorithmMain;
 import com.gas.web.bean.Res;
 import com.gas.web.bean.Schedule;
 import com.gas.web.bean.Task;
@@ -302,12 +302,11 @@ public class EchartsController {
         getResource(resourseId);
         if(algoType.equals("Planning")){
             String fileLastName = request.getParameter("fileLastName");
-            GAMain ga = (GAMain) Class.forName("com.gas.web.StaticAlgorithm." + algorithm + "Main").newInstance();
-            ga.process(absolutePath+"/"+getLastFileName(), map, fileLastName);
+            PlanningAlgorithmMain planningAlgorithmMain = new PlanningAlgorithmMain();
+            planningAlgorithmMain.process(absolutePath+"/"+getLastFileName(), map, algorithm, fileLastName);
             if(endGAflag) {
                 System.out.println("endEcharts");
                 iterator = 0;
-                ga=null;
                 endGAflag = false;
                 continueGAflag = true;
                 return jsonObject;
