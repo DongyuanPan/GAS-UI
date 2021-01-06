@@ -194,10 +194,10 @@ CREATE TABLE `algorithm` (
 -- ----------------------------
 -- Records of algorithm 给表添加一些初始化数据用来测试,暂无算法文件，自行上传
 -- ----------------------------
-INSERT INTO `algorithm` (name, summary) VALUES ('DataAware', '数据驱动', 'Scheduling', 'src/main/java/org/workflowsim/scheduling\DataAwareSchedulingAlgorithm.java');
-INSERT INTO `algorithm` (name, summary) VALUES ('MaxMin', '最大最小', 'Scheduling', ' src/main/java/org/workflowsim/scheduling\MaxMinSchedulingAlgorithm.java');
-INSERT INTO `algorithm` (name, summary) VALUES ('MCTS', '蒙特卡洛搜索树算法', 'Scheduling', 'src/main/java/org/workflowsim/scheduling\MCTSchedulingAlgorithm.java');
-INSERT INTO `algorithm` (name, summary) VALUES ('RoundRobin', '轮询调度算法', 'Scheduling', 'src/main/java/org/workflowsim/scheduling\RoundRobinSchedulingAlgorithm.java');
-INSERT INTO `algorithm` (name, summary) VALUES ('Static', '静态调度算法', 'Scheduling', ' src/main/java/org/workflowsim/scheduling\StaticSchedulingAlgorithm.java');
-INSERT INTO `algorithm` (name, summary) VALUES ('MinMin', '最小完成时间', 'Scheduling', 'src/main/java/org/workflowsim/scheduling\MinMinSchedulingAlgorithm.java');
-INSERT INTO `algorithm` (name, summary) VALUES ('GA', '遗传算法', 'Planning', ' src/main/java/com/gas/web/StaticAlgorithm/GAMain.java');
+INSERT INTO `algorithm` (name, summary, type, path) VALUES ('DataAware', '数据驱动', 'Scheduling', 'src/main/java/org/workflowsim/scheduling\DataAwareSchedulingAlgorithm.java');
+INSERT INTO `algorithm` (name, summary, type, path) VALUES ('MaxMin', '最大最小', 'Scheduling', ' src/main/java/org/workflowsim/scheduling\MaxMinSchedulingAlgorithm.java');
+INSERT INTO `algorithm` (name, summary, type, path) VALUES ('MCTS', '蒙特卡洛搜索树算法', 'Scheduling', 'src/main/java/org/workflowsim/scheduling\MCTSchedulingAlgorithm.java');
+INSERT INTO `algorithm` (name, summary, type, path) VALUES ('RoundRobin', '轮询调度算法', 'Scheduling', 'src/main/java/org/workflowsim/scheduling\RoundRobinSchedulingAlgorithm.java');
+INSERT INTO `algorithm` (name, summary, type, path) VALUES ('Static', '静态调度算法', 'Scheduling', ' src/main/java/org/workflowsim/scheduling\StaticSchedulingAlgorithm.java');
+INSERT INTO `algorithm` (name, summary, type, path) VALUES ('MinMin', '最小完成时间', 'Scheduling', 'src/main/java/org/workflowsim/scheduling\MinMinSchedulingAlgorithm.java');
+INSERT INTO `algorithm` (name, summary, type, path) VALUES ('GA', '遗传算法', 'Planning', ' src/main/java/com/gas/web/StaticAlgorithm/GAMain.java');

@@ -3,7 +3,7 @@ package com.gas.web.controller;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.gas.web.StaticAlgorithm.GAMain;
+import com.gas.web.StaticAlgorithm.PlanningAlgorithmMain;
 import com.gas.web.bean.Res;
 import com.gas.web.bean.Schedule;
 import com.gas.web.bean.Task;
@@ -13,6 +13,7 @@ import com.gas.web.entity.Vm;
 import com.gas.web.entity.Workflow;
 import com.gas.web.service.IVmService;
 import com.gas.web.service.IWorkflowService;
+import com.gas.web.util.PauseUtil;
 import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -301,12 +302,11 @@ public class EchartsController {
         getResource(resourseId);
         if(algoType.equals("Planning")){
             String fileLastName = request.getParameter("fileLastName");
-            GAMain ga = (GAMain) Class.forName("com.gas.web.StaticAlgorithm." + algorithm + "Main").newInstance();
-            ga.process(absolutePath+"/"+getLastFileName(), map, fileLastName);
+            PlanningAlgorithmMain planningAlgorithmMain = new PlanningAlgorithmMain();
+            planningAlgorithmMain.process(absolutePath+"/"+getLastFileName(), map, algorithm, fileLastName);
             if(endGAflag) {
                 System.out.println("endEcharts");
                 iterator = 0;
-                ga=null;
                 endGAflag = false;
                 continueGAflag = true;
                 return jsonObject;
@@ -338,6 +338,7 @@ public class EchartsController {
     @RequestMapping(value="/getDynamic",method = RequestMethod.POST)
     @ResponseBody
     public JSONObject getData(HttpServletRequest request) throws IOException, InterruptedException {
+        System.out.println("Thread ID :" + Thread.currentThread().getId());
         JSONObject jsonObject = new JSONObject();
         String algorithm = request.getParameter("dynamicAlgorithm");
         String fileLastName = request.getParameter("fileLastName");
@@ -351,10 +352,14 @@ public class EchartsController {
         }
         if(Integer.parseInt(stopGA) == 1){
             continueGAflag = false;
+            PauseUtil.setPauseFlag();
             return jsonObject;
         }else {
             continueGAflag = true;
+            PauseUtil.resetPauseFlag();
+            PauseUtil.continueThread();
         }
+
 
         jsonObject.put("code", 404);
         StringBuffer s = new StringBuffer();
