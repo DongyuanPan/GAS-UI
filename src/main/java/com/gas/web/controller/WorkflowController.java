@@ -6,13 +6,24 @@ import com.gas.web.entity.Workflow;
 import com.gas.web.service.IPaperService;
 import com.gas.web.service.IWorkflowService;
 import com.gas.web.vo.Response;
+import org.dom4j.io.SAXReader;
+import org.jdom2.JDOMException;
+import org.jdom2.input.SAXBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.*;
+import java.util.*;
+
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import org.dom4j.*;
+
 import java.io.File;
+import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/workflow")
@@ -49,6 +60,68 @@ public class WorkflowController {
             return Response.failure("查询失败", id);
         }
         return Response.success("查询成功", workflow);
+    }
+
+    @GetMapping("/display/{id}")
+    @ResponseBody
+    public JSONObject displayWorkflow(@PathVariable("id") Integer id) throws IOException, JDOMException, DocumentException {
+        JSONObject jsonObject = new JSONObject();
+        Workflow workflow = null;
+        workflow = workflowService.workflowFindById(id);
+        String path = workflow.getLocalAddress();
+        ArrayList<JSONObject> points = new ArrayList<JSONObject>();
+        ArrayList<JSONObject> lines =new ArrayList<JSONObject>();
+
+
+        //1.创建Reader对象
+        SAXReader reader = new SAXReader();
+        //2.加载xml
+        Document document = reader.read(new File(path));
+        //3.获取根节点
+        Element rootElement = document.getRootElement();
+        Iterator iterator = rootElement.elementIterator();
+        while (iterator.hasNext()){
+            Element stu = (Element) iterator.next();
+            if(stu.getName()=="child") {
+                List<Attribute> attributes = stu.attributes();
+                String point = attributes.get(0).getValue();
+                JSONObject jsonObjectPoint = new JSONObject();
+                jsonObjectPoint.put("name",point);
+                points.add(jsonObjectPoint);
+                Iterator iterator1 = stu.elementIterator();
+                while (iterator1.hasNext()) {
+                    Element stuChild = (Element) iterator1.next();
+                    List<Attribute> attributesChild = stuChild.attributes();
+                    String spoint = attributesChild.get(0).getValue();
+                    JSONObject jsonObjectLine = new JSONObject();
+                    jsonObjectLine.put("source",spoint);
+                    jsonObjectLine.put("target",point);
+                    lines.add(jsonObjectLine);
+                }
+
+            }
+//            List<Attribute> attributes = stu.attributes();
+ //           System.out.println("======获取属性值======");
+ //           for (Attribute attribute : attributes) {
+  //              System.out.println(attribute.getValue());
+ //           }
+  //          System.out.println("======遍历子节点======");
+  //          Iterator iterator1 = stu.elementIterator();
+  //          while (iterator1.hasNext()){
+   //             Element stuChild = (Element) iterator1.next();
+   //             System.out.println("节点名："+stuChild.getName()+"---节点值："+stuChild.getStringValue());
+
+        }
+        JSONObject jsonObjectLineStyle = new JSONObject();
+        jsonObjectLineStyle.put( "opacity", 0.9);
+        jsonObjectLineStyle.put( "width", 5);
+        jsonObjectLineStyle.put( "curveness", 0);
+        jsonObject.put("data",points);
+        jsonObject.put("links",lines);
+        jsonObject.put("lineStyle",jsonObjectLineStyle);
+
+        System.out.print(jsonObject);
+        return jsonObject;
     }
 
 
@@ -110,7 +183,7 @@ public class WorkflowController {
     private boolean isUpload = false;
     private String lastFileName = null;
     //工作流所保存的文件夹
-    private String dirName = "config/workflow";
+    private String  dirName = "config/workflow";
 
     public boolean isFinishUpload() {
         return finishUpload;
