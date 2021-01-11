@@ -19,7 +19,7 @@
            <div class="layui-row layui-col-space30">
                     <form class="layui-form" action="">
                         <div class="layui-form-item">
-                            <a class="layui-btn layui-btn-xs addtable">添加Host</a>
+                            <a class="layui-btn layui-btn-xs addtable">添加数据中心</a>
                         </div>
                         <div  id="tablelist">
 
@@ -99,7 +99,7 @@
                     '</tr>';
                 j=parseInt(j)+1;
             }
-            var str='<a class="layui-btn layui-btn-danger layui-btn-xs deltable" id="deltable'+i+'" onclick="test(this.id)">删除Host'+i+'</a>';
+            var str='<a class="layui-btn layui-btn-danger layui-btn-xs deltable" id="deltable'+i+'" onclick="test(this.id)">删除数据中心'+i+'</a>';
             tabelist.appendChild(tableItem);
             $('#tablelist').append(str);
             i=parseInt(i)+1;
@@ -228,10 +228,10 @@
             '</tr>'+
             '</tbody>'+
             '</table>'+
-            '<a class="layui-btn layui-btn-danger layui-btn-xs deltable" id="deltable'+tablenum+'" onclick="test(this.id)">删除Host'+tablenum+'</a>';
+            '<a class="layui-btn layui-btn-danger layui-btn-xs deltable" id="deltable'+tablenum+'" onclick="test(this.id)">删除数据中心'+tablenum+'</a>';
         //添加到表格最后
         $("#tablelist").append(str);
-        layer.msg("添加Host"+tablenum+"成功");
+        layer.msg("添加数据中心"+tablenum+"成功");
         form.render();
     });
 
@@ -272,7 +272,7 @@
     //删除一个host
     $('body').on('click', '.deltable', function() {
         if (remain===0) {
-            layer.msg('只有一个Host不允许删除。', {
+            layer.msg('只有一个数据中心不允许删除。', {
                 time : 2000
             });
         } else {
@@ -280,7 +280,7 @@
             remain=parseInt(remain)-1;
             $("#table"+parseInt(clickid.substr(8))).remove();
             $("#"+clickid).remove();
-            layer.msg("Host"+parseInt(clickid.substr(8))+"删除成功");
+            layer.msg("数据中心"+parseInt(clickid.substr(8))+"删除成功");
         }
     });
         $.ajax({

@@ -130,7 +130,7 @@ function loadresource(table,name) {
             {field: 'id', width: "10%", title: 'ID', sort: true, align: "center"},
             {field: 'person', width: "10%", title: '创建人', align: "center"},
             {field: 'name', width: "15%", title: '资源名称', align: "center"},
-            {field: 'hostnum', width: "15%", title: 'Host数量', sort: true, align: "center"},
+            {field: 'hostnum', width: "15%", title: '数据中心数量', sort: true, align: "center"},
             {field: 'crtime', width: "20%", title: '创建时间', sort: true, align: "center"},
             {title: '操作', width: "20%", toolbar: '#currentTableBar', align: "center"}
         ]],
@@ -149,7 +149,7 @@ function loadresourceInSimPage(table) {
             {field: 'id', width: "10%", title: 'ID', sort: true, align: "center"},
             {field: 'person', width: "10%", title: '创建人', align: "center"},
             {field: 'name', width: "25%", title: '资源名称', align: "center"},
-            {field: 'hostnum', width: "10%", title: 'Host数量', sort: true, align: "center"},
+            {field: 'hostnum', width: "10%", title: '数据中心数量', sort: true, align: "center"},
             {field: 'crtime', width: "35%", title: '创建时间', sort: true, align: "center"}
         ]],
         limits: [10, 15, 20, 25, 50, 100],
