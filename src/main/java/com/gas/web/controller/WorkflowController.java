@@ -85,9 +85,10 @@ public class WorkflowController {
             if(stu.getName()=="child") {
                 List<Attribute> attributes = stu.attributes();
                 String point = attributes.get(0).getValue();
-                JSONObject jsonObjectPoint = new JSONObject();
-                jsonObjectPoint.put("name",point);
-                points.add(jsonObjectPoint);
+ //               JSONObject jsonObjectPoint = new JSONObject();
+ //               jsonObjectPoint.put("name",point);
+ //               jsonObjectPoint.put("level",0);
+ //               points.add(jsonObjectPoint);
                 Iterator iterator1 = stu.elementIterator();
                 while (iterator1.hasNext()) {
                     Element stuChild = (Element) iterator1.next();
@@ -97,21 +98,139 @@ public class WorkflowController {
                     jsonObjectLine.put("source",spoint);
                     jsonObjectLine.put("target",point);
                     lines.add(jsonObjectLine);
+                    int tt=0;
+                    for(;tt<points.size(); tt++){
+                        if(spoint.equals(points.get(tt).get("name").toString()))break;
+                    }
+                    if(tt==points.size()){
+                        JSONObject jsonObjectSPoint = new JSONObject();
+                        jsonObjectSPoint.put("name",spoint);
+                        jsonObjectSPoint.put("level",0);
+                        points.add(jsonObjectSPoint);
+                    }
+                    int pp=0;
+                    for(;pp<points.size(); pp++){
+                        if(point.equals(points.get(pp).get("name").toString()))break;
+                    }
+                    if(pp==points.size()){
+                        JSONObject jsonObjectPoint = new JSONObject();
+                        jsonObjectPoint.put("name",point);
+                        jsonObjectPoint.put("level",0);
+                        points.add(jsonObjectPoint);
+                    }
                 }
 
             }
-//            List<Attribute> attributes = stu.attributes();
- //           System.out.println("======获取属性值======");
- //           for (Attribute attribute : attributes) {
-  //              System.out.println(attribute.getValue());
- //           }
-  //          System.out.println("======遍历子节点======");
-  //          Iterator iterator1 = stu.elementIterator();
-  //          while (iterator1.hasNext()){
-   //             Element stuChild = (Element) iterator1.next();
-   //             System.out.println("节点名："+stuChild.getName()+"---节点值："+stuChild.getStringValue());
-
         }
+
+
+
+
+        int levels[] = new int[points.size()];
+        int flag = 1;
+        do {
+            flag = 1;
+            for (int i = 0; i < lines.size(); i++) {
+                System.out.println("------------line-------");
+                System.out.println(i);
+                System.out.println("------------line-------");
+                String source = lines.get(i).get("source").toString();
+                String target = lines.get(i).get("target").toString();
+                System.out.print("source");
+                System.out.println(source);
+                System.out.print("target");
+                System.out.println(target);
+                int temp_level = 0;
+                for (int j = 0; j < points.size(); j++) {
+
+                    if (points.get(j).get("name").toString().equals(source)) {
+                        System.out.print(j);
+                        System.out.println("OK");
+                        temp_level = Integer.parseInt(points.get(j).get("level").toString());
+                        System.out.print("source");
+                        System.out.print(points.get(j).get("name"));
+                        System.out.print(points.get(j).get("    "));
+                        System.out.println(points.get(j).get("level"));
+                        break;
+                    }
+                    if (j >= points.size()) {
+                        System.out.println("fuck");
+                    }
+                }
+                for (int j = 0; j < points.size(); j++) {
+                    if (points.get(j).get("name").toString().equals(target)) {
+                        System.out.print(j);
+                        System.out.println("OK");
+                        if (Integer.parseInt(points.get(j).get("level").toString()) < temp_level + 1) {
+                            flag = 0;
+                            points.get(j).put("level", temp_level + 1);
+                            System.out.print("target");
+                            System.out.print(points.get(j).get("name"));
+                            System.out.print("    ");
+                            System.out.println(points.get(j).get("level"));
+
+                        }
+
+                        break;
+
+                    }
+                    if (j >= points.size()) {
+                        System.out.println("fuck");
+                    }
+
+                }
+
+            }
+        }while(flag==0);
+
+        for(int j=0; j<points.size();j++){
+            levels[Integer.parseInt(points.get(j).get("level").toString())]++;
+        }
+        int level_max=0, lever_num=0;
+
+        for(int k=0;k<levels.length;k++){
+            if(level_max<levels[k]){
+                level_max = levels[k];
+            }
+            if(levels[k]>0){
+                lever_num++;
+            }
+        }
+        double y_distance=300;
+        double y_start=100;
+        double x_distance=300.0*level_max/lever_num*1.8;
+        double x_start=300;
+        double level_index[] = new double[lever_num];
+        for(int l=0;l<lever_num;l++){
+            level_index[l] = (level_max - levels[l])/2.0*y_distance+y_start;
+        }
+        for(int j=0; j<points.size();j++){
+
+            points.get(j).put("x",Integer.parseInt(points.get(j).get("level").toString())*x_distance+x_start);
+            points.get(j).put("y",level_index[Integer.parseInt(points.get(j).get("level").toString())]+y_distance);
+//            points.get(j).remove("level");
+            level_index[Integer.parseInt(points.get(j).get("level").toString())]=level_index[Integer.parseInt(points.get(j).get("level").toString())]+y_distance;
+        }
+        int cccc=0;
+
+
+
+
+/*
+        for(int j=0; j<points.size();j++){
+            points.get(j).remove("level");
+        }
+*/
+
+
+
+
+
+
+
+
+
+
         JSONObject jsonObjectLineStyle = new JSONObject();
         jsonObjectLineStyle.put( "opacity", 0.9);
         jsonObjectLineStyle.put( "width", 5);

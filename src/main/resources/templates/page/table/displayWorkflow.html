@@ -27,7 +27,7 @@
         myChart.hideLoading();  // 隐藏 loading 效果
         option = {
             title: {
-                text: 'Graph 简单示例'
+                text: '工作流图示'
             },
             tooltip: {},
             animationDurationUpdate: 1500,
@@ -35,10 +35,10 @@
             series: [
                 {
                     type: 'graph',
-                    layout: 'force',
-                    force:{
-                        repulsion: 1135
-                    },
+                    layout: 'none',
+ //                   force:{
+  //                      repulsion: 1135
+  //                  },
                     symbolSize: 50,
                     roam: true,
                     label: {
