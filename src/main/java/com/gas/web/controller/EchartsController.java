@@ -300,6 +300,7 @@ public class EchartsController {
         Workflow workflow = iWorkflowService.workflowFindById(Integer.parseInt(workflowId));
         lastFileName = workflow.getFileName();
         getResource(resourseId);
+
         if(algoType.equals("Planning")){
             String fileLastName = request.getParameter("fileLastName");
             PlanningAlgorithmMain planningAlgorithmMain = new PlanningAlgorithmMain();
@@ -330,6 +331,7 @@ public class EchartsController {
             lastFileName = null;
             vmnumber = 0;
         }
+
         return jsonObject;
     }
     /**
