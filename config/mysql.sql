@@ -184,8 +184,9 @@ INSERT INTO `project` (title, pic, startDate, endDate, type)  VALUES ('sample5',
 DROP TABLE IF EXISTS `algorithm`;#判断algorithm表是否存在，若存在则执行删除表操作
 CREATE TABLE `algorithm` (
     `id` int(10) NOT NULL AUTO_INCREMENT,
-    `name` varchar(255) default NULL,
+    `name` varchar(255) NOT NULL UNIQUE,
     `summary` varchar(300) default NULL,
+    `type` varchar(30) NOT NULL default 'static',
     `path` varchar(200) default NULL,
     PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -193,6 +194,10 @@ CREATE TABLE `algorithm` (
 -- ----------------------------
 -- Records of algorithm 给表添加一些初始化数据用来测试,暂无算法文件，自行上传
 -- ----------------------------
-INSERT INTO `algorithm` (name, summary) VALUES ('X算法', 'XXX');
-INSERT INTO `algorithm` (name, summary) VALUES ('Y算法', 'YYY');
-INSERT INTO `algorithm` (name, summary) VALUES ('Z算法', 'ZZZ');
+INSERT INTO `algorithm` (name, summary, type, path) VALUES ('DataAware', '数据驱动', 'Scheduling', 'src/main/java/org/workflowsim/scheduling\DataAwareSchedulingAlgorithm.java');
+INSERT INTO `algorithm` (name, summary, type, path) VALUES ('MaxMin', '最大最小', 'Scheduling', ' src/main/java/org/workflowsim/scheduling\MaxMinSchedulingAlgorithm.java');
+INSERT INTO `algorithm` (name, summary, type, path) VALUES ('MCTS', '蒙特卡洛搜索树算法', 'Scheduling', 'src/main/java/org/workflowsim/scheduling\MCTSchedulingAlgorithm.java');
+INSERT INTO `algorithm` (name, summary, type, path) VALUES ('RoundRobin', '轮询调度算法', 'Scheduling', 'src/main/java/org/workflowsim/scheduling\RoundRobinSchedulingAlgorithm.java');
+INSERT INTO `algorithm` (name, summary, type, path) VALUES ('Static', '静态调度算法', 'Scheduling', ' src/main/java/org/workflowsim/scheduling\StaticSchedulingAlgorithm.java');
+INSERT INTO `algorithm` (name, summary, type, path) VALUES ('MinMin', '最小完成时间', 'Scheduling', 'src/main/java/org/workflowsim/scheduling\MinMinSchedulingAlgorithm.java');
+INSERT INTO `algorithm` (name, summary, type, path) VALUES ('GA', '遗传算法', 'Planning', ' src/main/java/com/gas/web/StaticAlgorithm/GAMain.java');

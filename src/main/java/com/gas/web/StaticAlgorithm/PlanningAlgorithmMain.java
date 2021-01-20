@@ -1,103 +1,87 @@
-/**
- * Copyright 2012-2013 University Of Southern California
- *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not
- * use this file except in compliance with the License. You may obtain a copy of
- * the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations under
- * the License.
- */
-package org.workflowsim.examples;
+package com.gas.web.StaticAlgorithm;
 
 import java.io.File;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.LinkedList;
-import java.util.List;
-import org.cloudbus.cloudsim.Cloudlet;
-import org.cloudbus.cloudsim.CloudletSchedulerSpaceShared;
-import org.cloudbus.cloudsim.DatacenterCharacteristics;
-import org.cloudbus.cloudsim.HarddriveStorage;
-import org.cloudbus.cloudsim.Host;
-import org.cloudbus.cloudsim.Log;
-import org.cloudbus.cloudsim.Pe;
-import org.cloudbus.cloudsim.Storage;
-import org.cloudbus.cloudsim.VmAllocationPolicySimple;
-import org.cloudbus.cloudsim.VmSchedulerTimeShared;
+import java.util.*;
+
+import org.cloudbus.cloudsim.*;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.provisioners.BwProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.RamProvisionerSimple;
-import org.workflowsim.CondorVM;
-import org.workflowsim.Task;
-import org.workflowsim.WorkflowDatacenter;
-import org.workflowsim.Job;
-import org.workflowsim.WorkflowEngine;
-import org.workflowsim.WorkflowPlanner;
+import org.workflowsim.*;
 import org.workflowsim.utils.ClusteringParameters;
 import org.workflowsim.utils.OverheadParameters;
 import org.workflowsim.utils.Parameters;
 import org.workflowsim.utils.ReplicaCatalog;
 import org.workflowsim.utils.Parameters.ClassType;
 
-/**
- * This WorkflowSimExample creates a workflow planner, a workflow engine, and
- * one schedulers, one data centers and 20 vms. You should change daxPath at
- * least. You may change other parameters as well.
- *
- * @author Weiwei Chen
- * @since WorkflowSim Toolkit 1.0
- * @date Apr 9, 2013
- */
-public class WorkflowSimBasicExample1 {
+public class PlanningAlgorithmMain {
 
-    protected static List<CondorVM> createVM(int userId, int vms) {
+    static int totalvm=0;
+    public static List<CondorVM> createVM(int userId, int vms,long s,int r,int m,long band,int cpu) {
         //Creates a container to store VMs. This list is passed to the broker later
+        int lastnum=totalvm;
+        int i=0;
+        totalvm=totalvm+vms;
         LinkedList<CondorVM> list = new LinkedList<>();
-
         //VM Parameters
-        long size = 10000; //image size (MB)
-        int ram = 512; //vm memory (MB)
-        int mips = 1000;
-        long bw = 1000;
-        int pesNumber = 1; //number of cpus
+        long size = s; //image size (MB)10000
+        int ram =r; //vm memory (MB)512
+        int mips = m;
+        long bw = band;
+        int pesNumber = cpu; //number of cpus
         String vmm = "Xen"; //VMM name
-
         //create VMs
         CondorVM[] vm = new CondorVM[vms];
-        for (int i = 0; i < vms; i++) {
-            double ratio = 1.0;
-            vm[i] = new CondorVM(i, 1,userId, mips * ratio, pesNumber, ram, bw, size, vmm, new CloudletSchedulerSpaceShared());
+        Random bwRandom = new Random(System.currentTimeMillis());
+        for ( ; lastnum <totalvm; lastnum++) {
+            //double ratio = bwRandom.nextDouble();
+            double ratio=0.2;
+            vm[i] = new CondorVM(lastnum,0, userId, mips * ratio, pesNumber, ram, (long) (bw * ratio), size, vmm, new CloudletSchedulerSpaceShared());
             list.add(vm[i]);
+            i++;
         }
         return list;
     }
+
+
+    //创建虚拟机
+    public List<CondorVM> getDatacenterVM(Map<String, com.gas.web.entity.Vm> map, int userId ){
+        List<CondorVM> vmlist=new ArrayList<>();
+        for (com.gas.web.entity.Vm virtual:map.values()) {
+            int count=virtual.getCount();
+            long mirror=virtual.getMirror();
+            int ram=virtual.getRam();
+            int mips=virtual.getMips();
+            long bandwidth=virtual.getBw();
+            int cpu=virtual.getCpu();
+            List<CondorVM> vmlistemp = createVM(userId, count, mirror, ram, mips, bandwidth, cpu);
+            vmlist.addAll(vmlist.size(),vmlistemp);
+        }
+        return vmlist;
+    }
+
 
     ////////////////////////// STATIC METHODS ///////////////////////
     /**
      * Creates main() to run this example This example has only one datacenter
      * and one storage
      */
-    public static void main(String[] args) {
+    public void process(String workflowPath, Map<String, com.gas.web.entity.Vm> map, String algorithm, String fileLastName) {
         try {
-            // First step: Initialize the WorkflowSim package. 
+            // First step: Initialize the WorkflowSim package.
             /**
              * However, the exact number of vms may not necessarily be vmNum If
              * the data center or the host doesn't have sufficient resources the
              * exact vmNum would be smaller than that. Take care.
              */
-            int vmNum = 20;//number of vms;
+            int vmNum = 5;//number of vms;
             /**
              * Should change this based on real physical path
              */
-            String daxPath = "config\\dax\\CyberShake_1000.xml";
+            String daxPath = workflowPath;
+
             File daxFile = new File(daxPath);
             if (!daxFile.exists()) {
                 Log.printLine("Warning: Please replace daxPath with the physical path in your working environment!");
@@ -154,7 +138,7 @@ public class WorkflowSimBasicExample1 {
              * Create a list of VMs.The userId of a vm is basically the id of
              * the scheduler that controls this vm.
              */
-            List<CondorVM> vmlist0 = createVM(wfEngine.getSchedulerId(0), Parameters.getVmNum());
+            List<CondorVM> vmlist0 = getDatacenterVM(map, wfEngine.getSchedulerId(0));
 
             /**
              * Submits this list of vms to this WorkflowEngine.
@@ -165,13 +149,19 @@ public class WorkflowSimBasicExample1 {
              * Binds the data centers with the scheduler.
              */
             wfEngine.bindSchedulerDatacenter(datacenter0.getId(), 0);
-            CloudSim.startSimulation();
-            List<Job> outputList0 = wfEngine.getJobsReceivedList();
-            CloudSim.stopSimulation();
-            printJobList(outputList0);
-        } catch (Exception e) {
-            Log.printLine("The simulation has been terminated due to an unexpected error" + e);
-        }
+
+            PlanningAlgorithmBase planingAlgorithm = null;
+            Class cls = Class.forName("com.gas.web.StaticAlgorithm." + algorithm);
+            try {
+                planingAlgorithm = (PlanningAlgorithmBase)cls.newInstance();
+            }catch (IllegalAccessException | InstantiationException e){
+                System.out.println("create planing algorithm error " + e);
+            }
+
+            planingAlgorithm.run(workflowPath, vmlist0, algorithm, fileLastName);
+          } catch (Exception e) {
+            Log.printLine("The simulation has been terminated due to an unexpected error: " + e);
+          }
     }
 
     protected static WorkflowDatacenter createDatacenter(String name) {

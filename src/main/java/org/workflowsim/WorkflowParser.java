@@ -250,6 +250,7 @@ public final class WorkflowParser {
                         }
                         task.setType(nodeType);
                         task.setUserId(userId);
+                        task.setTaskName(nodeName);
                         mName2Task.put(nodeName, task);
                         for (FileItem file : mFileList) {
                             task.addRequiredFile(file.getName());

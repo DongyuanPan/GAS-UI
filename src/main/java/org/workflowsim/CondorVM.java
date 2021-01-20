@@ -78,6 +78,7 @@ public class CondorVM extends Vm {
      */
     public CondorVM(
             int id,
+            int hostId,
             int userId,
             double mips,
             int numberOfPes,
@@ -86,7 +87,7 @@ public class CondorVM extends Vm {
             long size,
             String vmm,
             CloudletScheduler cloudletScheduler) {
-        super(id, userId, mips, numberOfPes, ram, bw, size, vmm, cloudletScheduler);
+        super(id, hostId,userId, mips, numberOfPes, ram, bw, size, vmm, cloudletScheduler);
         /*
          * At the beginning all vm status is idle. 
          */
@@ -119,6 +120,7 @@ public class CondorVM extends Vm {
      * @pre cloudletScheduler != null
      * @post $none
      */
+
     public CondorVM(
             int id,
             int userId,
@@ -133,12 +135,34 @@ public class CondorVM extends Vm {
             double costPerStorage,
             double costPerBW,
             CloudletScheduler cloudletScheduler) {
-        this(id, userId, mips, numberOfPes, ram, bw, size, vmm, cloudletScheduler);
+        super(id, userId, mips, numberOfPes, ram, bw, size, vmm, cloudletScheduler);
         this.cost = cost;
         this.costPerBW = costPerBW;
         this.costPerMem = costPerMem;
         this.costPerStorage = costPerStorage;
     }
+    public CondorVM(
+            int id,
+            int hostId,
+            int userId,
+            double mips,
+            int numberOfPes,
+            int ram,
+            long bw,
+            long size,
+            String vmm,
+            double cost,
+            double costPerMem,
+            double costPerStorage,
+            double costPerBW,
+            CloudletScheduler cloudletScheduler) {
+        super(id, hostId,userId, mips, numberOfPes, ram, bw, size, vmm, cloudletScheduler);
+        this.cost = cost;
+        this.costPerBW = costPerBW;
+        this.costPerMem = costPerMem;
+        this.costPerStorage = costPerStorage;
+    }
+
 
     /**
      * Gets the CPU cost

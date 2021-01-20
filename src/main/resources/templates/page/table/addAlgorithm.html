@@ -23,6 +23,15 @@
         </div>
     </div>
     <div class="layui-form-item">
+        <label class="layui-form-label required">算法类型</label>
+        <div class="layui-input-block">
+            <select name="type" id="type" lay-verify="required" lay-reqtext="类型不能为空" placeholder="请选择算法类型" value="" >
+                <option value="Planning">Scheduling</option>
+                <option value="Planning">Planning</option>
+            </select>
+        </div>
+    </div>
+    <div class="layui-form-item">
         <label class="layui-form-label required">摘要</label>
         <div class="layui-input-block ">
             <textarea name="summary" id="summary" rows="3" cols="119" lay-verify="required" lay-reqtext="摘要不能为空" placeholder="请输入算法摘要" value=""></textarea>
@@ -32,7 +41,7 @@
     <div class="layui-form-item">
         <label class="layui-form-label">上传算法</label>
         <div class="layui-upload">
-            <button type="button" class="layui-btn layui-btn-normal" id="chooseFile">选择文件</button>
+            <button type="button" class="layui-btn layui-btn-normal" id="chooseFile">选择算法文件</button>
         </div>
     </div>
 
@@ -55,6 +64,7 @@
         upload.render({
             elem: '#chooseFile',
             url: '/algorithm/uploadFile',
+            multiple: true,
             auto: false,//选择文件后不自动上传
             accept: 'file', //允许上传的文件类型
             bindAction: '#saveBtn',

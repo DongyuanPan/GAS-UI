@@ -18,10 +18,54 @@
             <div class="layui-card">
                 <div class="layui-card-body" style="padding-top: 40px;">
                     <div class="layui-carousel" id="stepForm" lay-filter="stepForm" style="margin: 0 auto;">
-                        <div carousel-item>
-                            <div class="layui-form-item" style="text-align: center">
+                        <div carousel-item >
+
+                            <div class="layui-form-item" style="text-align: center" id="choose">
                                 <div class="layui-form-item">
-                                    <table class="layui-hide" id="currentTableIdOfWorkflow" lay-filter="currentTableFilter" style="margin-top: 50px; margin-left: 0px; margin-right: 0px"></table>
+                                    <div class="layui-input-block">
+                                       <select name="OP" id="chooseOp" lay-verify="required" lay-reqtext="操作不能为空" placeholder="请选择操作类型" style="margin-top: 50px; margin-left: 0px; margin-right: 0px">
+                                           <option>请选择操作</option>
+                                           <option value="仿真绘图">仿真绘图</option>
+                                          <option value="直接绘图">直接绘图</option>
+                                       </select>
+                                    </div>
+                                </div>
+                                <div class="layui-form-item">
+                                    <div class="layui-input-block">
+                                        <button class="layui-btn layui-btn-primary" lay-submit lay-filter="formStep" id="NextInStep0">
+                                            &emsp;&emsp;下一步&emsp;&emsp;
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+<!--
+                            <div class="layui-form-item" style="text-align: center" id="directSimNext">
+
+                                   <div class="layui-form-item">
+                                       <div class="layui-input-block">
+                                         <div class="layui-upload">
+                                              <button type="button" class="layui-btn layui-btn-normal" style="margin-top: 50px; margin-left: 0px; margin-right: 0px" id="chooseFile">选择任务结果</button>
+                                         </div>
+                                       </div>
+                                   </div>
+
+                                   <div class="layui-form-item">
+                                      <div class="layui-input-block">
+                                            <button type="button" class="layui-btn layui-btn-primary" lay-submit id="submit">立即绘制</button>
+                                      </div>
+                                   </div>
+                                  <div class="layui-form-item">
+                                      <div class="layui-input-block">
+                                          <button class="layui-btn layui-btn-primary" lay-submit  id="PreInStep0">
+                                            &emsp;&emsp;上一步&emsp;&emsp;
+                                          </button>
+                                      </div>
+                                  </div>
+                            </div>
+-->
+                            <div class="layui-form-item" style="text-align: center" id="workfolw">
+                                <div class="layui-form-item">
+                                    <table class="layui-hide" id="currentTableIdOfWorkflow" lay-filter="currentTableFilter" style="margin-top: 50px; margin-left: 0px; margin-right: 0px; width: fit-content"></table>
                                 </div>
                                 <div class="layui-form-item">
                                     <div class="layui-input-block">
@@ -126,10 +170,11 @@
 <script src="../../static/js/lay-config.js?v=1.0.4" charset="utf-8"></script>
 <script src="../../static/js/table/table-load.js" charset="utf-8"></script>
 <script>
-    layui.use([ 'form', 'step', 'table'], function () {
+    layui.use([ 'form', 'step', 'table', 'upload'], function () {
         var $ = layui.$,
             step = layui.step,
-            table = layui.table;
+            table = layui.table,
+            upload = layui.upload;
         var dataOfWorkflow,
             dataOfResource,
             dataOfAlgorithm;
@@ -145,6 +190,8 @@
             stepWidth: '750px',
             height: '500px',
             stepItems: [{
+                title: '选择操作'
+            }, {
                 title: '选择工作流'
             }, {
                 title: '选择资源'
@@ -157,8 +204,38 @@
             }
             ]
         });
-        //载入表格
-        loadWorkflowInSimPage(table);
+
+        upload.render({
+            elem: '#chooseFile'
+            ,url: '/uploadJsonFile'
+            ,auto: false
+            ,accept: 'file' //允许上传的文件类型
+            ,bindAction: '#submit'
+            ,done: function(result){
+                if (result.code == 200) {
+                   window.localStorage.setItem("directSim", JSON.stringify(result));
+                   self.location="ResultShow3.html";
+                } else {
+                    alert("上传文件失败");
+                }
+            }
+            ,error: function(){
+                //请求异常回调
+                alert("上传文件失败");
+            }
+        });
+        $('#NextInStep0').click(function () {
+            var obj = document.getElementById("chooseOp").value;
+            if(obj == "仿真绘图"){
+                step.next('#stepForm');
+                //载入表格
+                loadWorkflowInSimPage(table);
+
+            }else {
+                step.next('#stepForm');
+            }
+        })
+
         //换页
         $('#NextInStep1').click(function () {
             step.next('#stepForm');
@@ -210,20 +287,38 @@
             var checkStatusOfAlgorithm = table.checkStatus('currentTableIdOfAlgorithm');
             dataOfAlgorithm = checkStatusOfAlgorithm.data;
             algorithmId=JSON.stringify(dataOfAlgorithm[0].id);
+            var  algorithmSum=JSON.stringify(dataOfAlgorithm[0].summary);
+            var algorithmName2,algorithmSum2,algorithmtype2;
+            if(dataOfAlgorithm.length==2){
+                algorithmName2=dataOfAlgorithm[1].name;
+                algorithmSum2=dataOfAlgorithm[1].summary;
+                algorithmtype2=dataOfAlgorithm[1].type;
+            }
             table.render({
                 elem: '#currentTableIdOfAlgorithmConfirm',
                 cols: [[
-                    {field: 'name', width: "50%", title: '算法名称', sort: true, align: "left"},
-                    {field: 'summary', width: "50%", title: '摘要', align: "left"}
+                    {field: 'name', width: "40%", title: '算法名称', sort: true, align: "left"},
+                    {field: 'summary', width: "40%", title: '摘要', align: "left"},
+                    {field: 'type', width: "20%", title: '算法类型', align: "center"}
                 ]],
                 data:[
                     {   name: JSON.stringify(dataOfAlgorithm[0].name),
-                        summary: JSON.stringify(dataOfAlgorithm[0].summary)}
+                        summary: JSON.stringify(dataOfAlgorithm[0].summary),
+                        type: JSON.stringify(dataOfAlgorithm[0].type)
+                    },
+                    {   name: JSON.stringify(algorithmName2),
+                        summary: JSON.stringify(algorithmSum2),
+                        type: JSON.stringify(algorithmtype2)
+                    }
+
                 ],
                 page: false,
                 skin: 'line'
             });
         });
+        $('#PreInStep0').click(function () {
+            step.pre('#stepForm');
+        })
         $('#PreInStep2').click(function () {
             step.pre('#stepForm');
             loadWorkflowInSimPage(table);
@@ -239,22 +334,41 @@
         //点击确认按钮，提交表单
         $('#Sure').click(function () {
             $('#sure').submit=true;
-            if(JSON.stringify(dataOfWorkflow)!="[]" && JSON.stringify(dataOfResource)!="[]" && JSON.stringify(dataOfAlgorithm)!="[]"){
+            if(dataOfAlgorithm[0].type == "Planning"){
+                var fileLast=new Date().getTime();
+                window.localStorage.setItem("fileLastName", fileLast);
+                window.localStorage.setItem("algorithm", dataOfAlgorithm[0].name);
+                $.ajax({
+                    url: '/formUpload',
+                    method: 'post',
+                    data:{
+                        "workflow" : workflowId,
+                        "resource" : resourceId,
+                        "algorithm" : JSON.stringify(dataOfAlgorithm),
+                        "fileLastName" : fileLast,
+                        "type" : dataOfAlgorithm[0].type
+                    },
+                    dataType : 'JSON',
+                })
+                step.next('#stepForm');
+                self.location="dynamicAlgorithm.html";
+            }
+             else if(JSON.stringify(dataOfWorkflow)!="[]" && JSON.stringify(dataOfResource)!="[]" && JSON.stringify(dataOfAlgorithm)!="[]"){
                 $.ajax({
                     url: '/formUpload',
                     method: 'post',
                     data: {
                         "workflow": workflowId,
                         "resource": resourceId,
-                        "algorithm": algorithmId
+                        "algorithm" :JSON.stringify(dataOfAlgorithm),
+                        "type" : dataOfAlgorithm[0].type
                     },
                     dataType: 'JSON',
                     success: function (res) {
                         if (res.code == 200) {
-                            var result = JSON.stringify(res.data);
+                            var result = JSON.stringify(res);
                             window.localStorage.setItem("result", result);
                             step.next('#stepForm');
-                           // window.location.href="ResultShow2.html";
                             self.location="ResultShow2.html";
                         } else {
 
@@ -268,6 +382,7 @@
                 layer.msg("请选择资源");
             }
         });
+
     })
 </script>
 </body>

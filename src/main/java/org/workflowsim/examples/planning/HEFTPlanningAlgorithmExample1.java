@@ -64,7 +64,7 @@ public class HEFTPlanningAlgorithmExample1 extends WorkflowSimBasicExample1 {
         Random bwRandom = new Random(System.currentTimeMillis());
         for (int i = 0; i < vms; i++) {
             double ratio = bwRandom.nextDouble();
-            vm[i] = new CondorVM(i, userId, mips * ratio, pesNumber, ram, (long) (bw * ratio), size, vmm, new CloudletSchedulerSpaceShared());
+            vm[i] = new CondorVM(i, 1,userId, mips * ratio, pesNumber, ram, (long) (bw * ratio), size, vmm, new CloudletSchedulerSpaceShared());
             list.add(vm[i]);
         }
         return list;
@@ -88,7 +88,7 @@ public class HEFTPlanningAlgorithmExample1 extends WorkflowSimBasicExample1 {
             /**
              * Should change this based on real physical path
              */
-            String daxPath = "/Users/weiweich/NetBeansProjects/WorkflowSim-1.0/config/dax/Montage_100.xml";
+            String daxPath = "config/dax/Montage_100.xml";
 
             File daxFile = new File(daxPath);
             if (!daxFile.exists()) {

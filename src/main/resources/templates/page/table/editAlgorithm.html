@@ -22,6 +22,15 @@
             <input type="text" name="name" lay-verify="required" lay-reqtext="算法名称不能为空" placeholder="请输入算法名称" value="" class="layui-input">
         </div>
     </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label required">算法类型</label>
+        <div class="layui-input-block">
+            <input type="radio" name="type" value="Scheduling" title="Scheduling" checked="">
+            <input type="radio" name="type" value="Planning" title="Planning">
+        </div>
+    </div>
+
     <div class="layui-form-item">
         <label class="layui-form-label required">摘要</label>
         <div class="layui-input-block ">
@@ -60,6 +69,12 @@
             success:function(res){
                 document.getElementsByName('name')[0].setAttribute("value", res.data.name);
                 document.getElementById('summary').value=res.data.summary
+                var types = document.getElementsByName("type");
+                for (var i = 0; i < types.length; i++) {
+                    if(res.data.type == types[i].value){
+                        $(types[i]).next().click();
+                    }
+                }
             },
             error:function () {
                 alert("错误");

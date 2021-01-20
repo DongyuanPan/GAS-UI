@@ -104,6 +104,12 @@
           "href": "page/ResultShow2.html",
           "icon": "fa fa-superpowers",
           "target": "_self"
+        },
+        {
+          "title": "动态算法结果展示",
+          "href": "page/dynamicAlgorithm.html",
+          "icon":"fa fa-superpowers",
+          "target": ""
         }
       ]
     }

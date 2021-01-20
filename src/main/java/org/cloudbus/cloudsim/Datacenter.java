@@ -428,8 +428,15 @@ public class Datacenter extends SimEntity {
 	 */
 	protected void processVmCreate(SimEvent ev, boolean ack) throws IOException {
 		Vm vm = (Vm) ev.getData();
+		Host hostVm = null;
+        for(Host host:characteristics.getHostList()){
+        	if(host.getId()==vm.getHostId()){
+        		hostVm=host;
+        		break;
+			}
+		}
 
-		boolean result = getVmAllocationPolicy().allocateHostForVm(vm);
+		boolean result = getVmAllocationPolicy().allocateHostForVm(vm,hostVm);
 
 		if (ack) {
 			int[] data = new int[3];

@@ -143,7 +143,7 @@ public class DatacenterBroker extends SimEntity {
 	 * @post $none
 	 */
 	@Override
-	public void processEvent(SimEvent ev) throws IllegalAccessException, InstantiationException {
+	public void processEvent(SimEvent ev) throws IllegalAccessException, InstantiationException, ClassNotFoundException {
 		switch (ev.getTag()) {
 		// Resource characteristics request
 			case CloudSimTags.RESOURCE_CHARACTERISTICS_REQUEST:

@@ -1,6 +1,9 @@
 package com.gas.web.controller;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.gas.web.StaticAlgorithm.PlanningAlgorithmMain;
 import com.gas.web.bean.Res;
 import com.gas.web.bean.Schedule;
 import com.gas.web.bean.Task;
@@ -10,6 +13,7 @@ import com.gas.web.entity.Vm;
 import com.gas.web.entity.Workflow;
 import com.gas.web.service.IVmService;
 import com.gas.web.service.IWorkflowService;
+import com.gas.web.util.PauseUtil;
 import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -29,10 +33,22 @@ import java.util.*;
 @Controller
 public class EchartsController {
     int datacenter=1,vmnumber=0;
+
     boolean nonefile=false;
+
     public Map<String, Vm> map;
+
     private final IVmService iVmService;
+
     private final IWorkflowService iWorkflowService;
+
+    private static double finishtime=0;
+
+    private static int iterator=0;
+
+    public static boolean continueGAflag = true;
+
+    public static boolean endGAflag = false;
 
     @Autowired
     public EchartsController(IVmService iVmService, IWorkflowService iWorkflowService) {
@@ -85,7 +101,8 @@ public class EchartsController {
         return res;
     }
 
-    private Display toDisplay(List<CondorVM> vmList, List<Job> jobList) {
+    public static Display toDisplay(List<CondorVM> vmList, List<Job> jobList) {
+        finishtime=0;
         Schedule schedule = new Schedule();
         List<Res> resList = new ArrayList<>();
         List<Task> taskList = new ArrayList<>();
@@ -115,6 +132,7 @@ public class EchartsController {
                 task.setIndexRes(VMidToIndex.get(job.getVmId()));
                 task.setStartTime(taskTmp.getExecStartTime());
                 task.setEndTime(taskTmp.getTaskFinishTime());
+                finishtime=Math.max(taskTmp.getTaskFinishTime(),finishtime);
                 task.setId(taskTmp.getCloudletId());
                 task.setName(taskTmp.getType());
                 task.setColorNum(new Random().nextInt(11));
@@ -136,7 +154,7 @@ public class EchartsController {
         return new Display(schedule);
     }
     public void getResource(String name){
-        map=new HashMap<String, Vm>();
+        //map=new HashMap<String, Object>();
         try {
             map=iVmService.getAllVm(Integer.parseInt(name));
             for (Vm vm:map.values()) {
@@ -212,11 +230,9 @@ public class EchartsController {
         }
         try {
             jsonObject.put("code", 200);
-            JSONObject jsonobject = JSONObject.parseObject(new String(file.getBytes()));//
-            //jsonObject.put("data", new String(file.getBytes(),"UTF-8"));
+            JSONObject jsonobject = JSONObject.parseObject(new String(file.getBytes()));
             jsonObject.put("data", jsonobject);
             jsonObject.put("url", stringBuilder.append(path).append(fileName).toString());
-//            file.transferTo(new File(path, fileName));
         } catch (Exception e) {
             jsonObject.put("code", 0);
             e.printStackTrace();
@@ -267,7 +283,7 @@ public class EchartsController {
      */
     @RequestMapping(value = "/formUpload", method = RequestMethod.POST)
     @ResponseBody
-    public JSONObject addQuestionnaire(HttpServletRequest request) throws IOException {
+    public JSONObject addQuestionnaire(HttpServletRequest request) throws IOException, ClassNotFoundException, IllegalAccessException, InstantiationException {
         JSONObject jsonObject = new JSONObject();
         File fileDir = new File("config/workflow/");
         if(!fileDir.exists()){
@@ -277,58 +293,104 @@ public class EchartsController {
         String workflowId = request.getParameter("workflow");
         String resourseId = request.getParameter("resource");
         String algorithm = request.getParameter("algorithm");
+        String algoType = request.getParameter("type");
+        JSONArray algorithmArray=JSONArray.parseArray(algorithm);
+        algorithm=algorithmArray.getJSONObject(0).get("name").toString();
+        String algorithm2 = null;
         Workflow workflow = iWorkflowService.workflowFindById(Integer.parseInt(workflowId));
-        lastFileName=workflow.getFileName();
+        lastFileName = workflow.getFileName();
         getResource(resourseId);
-        SchedulingAlgorithm f = new SchedulingAlgorithm();
-        f.process(absolutePath+"/"+getLastFileName(), vmnumber, Integer.parseInt(algorithm), map, datacenter);
-        List<Job> ppp = f.getTaskList();
-        List<CondorVM> ooo=f.getCondorVMList();
-        double lengh_of_all_jobs=0,mips_of_all_vms=0,finish_time_of_all_jobs=0;
-        double total_cpu_time=0;
-        for(int i =0 ;i<ppp.size();i++){
-            lengh_of_all_jobs=lengh_of_all_jobs+ppp.get(i).getCloudletLength();
-            if(finish_time_of_all_jobs<ppp.get(i).getFinishTime())finish_time_of_all_jobs=ppp.get(i).getFinishTime();
-        }
-        for(int i =0 ;i<ooo.size();i++) {
-            mips_of_all_vms += ooo.get(i).getMips() * ooo.get(i).getNumberOfPes() * finish_time_of_all_jobs;
-        };
-        double mean_cpu_use=lengh_of_all_jobs/mips_of_all_vms;
-        jsonObject.put("code", 200);
-        jsonObject.put("mean_cpu_use",mean_cpu_use);
-        jsonObject.put("data", toDisplay(f.getCondorVMList(), f.getTaskList()));
-        System.out.println(jsonObject);
-        lastFileName=null;
-        vmnumber=0;
-        return jsonObject;
-        //-------------------------------------------------------------------------------------张雅茹写的
-        /*while (true) {
-            System.out.println("sleep");
-            daxFile = new File(path + getLastFileName());
-            if (daxFile.exists()&&daxFile.isFile())
-                break;
-        }
-        while (true) {
-            System.out.println("tablenone");
-            if (tableload==1)
-                break;
-        }*/
-//        while (getLastFileName() == null) {
-//            System.out.println("sleep");
-//        }
 
-//        while (!finishUpload) {
-//            System.out.println("sleep");
-//        }
-        /*SchedulingAlgorithm f = new SchedulingAlgorithm();
-        f.process(path+getLastFileName(), vmnumber, Integer.parseInt(algorithm), map, datacenter);
-        jsonObject.put("code", 200);
-        jsonObject.put("data", toDisplay(f.getCondorVMList(), f.getTaskList()));
-        System.out.println(jsonObject);
-        setFinishUpload(false);
-        tableload=0;
-        lastFileName=null;
-        vmnumber=0;
-        return jsonObject;*/
+        if(algoType.equals("Planning")){
+            String fileLastName = request.getParameter("fileLastName");
+            PlanningAlgorithmMain planningAlgorithmMain = new PlanningAlgorithmMain();
+            planningAlgorithmMain.process(absolutePath+"/"+getLastFileName(), map, algorithm, fileLastName);
+            if(endGAflag) {
+                System.out.println("endEcharts");
+                iterator = 0;
+                endGAflag = false;
+                continueGAflag = true;
+                return jsonObject;
+            }
+        }
+        else {
+            SchedulingAlgorithm f = new SchedulingAlgorithm();
+            f.process(absolutePath + "/" + getLastFileName(), vmnumber, algorithm, map, datacenter);
+            jsonObject.put("code", 200);
+            jsonObject.put("algorithm1", algorithm);
+            jsonObject.put("data", toDisplay(f.getCondorVMList(), f.getTaskList()));
+            jsonObject.put("finishtime1", finishtime);
+            if (algorithmArray.size() == 2) {
+                algorithm2 = algorithmArray.getJSONObject(1).get("name").toString();
+                f.process(absolutePath + "/" + getLastFileName(), vmnumber, algorithm2, map, datacenter);
+                jsonObject.put("algorithm2", algorithm2);
+                jsonObject.put("data2", toDisplay(f.getCondorVMList(), f.getTaskList()));
+                jsonObject.put("finishtime2", finishtime);
+            }
+            System.out.println(jsonObject);
+            lastFileName = null;
+            vmnumber = 0;
+        }
+
+        return jsonObject;
+    }
+    /**
+     * test ajax
+     */
+    @RequestMapping(value="/getDynamic",method = RequestMethod.POST)
+    @ResponseBody
+    public JSONObject getData(HttpServletRequest request) throws IOException, InterruptedException {
+        System.out.println("Thread ID :" + Thread.currentThread().getId());
+        JSONObject jsonObject = new JSONObject();
+        String algorithm = request.getParameter("dynamicAlgorithm");
+        String fileLastName = request.getParameter("fileLastName");
+        String stopGA = request.getParameter("stopGA");
+        String endGA = request.getParameter("endGA");
+        if(Integer.parseInt(endGA) == 1){
+            endGAflag = true;
+            return jsonObject;
+        }else {
+            endGAflag = false;
+        }
+        if(Integer.parseInt(stopGA) == 1){
+            continueGAflag = false;
+            PauseUtil.setPauseFlag();
+            return jsonObject;
+        }else {
+            continueGAflag = true;
+            PauseUtil.resetPauseFlag();
+            PauseUtil.continueThread();
+        }
+
+
+        jsonObject.put("code", 404);
+        StringBuffer s = new StringBuffer();
+        FileInputStream in;
+        if( iterator==0 ) {
+            File file = new File("src\\main\\resources\\StaticAlgorithmResult\\"+algorithm+"-init-"+fileLastName+".json");
+            if(file.exists()) {
+                in = new FileInputStream(file);
+                iterator++;
+            } else {
+                return jsonObject;
+            }
+        }else {
+            File file = new File("src\\main\\resources\\StaticAlgorithmResult\\" + algorithm + "-"+ fileLastName + ".json");
+            if (file.exists()) {
+                in = new FileInputStream(file);
+            } else {
+                return jsonObject;
+            }
+        }
+        BufferedReader reader = new BufferedReader(new InputStreamReader(in,"utf-8"));
+        String s1 = reader.readLine();
+        while (s1!=null)
+        {
+            s.append(s1);
+            s1 = reader.readLine();
+        }
+       jsonObject = JSON.parseObject(s.toString());
+       in.close();
+       return jsonObject;
     }
 }
