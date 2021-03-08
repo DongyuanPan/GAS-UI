@@ -199,8 +199,10 @@ function loadWorkflow(table) {
             {type: "checkbox", width: "10%"},
             {field: 'id', width: "10%", title: 'ID', sort: true, align: "center"},
             {field: 'title', width: "30%", title: '工作流名称', align: "left"},
-            {field: 'information', width: "20%", title: '描述信息', align: "center"},
-            {title: '操作', width: "30%", toolbar: '#currentTableBar', align: "center"}
+
+            {field: 'information', width: "20%", title: '描述信息', align: "left"},
+            {title: '操作', width: "20%", toolbar: '#currentTableBar', align: "center"}
+
         ]],
         limits: [10, 15, 20, 25, 50, 100],
         limit: 15,
