@@ -26,7 +26,7 @@
         <label class="layui-form-label required">算法类型</label>
         <div class="layui-input-block">
             <select name="type" id="type" lay-verify="required" lay-reqtext="类型不能为空" placeholder="请选择算法类型" value="" >
-                <option value="Planning">Scheduling</option>
+                <option value="Scheduling">Scheduling</option>
                 <option value="Planning">Planning</option>
             </select>
         </div>
@@ -71,7 +71,7 @@
             //操作成功的回调
             done: function (result) {
                 if (result.code == 200) {
-                    alert("上传文件成功");
+                    // alert("上传文件成功");
                 } else {
                     alert("上传文件失败");
                 }

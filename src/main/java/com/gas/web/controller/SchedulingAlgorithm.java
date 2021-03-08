@@ -215,6 +215,7 @@ public class SchedulingAlgorithm {
         // Here are the steps needed to create a PowerDatacenter:
         // 1. We need to create a list to store one or more
         //    Machines
+        // Host 对应数据中心
         int hostNum=vmHostList.size();
         List<Host> hostList = new ArrayList<>();
 
@@ -226,13 +227,19 @@ public class SchedulingAlgorithm {
             int mips = 2000;
             // 3. Create PEs and add these into the list.
             //for a quad-core machine, a list of 4 PEs is required:
-            peList1.add(new Pe(0, new PeProvisionerSimple(mips))); // need to store Pe id and MIPS Rating
-            peList1.add(new Pe(1, new PeProvisionerSimple(mips)));
+            for (int j = 0; j < 500; ++j) {
+                peList1.add(new Pe(j, new PeProvisionerSimple(mips)));
+            }
+            mips = 2500;
+            for (int j = 500; j < 1000; ++j) {
+                peList1.add(new Pe(j, new PeProvisionerSimple(mips)));
+            }
+
 
             int hostId = vmHostList.get(i);
-            int ram = 4096; //host memory (MB)
-            long storage = 1000000; //host storage
-            int bw = 10000;
+            int ram = Integer.MAX_VALUE; //host memory (MB)
+            long storage = Long.MAX_VALUE; //host storage
+            int bw = Integer.MAX_VALUE;
             hostList.add(
                     new Host(
                             hostId,

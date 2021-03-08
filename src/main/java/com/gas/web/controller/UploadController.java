@@ -56,14 +56,14 @@ public class UploadController {
             ClassLoader loader = ClassLoader.getSystemClassLoader();
             Class<?> c = loader.loadClass(Constant.algorithmPackageName + "." + fileName.replace(".java", ""));
 
-            // 更新算法选择列表
-            List<Class<?>> classList =  WorkflowScheduler.getClasses(Constant.algorithmPackageName);
-            List<String> algoNameList = new ArrayList<>();
-            for (Class<?> aClass : classList) {
-                algoNameList.add(aClass.getSimpleName());
-            }
-            jsonObject.put("code", 200);
-            jsonObject.put("data", algoNameList);
+//            // 更新算法选择列表
+//            List<Class<?>> classList =  WorkflowScheduler.getClasses(Constant.algorithmPackageName);
+//            List<String> algoNameList = new ArrayList<>();
+//            for (Class<?> aClass : classList) {
+//                algoNameList.add(aClass.getSimpleName());
+//            }
+//            jsonObject.put("code", 200);
+//            jsonObject.put("data", algoNameList);
         } catch (Exception e) {
             jsonObject.put("code", -1);
             e.printStackTrace();

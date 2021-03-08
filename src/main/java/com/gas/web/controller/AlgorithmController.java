@@ -259,17 +259,17 @@ public class AlgorithmController {
             ClassLoader loader = ClassLoader.getSystemClassLoader();
             Class<?> c = loader.loadClass(Constant.algorithmPackageName + "." + fileName.replace(".java", ""));
 
-            // 更新算法选择列表
-            List<Class<?>> classList =  WorkflowScheduler.getClasses(Constant.algorithmPackageName);
-            List<String> algoNameList = new ArrayList<>();
-            for (Class<?> aClass : classList) {
-                algoNameList.add(aClass.getSimpleName());
-            }
+//            // 更新算法选择列表
+//            List<Class<?>> classList =  WorkflowScheduler.getClasses(Constant.algorithmPackageName);
+//            List<String> algoNameList = new ArrayList<>();
+//            for (Class<?> aClass : classList) {
+//                algoNameList.add(aClass.getSimpleName());
+//            }
 
             isupload=true;
 
             jsonObject.put("code", 200);
-            jsonObject.put("data", algoNameList);
+//            jsonObject.put("data", algoNameList);
         } catch (Exception e) {
             if(algorithmfile.exists() && algorithmfile.isFile()) {//编译出错则将其删除
                 algorithmfile.delete();

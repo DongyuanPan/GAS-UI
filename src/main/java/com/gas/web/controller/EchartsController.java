@@ -56,20 +56,20 @@ public class EchartsController {
         this.iWorkflowService = iWorkflowService;
     }
 
-    @ResponseBody
-    @RequestMapping("/init")
-    public HashMap<String, Object> init() {
-        HashMap<String, Object> res = new HashMap<>();
-        res.put("code", "200");
-        res.put("data", genJson());
-        List<Class<?>> classList =  WorkflowScheduler.getClasses(Constant.algorithmPackageName);
-        List<String> algoNameList = new ArrayList<>();
-        for (Class<?> aClass : classList) {
-            algoNameList.add(aClass.getSimpleName());
-        }
-        res.put("algoNameList", algoNameList);
-        return res;
-    }
+//    @ResponseBody
+//    @RequestMapping("/init")
+//    public HashMap<String, Object> init() {
+//        HashMap<String, Object> res = new HashMap<>();
+//        res.put("code", "200");
+//        res.put("data", genJson());
+//        List<Class<?>> classList =  WorkflowScheduler.getClasses(Constant.algorithmPackageName);
+//        List<String> algoNameList = new ArrayList<>();
+//        for (Class<?> aClass : classList) {
+//            algoNameList.add(aClass.getSimpleName());
+//        }
+//        res.put("algoNameList", algoNameList);
+//        return res;
+//    }
 
     @RequestMapping("/home")
     public String home() {
